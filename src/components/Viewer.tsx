@@ -13,10 +13,11 @@ interface ViewerProps {
     selectedObject: THREE.Object3D | null;
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
     appState: React.MutableRefObject<number | null>;
+    hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>;
 }
 
 function Viewer(props: ViewerProps) {
-    const { selectedObjectRef, selectedObject, setSelectedObject, appState } = props;
+    const { selectedObjectRef, selectedObject, setSelectedObject, appState, hoveringVertex } = props;
     const world = new SceneSetup();
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
@@ -39,9 +40,9 @@ function Viewer(props: ViewerProps) {
 
         // Set Handlers user events
         window.addEventListener('click', (e) => onMouseClick(e, ray_caster,
-            world, selectedObjectRef, setSelectedObject, appState));
+            world, selectedObjectRef, setSelectedObject, appState, hoveringVertex));
         window.addEventListener('resize', (e) => onResize(world));
-        window.addEventListener("pointermove", (e) => onMouseMove(e, ray_caster, world, appState));
+        window.addEventListener("pointermove", (e) => onMouseMove(e, ray_caster, world, appState, hoveringVertex));
 
 
         // THREE Animation Loop
@@ -49,6 +50,7 @@ function Viewer(props: ViewerProps) {
             requestAnimationFrame(animate);
             world.controls.update();
             world.renderer.render(world.scene, world.camera);
+            world.labelRenderer.render(world.scene, world.camera)
         };
 
         animate();

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { appColors } from '../styles/AppColors';
 import { defaultLightConfiguration } from './Lighting';
@@ -7,6 +8,7 @@ import { defaultLightConfiguration } from './Lighting';
 export class SceneSetup {
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;
+    labelRenderer: CSS2DRenderer;
     camera: THREE.PerspectiveCamera;
     controls: OrbitControls;
 
@@ -15,9 +17,17 @@ export class SceneSetup {
         this.scene = new THREE.Scene();
         this.scene.background = appColors.BACKGROUND_WHITE;
 
-        // -- Renderer
+        // -- Geometry Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // LabelRendered
+        this.labelRenderer = new CSS2DRenderer()
+        this.labelRenderer.setSize(window.innerWidth, window.innerHeight)
+        this.labelRenderer.domElement.style.position = 'absolute'
+        this.labelRenderer.domElement.style.top = '0px'
+        this.labelRenderer.domElement.style.pointerEvents = 'none'
+        document.body.appendChild(this.labelRenderer.domElement)
 
         // -- Camera
         const FOV = 45

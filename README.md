@@ -1,5 +1,12 @@
 # PH Navigator (WIP)
 
+## TODO:
+
+- [ ] Windows
+- [ ] Draft Deploymen
+- [ ] Refactor App State and Events
+
+
 
  #### [https://bldgtyp.github.io/ph_navigator/](https://bldgtyp.github.io/ph_navigator/)
 

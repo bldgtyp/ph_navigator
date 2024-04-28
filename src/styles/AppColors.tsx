@@ -9,4 +9,5 @@ export const appColors = {
     OUTLINE: new THREE.Color(0x262626),
     GRID_LINE_LIGHT: new THREE.Color(0xc9c9c9),
     GRID_LINE_DARK: new THREE.Color(0x919191),
+    DIMENSION_LINE: new THREE.Color(0xe600e6),
 };
