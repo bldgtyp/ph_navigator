@@ -6,7 +6,7 @@ import { SceneSetup } from '../scene/SceneSetup';
 import { convertHBFaceToMesh } from '../loaders/HoneybeeFaces';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/surfaceSelectEvents';
-import { measureModeOnMouseClick } from '../handlers/measureEvents';
+import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/measure';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -16,6 +16,7 @@ interface ViewerProps {
     appStateRef: React.MutableRefObject<number | null>;
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>;
 }
+
 type EventListeners = {
     [key: number]: {
         [key: string]: (e: any) => void;
@@ -46,6 +47,9 @@ function Viewer(props: ViewerProps) {
                     measureModeOnMouseClick(
                         e, world.current, selectedObjectRef, setSelectedObject, hoveringVertex)
                 }, [world.current, selectedObjectRef, setSelectedObject, hoveringVertex]
+            ),
+            pointermove: useCallback(
+                (e: any) => { measureModeOnMouseMove(e, ray_caster, world.current, appStateRef, hoveringVertex) }, []
             ),
         }
     }

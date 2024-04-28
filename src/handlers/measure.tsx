@@ -3,7 +3,7 @@ import { SceneSetup } from '../scene/SceneSetup';
 import * as THREE from 'three';
 import { appMaterials } from '../scene/Materials';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer'
-import { handleClearSelectedMesh } from './meshSelection';
+import { handleClearSelectedMesh, getNearestFaceVertex } from './meshSelection';
 
 const dimensionLines = new THREE.Group();
 dimensionLines.renderOrder = 1;
@@ -60,6 +60,24 @@ function handleMeasureDistance(
     }
 }
 
+export function measureModeOnMouseMove(
+    event: any,
+    ray_caster: THREE.Raycaster,
+    world: SceneSetup,
+    appState: React.MutableRefObject<number | null>,
+    hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
+) {
+    const faceVertex = getNearestFaceVertex(event, ray_caster, world);
+    if (faceVertex) {
+        hoveringVertex.current = faceVertex;
+        world.scene.add(marker);
+        marker.position.copy(faceVertex);
+    } else {
+        world.scene.remove(marker);
+    }
+}
+
+
 export function measureModeOnMouseClick(
     event: any,
     world: SceneSetup,
@@ -69,5 +87,5 @@ export function measureModeOnMouseClick(
 ) {
     world.scene.add(dimensionLines);
     handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
-    // handleMeasureDistance(dimensionLines, hoveringVertex, world)
+    handleMeasureDistance(dimensionLines, hoveringVertex, world)
 }
