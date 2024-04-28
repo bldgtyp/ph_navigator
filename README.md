@@ -1,5 +1,4 @@
-# Get CSV Files from PHPP 
-PH Navigator (WIP)....
+# PH Navigator (WIP)
 
 
  #### [https://bldgtyp.github.io/ph_navigator/](https://bldgtyp.github.io/ph_navigator/)
