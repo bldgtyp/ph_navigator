@@ -13,6 +13,8 @@
 - [x] Windows & Material
 - [x] Get Boundary Condition
 - [x] Get HB-Construction Name and Props
+- [ ] Get Outdoor Shades
+- [ ] Get Doors
 
 #### UI:
 - [ ] Refactor App-State and Mouse-Events
@@ -29,7 +31,7 @@
   - [ ] camera location
   - [ ] shadow map
 
-#### FastAPI:
+#### API:
 - [ ] Create Pydantic Response Models
 - [ ] Refactor all API endpoints to use Pydantic Models
 - [ ] Move file paths into config file
