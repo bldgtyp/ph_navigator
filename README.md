@@ -15,12 +15,23 @@
 - [x] Get HB-Construction Name and Props
 - [ ] Get Outdoor Shades
 - [ ] Get Doors
+- [ ] Spaces
+- [ ] Thermal Bridge Edges
+- [ ] Winter / Summer Window Radiation Grid and Legend
+
+#### Systems:
+- [ ] Ventilation Ducting
+- [ ] Ventilation Equipment
+- [ ] Plumbing Piping
+- [ ] Hot Water Tanks and Heaters
 
 #### UI:
 - [ ] Refactor App-State and Mouse-Events
+   - [ ] State as Enum? 'State' Pattern?
 - [ ] Fix Measurement Vertex Selector behavior. Super jankey right now.
 - [ ] Add Sun-path diagram State
   - [ ] Time of Day control (connect to sunlight position)
+- [ ] Comments
 
 #### Scene:
 - [x] Add Shadows on Ground Plane

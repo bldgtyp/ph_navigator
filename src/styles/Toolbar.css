@@ -1,7 +1,7 @@
 .toolbar {
     position: absolute;
     left: 50%;
-    transform: translateY(-100%);
+    transform: translate(-50%, -100%);
     text-align: center;
     padding: 1em;
 }

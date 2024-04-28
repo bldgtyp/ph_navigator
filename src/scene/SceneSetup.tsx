@@ -6,6 +6,7 @@ import { appMaterials } from './Materials';
 import { defaultLightConfiguration } from './Lighting';
 
 
+
 export class SceneSetup {
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;

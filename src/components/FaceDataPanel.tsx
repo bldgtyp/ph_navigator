@@ -7,7 +7,7 @@ interface FaceDataPanelProps {
     selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>;
     selectedObject: THREE.Object3D | null
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
-    appState: React.MutableRefObject<number | null>;
+    appStateRef: React.MutableRefObject<number | null>;
 }
 
 function PanelItem(props: { label: React.ReactNode, value: string }) {
@@ -20,8 +20,7 @@ function PanelItem(props: { label: React.ReactNode, value: string }) {
 }
 
 function Sidebar(props: FaceDataPanelProps) {
-    const { selectedObjectRef, selectedObject, setSelectedObject, appState } = props;
-    console.log(selectedObject)
+    const { selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef } = props;
     return (
         <Paper className="face-data-panel">
             <p className='heading'>Face Attributes</p>
