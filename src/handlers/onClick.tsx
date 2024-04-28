@@ -101,7 +101,7 @@ function handleMeasureDistance(
         // Store the line and label
         line.geometry.attributes.position.needsUpdate = true
         const distance = selectedVertices[0].distanceTo(selectedVertices[1])
-        measurementLabel.element.innerText = distance.toFixed(2) + 'm'
+        measurementLabel.element.innerText = distance.toFixed(2)
         measurementLabel.position.lerpVectors(selectedVertices[0], selectedVertices[1], 0.5)
 
         // Cleanup

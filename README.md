@@ -1,14 +1,25 @@
 # PH Navigator (WIP)
 
+#### [https://bldgtyp.github.io/ph_navigator/](https://bldgtyp.github.io/ph_navigator/)
+
+
 ## TODO:
+#### Deployment:
+- [ ] Create Docker Image
+- [ ] Test Deployment to Render.com
 
+#### Geometry:
 - [ ] Windows
-- [ ] Draft Deploymen
+  - [ ] Material
 - [ ] Refactor App State and Events
+- [ ] Get Boundary Condition
+- [ ] Get HB-Construction Name and Props
 
+#### FastAPI:
+- [ ] Create Pydantic Response Models
+- [ ] Refactor all API endpoints to use Pydantic Models
+- [ ] Move file paths into config file
 
-
- #### [https://bldgtyp.github.io/ph_navigator/](https://bldgtyp.github.io/ph_navigator/)
 
 # Backend (FastAPI)
 #### Setup:
