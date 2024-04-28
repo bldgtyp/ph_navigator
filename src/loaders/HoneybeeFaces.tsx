@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { appMaterials } from '../scene/Materials';
-import { HoneybeeFace3D } from '../types/HoneybeeFace3D';
+import { HoneybeeFace3D, HoneybeeAperture } from '../types/HoneybeeFace3D';
 
-export function convertHBFaceToMesh(face: HoneybeeFace3D): { mesh: THREE.Mesh, wireframe: THREE.LineLoop } {
+export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop } {
     // ------------------------------------------------------------------------
     // Build up the Surface Mesh
     const vertices: THREE.Vector3[] = [];
@@ -31,7 +31,7 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D): { mesh: THREE.Mesh, w
     buffGeometry.computeVertexNormals();
 
     // Create Surface Mesh
-    const threeMesh = new THREE.Mesh(buffGeometry, appMaterials.geometryStandardMaterial);
+    const threeMesh = new THREE.Mesh(buffGeometry, face.face_type === 'Aperture' ? appMaterials.geometryWindowMaterial : appMaterials.geometryStandardMaterial);
     threeMesh.castShadow = true;
     threeMesh.geometry.computeBoundingBox();
 
@@ -42,6 +42,15 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D): { mesh: THREE.Mesh, w
     threeMesh.userData['type'] = face.type;
     threeMesh.userData['area'] = face.geometry.area;
     threeMesh.userData['boundary_condition'] = face.boundary_condition;
+    threeMesh.userData['properties'] = {
+        energy: {
+            construction: {
+                identifier: face.properties.energy.construction.identifier,
+                r_factor: face.properties.energy.construction.r_factor,
+                u_factor: face.properties.energy.construction.u_factor,
+            }
+        }
+    };
 
     // ------------------------------------------------------------------------
     // Build up the Wireframe Boundary

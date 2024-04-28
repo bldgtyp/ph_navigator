@@ -8,7 +8,7 @@ const dimensionLines = new THREE.Group();
 dimensionLines.renderOrder = 1;
 var selectedVertices: THREE.Vector3[] = [];
 var drawingLine = false;
-var marker = new THREE.Mesh(new THREE.SphereGeometry(0.25, 12, 12), new THREE.MeshBasicMaterial({
+var marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 12, 12), new THREE.MeshBasicMaterial({
     color: 0xe600e6
 }));
 marker.position.setScalar(1000);
@@ -39,8 +39,12 @@ function handleClearSelectedMesh(
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>,
 ) {
     if (selectedObjectRef && selectedObjectRef.current instanceof THREE.Mesh) {
-        selectedObjectRef.current.material = appMaterials.geometryStandardMaterial;
-    }
+        if ((selectedObjectRef.current as THREE.Mesh).userData["face_type"] == "Aperture") {
+            selectedObjectRef.current.material = appMaterials.geometryWindowMaterial;
+        } else {
+            selectedObjectRef.current.material = appMaterials.geometryStandardMaterial;
+        };
+    };
     selectedObjectRef.current = null;
     setSelectedObject(null);
 }
@@ -101,7 +105,7 @@ function handleMeasureDistance(
         // Store the line and label
         line.geometry.attributes.position.needsUpdate = true
         const distance = selectedVertices[0].distanceTo(selectedVertices[1])
-        measurementLabel.element.innerText = distance.toFixed(2)
+        measurementLabel.element.innerText = distance.toFixed(2) + "m"
         measurementLabel.position.lerpVectors(selectedVertices[0], selectedVertices[1], 0.5)
 
         // Cleanup

@@ -10,13 +10,15 @@
 
 #### Geometry:
 - [x] Add Ground Plane
-- [ ] Windows & Material
-- [ ] Get Boundary Condition
-- [ ] Get HB-Construction Name and Props
+- [x] Windows & Material
+- [x] Get Boundary Condition
+- [x] Get HB-Construction Name and Props
 
 #### UI:
 - [ ] Refactor App-State and Mouse-Events
 - [ ] Fix Measurement Vertex Selector behavior. Super jankey right now.
+- [ ] Add Sun-path diagram State
+  - [ ] Time of Day control (connect to sunlight position)
 
 #### Scene:
 - [x] Add Shadows on Ground Plane

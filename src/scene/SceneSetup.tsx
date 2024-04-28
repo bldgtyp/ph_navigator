@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { appColors } from '../styles/AppColors';
+import { appMaterials } from './Materials';
 import { defaultLightConfiguration } from './Lighting';
 
 
@@ -83,7 +84,7 @@ export class SceneSetup {
         this.groundGeometry = new THREE.Group();
         const ground = new THREE.Mesh(
             new THREE.PlaneGeometry(50, 50),
-            new THREE.ShadowMaterial({ opacity: 0.5, transparent: true })
+            appMaterials.groundShadowMaterial
         );
         ground.receiveShadow = true;
         this.groundGeometry.add(ground);

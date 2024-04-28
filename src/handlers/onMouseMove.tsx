@@ -1,8 +1,8 @@
 import { SceneSetup } from '../scene/SceneSetup';
 import * as THREE from 'three';
 
-var marker = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 6), new THREE.MeshBasicMaterial({
-    color: 0xFFc8FF
+var marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 6, 6), new THREE.MeshBasicMaterial({
+    color: 0xe600e6
 }));
 marker.position.setScalar(1000);
 

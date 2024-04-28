@@ -35,6 +35,14 @@ function Viewer(props: ViewerProps) {
                 world.buildingGeometry.add(geom.mesh);
                 world.buildingGeometry.add(geom.wireframe);
                 world.buildingGeometry.add(new VertexNormalsHelper(geom.mesh, 0.15, 0x000000));
+
+                face.apertures.forEach(aperture => {
+                    const apertureGeom = convertHBFaceToMesh(aperture);
+                    world.buildingGeometry.add(apertureGeom.mesh);
+                    world.buildingGeometry.add(apertureGeom.wireframe);
+                    world.buildingGeometry.add(new VertexNormalsHelper(apertureGeom.mesh, 0.15, 0x000000));
+                });
+
             });
         });
 

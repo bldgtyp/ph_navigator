@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 import pathlib
 
-from PHX.from_HBJSON import create_project, read_HBJSON_file
+from PHX.from_HBJSON import read_HBJSON_file
 
 app = FastAPI()
 
@@ -46,7 +46,27 @@ def model_faces() -> dict[str, str]:
     face_dicts = []
     for face in hb_model.faces:
         face_dict = face.to_dict()
-        face_dict["geometry"]["mesh"] = face.geometry.triangulated_mesh3d.to_dict()
-        face_dict["geometry"]["area"] = face.geometry.area
+        face_dict["geometry"]["mesh"] = face.punched_geometry.triangulated_mesh3d.to_dict()
+        face_dict["geometry"]["area"] = face.punched_geometry.area
+        face_dict["properties"]["energy"]["construction"] = {}
+        face_dict["properties"]["energy"]["construction"] = face.properties.energy.construction.to_dict()
+        face_dict["properties"]["energy"]["construction"]["r_factor"] = face.properties.energy.construction.r_factor
+        face_dict["properties"]["energy"]["construction"]["u_factor"] = face.properties.energy.construction.u_factor
+        face_dict["apertures"] = []
+        for aperture in face.apertures:
+            aperture_dict = aperture.to_dict()
+            aperture_dict["face_type"] = "Aperture"
+            aperture_dict["properties"]["energy"]["construction"] = {}
+            aperture_dict["properties"]["energy"]["construction"] = aperture.properties.energy.construction.to_dict()
+            aperture_dict["properties"]["energy"]["construction"][
+                "r_factor"
+            ] = aperture.properties.energy.construction.r_factor
+            aperture_dict["properties"]["energy"]["construction"][
+                "u_factor"
+            ] = aperture.properties.energy.construction.u_factor
+            aperture_dict["geometry"]["mesh"] = aperture.geometry.triangulated_mesh3d.to_dict()
+            aperture_dict["geometry"]["area"] = aperture.geometry.area
+            face_dict["apertures"].append(aperture_dict)
+
         face_dicts.append(face_dict)
     return {"message": json.dumps(face_dicts)}
