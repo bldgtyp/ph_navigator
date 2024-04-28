@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 export const appColors = {
+    GROUND: new THREE.Color(0x00ff00),
     SURFACE_WHITE: new THREE.Color(0xffffff),
     SURFACE_HIGHLIGHT: new THREE.Color(0xe600e6),
     LIGHT_GREY: new THREE.Color(0xededed),

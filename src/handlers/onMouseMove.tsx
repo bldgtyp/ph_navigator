@@ -55,7 +55,7 @@ function getIntersectionObjectFromMouseClick(
     ray_caster.setFromCamera(pointer, world.camera);
 
     // Find the first (closest to camera) object intersecting the ray-cast
-    const intersects = ray_caster.intersectObjects(world.scene.children);
+    const intersects = ray_caster.intersectObjects(world.buildingGeometry.children);
     const intersect = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
     return intersect ? intersect : null;
 };

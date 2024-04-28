@@ -29,7 +29,7 @@ function getSelectedMeshFromMouseClick(
     ray_caster.setFromCamera(pointer, world.camera);
 
     // Find the First (closets to camera) object intersecting the picking ray
-    const intersects = ray_caster.intersectObjects(world.scene.children);
+    const intersects = ray_caster.intersectObjects(world.buildingGeometry.children);
     const mesh = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
     return mesh ? mesh.object as THREE.Mesh : null;
 };
@@ -110,7 +110,6 @@ function handleMeasureDistance(
         drawingLine = false;
     }
 }
-
 
 export function onMouseClick(
     event: any,

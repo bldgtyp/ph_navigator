@@ -11,6 +11,8 @@ export class SceneSetup {
     labelRenderer: CSS2DRenderer;
     camera: THREE.PerspectiveCamera;
     controls: OrbitControls;
+    groundGeometry: THREE.Group;
+    buildingGeometry: THREE.Group;
 
     constructor() {
         // -- Scene
@@ -20,6 +22,10 @@ export class SceneSetup {
         // -- Geometry Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // -- Shadows
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         // LabelRendered
         this.labelRenderer = new CSS2DRenderer()
@@ -63,15 +69,35 @@ export class SceneSetup {
 
         // -- Sunlight
         const light_2 = new THREE.DirectionalLight(defaultLightConfiguration.color, defaultLightConfiguration.intensity);
-        light_2.position.set(0, 10, 25);
+        light_2.position.set(10, 10, 25);
         light_2.castShadow = defaultLightConfiguration.castShadow;
         light_2.shadow.camera.updateProjectionMatrix();
+        light_2.shadow.camera.top = 25;
+        light_2.shadow.camera.bottom = -25;
+        light_2.shadow.camera.left = -25;
+        light_2.shadow.camera.right = 25;
+
         this.scene.add(light_2);
 
+        // -- Ground
+        this.groundGeometry = new THREE.Group();
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(50, 50),
+            new THREE.ShadowMaterial({ opacity: 0.5, transparent: true })
+        );
+        ground.receiveShadow = true;
+        this.groundGeometry.add(ground);
+        this.scene.add(this.groundGeometry);
+
+        // -- Group for the Loaded Geometry
+        this.buildingGeometry = new THREE.Group();
+        this.scene.add(this.buildingGeometry);
+
+        // -- Show Helpers
         // const lightHelper = new THREE.DirectionalLightHelper(light_2, 5);
-        // scene.add(lightHelper);
+        // this.scene.add(lightHelper);
 
         // const shadowHelper = new THREE.CameraHelper(light_2.shadow.camera);
-        // scene.add(shadowHelper);
+        // this.scene.add(shadowHelper);
     }
 }

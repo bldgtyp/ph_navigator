@@ -1,6 +1,6 @@
 export const defaultLightConfiguration = {
     enabled: true,
-    castShadow: false,
+    castShadow: true,
     intensity: 2.1,
     color: 0xffffff,
     elevation: 1.33,

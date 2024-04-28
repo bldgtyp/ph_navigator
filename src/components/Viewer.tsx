@@ -32,9 +32,9 @@ function Viewer(props: ViewerProps) {
         fetchModelFaces('model_faces').then(data => {
             data.forEach(face => {
                 const geom = convertHBFaceToMesh(face)
-                world.scene.add(geom.mesh);
-                world.scene.add(geom.wireframe);
-                world.scene.add(new VertexNormalsHelper(geom.mesh, 0.15, 0x000000));
+                world.buildingGeometry.add(geom.mesh);
+                world.buildingGeometry.add(geom.wireframe);
+                world.buildingGeometry.add(new VertexNormalsHelper(geom.mesh, 0.15, 0x000000));
             });
         });
 
