@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
@@ -26,15 +26,27 @@ function Viewer(props: ViewerProps) {
     const { world, selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef, hoveringVertex } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
+
+    // Setup all the Event Listener Callbacks
     const eventListeners: EventListeners = {
         "0": {
-            click: (e: any) => { },
+            click: useCallback((e: any) => { }, []),
         },
         "1": {
-            click: (e: any) => { surfaceSelectModeOnMouseClick(e, ray_caster, world.current, selectedObjectRef, setSelectedObject) },
+            click: useCallback(
+                (e: any) => {
+                    surfaceSelectModeOnMouseClick(
+                        e, ray_caster, world.current, selectedObjectRef, setSelectedObject)
+                }, [world.current, selectedObjectRef, setSelectedObject]
+            ),
         },
         "2": {
-            click: (e: any) => { measureModeOnMouseClick(e, world.current, selectedObjectRef, setSelectedObject, hoveringVertex) },
+            click: useCallback(
+                (e: any) => {
+                    measureModeOnMouseClick(
+                        e, world.current, selectedObjectRef, setSelectedObject, hoveringVertex)
+                }, [world.current, selectedObjectRef, setSelectedObject, hoveringVertex]
+            ),
         }
     }
 
@@ -78,13 +90,12 @@ function Viewer(props: ViewerProps) {
     }, []);
 
     useEffect(() => {
+        // Setup Event Listeners based on the App-State
         for (let state in eventListeners) {
             for (let event in eventListeners[state]) {
                 if (state !== appStateRef.current?.toString()) {
-                    console.log(`> Removing: State-${state} | Event '${event}'`);
                     window.removeEventListener(event, eventListeners[state][event]);
                 } else {
-                    console.log(`> Adding: State-${state} | Event '${event}'`);
                     window.addEventListener(event, eventListeners[state][event]);
                 }
             }
