@@ -38,7 +38,7 @@ export class SceneSetup {
         // -- Camera
         const FOV = 45
         this.camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set(30, 30, 30);
+        this.camera.position.set(-25, 40, 30);
         this.camera.lookAt(0, 0, 0);
         this.camera.up.set(0, 0, 1);
 

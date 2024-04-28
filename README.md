@@ -21,6 +21,11 @@
 #### Scene:
 - [x] Add Shadows on Ground Plane
 - [ ] AO shadows
+- [ ] Auto-bounds based on loaded geometry:
+  - [ ] grid
+  - [ ] lights
+  - [ ] camera location
+  - [ ] shadow map
 
 #### FastAPI:
 - [ ] Create Pydantic Response Models
