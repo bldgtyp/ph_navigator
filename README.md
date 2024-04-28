@@ -5,15 +5,22 @@
 
 ## TODO:
 #### Deployment:
-- [ ] Create Docker Image
+- [ ] Create Docker Image or WebService?
 - [ ] Test Deployment to Render.com
 
 #### Geometry:
-- [ ] Windows
-  - [ ] Material
-- [ ] Refactor App State and Events
+- [x] Add Ground Plane
+- [ ] Windows & Material
 - [ ] Get Boundary Condition
 - [ ] Get HB-Construction Name and Props
+
+#### UI:
+- [ ] Refactor App-State and Mouse-Events
+- [ ] Fix Measurement Vertex Selector behavior. Super jankey right now.
+
+#### Scene:
+- [x] Add Shadows on Ground Plane
+- [ ] AO shadows
 
 #### FastAPI:
 - [ ] Create Pydantic Response Models
@@ -21,7 +28,7 @@
 - [ ] Move file paths into config file
 
 
-# Backend (FastAPI)
+# Backend Setup (FastAPI)
 #### Setup:
 1. `python3.11 -m venv .venv` *(Note: Render.com uses Python3.11, so stick with that)*
 1. `source .venv/bin/activate`
@@ -30,7 +37,7 @@
 1. `uvicorn backend.main:app --reload`
 
 
-# Frontend (React)
+# Frontend Setup (React)
 #### Setup:
 1. `npx create-react-app --template typescript`
 1. `npm install three`
