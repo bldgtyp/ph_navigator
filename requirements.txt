@@ -1,0 +1,7 @@
+fastapi
+python-multipart
+python-dotenv
+PHX
+uvicorn
+isort
+black

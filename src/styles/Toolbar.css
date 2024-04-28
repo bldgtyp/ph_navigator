@@ -1,0 +1,24 @@
+.toolbar {
+    position: absolute;
+    left: 50%;
+    transform: translateY(-100%);
+    text-align: center;
+    padding: 1em;
+}
+
+.round-button {
+    width: 40px;
+    height: 40px;
+    border-style: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.round-button:hover {
+    background-color: #deb5de;
+}
+
+.round-button.active {
+    background-color: #ff1bff;
+}

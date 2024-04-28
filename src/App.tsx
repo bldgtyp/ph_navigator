@@ -1,24 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './styles/App.css';
+import Viewer from './components/Viewer';
+import Sidebar from './components/Sidebar';
+import Toolbar from './components/Toolbar';
+import { useRef, useState } from 'react';
+import * as THREE from 'three';
 
 function App() {
+  const [selectedObject, setSelectedObject] = useState<any>(null); // For React Rendering
+  const selectedObjectRef = useRef<THREE.Object3D | null>(null); // For Three.js Rendering
+  const appState = useRef(null);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Viewer selectedObjectRef={selectedObjectRef} selectedObject={selectedObject} setSelectedObject={setSelectedObject} appState={appState} />
+      <Sidebar selectedObjectRef={selectedObjectRef} selectedObject={selectedObject} setSelectedObject={setSelectedObject} appState={appState} />
+      <Toolbar appState={appState} />
     </div>
   );
 }
