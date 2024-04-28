@@ -1,6 +1,6 @@
 import './styles/App.css';
 import Viewer from './components/Viewer';
-import Sidebar from './components/Sidebar';
+import FaceDataPanel from './components/FaceDataPanel';
 import Toolbar from './components/Toolbar';
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -21,7 +21,7 @@ function App() {
         appState={appState}
         hoveringVertex={hoveringVertex}
       />
-      <Sidebar
+      <FaceDataPanel
         selectedObjectRef={selectedObjectRef}
         selectedObject={selectedObject}
         setSelectedObject={setSelectedObject}

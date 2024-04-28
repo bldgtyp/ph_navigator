@@ -24,13 +24,17 @@ type LadybugFace3D = {
     area: number,
 }
 
+type HoneybeeBoundaryCondition = {
+    type: string,
+}
+
 export type HoneybeeFace3D = {
     type: string,
     face_type: string,
     identifier: string,
     display_name: string,
     geometry: LadybugFace3D
-    // boundary_condition: any,
+    boundary_condition: HoneybeeBoundaryCondition,
     // apertures: any[],
     // doors: any[],
     // indoor_shades: any[],

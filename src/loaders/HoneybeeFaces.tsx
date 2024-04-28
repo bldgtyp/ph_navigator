@@ -41,6 +41,7 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D): { mesh: THREE.Mesh, w
     threeMesh.userData['face_type'] = face.face_type;
     threeMesh.userData['type'] = face.type;
     threeMesh.userData['area'] = face.geometry.area;
+    threeMesh.userData['boundary_condition'] = face.boundary_condition;
 
     // ------------------------------------------------------------------------
     // Build up the Wireframe Boundary

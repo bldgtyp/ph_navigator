@@ -8,7 +8,7 @@ const dimensionLines = new THREE.Group();
 dimensionLines.renderOrder = 1;
 var selectedVertices: THREE.Vector3[] = [];
 var drawingLine = false;
-var marker = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 6), new THREE.MeshBasicMaterial({
+var marker = new THREE.Mesh(new THREE.SphereGeometry(0.25, 12, 12), new THREE.MeshBasicMaterial({
     color: 0xe600e6
 }));
 marker.position.setScalar(1000);
