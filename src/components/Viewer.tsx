@@ -28,7 +28,7 @@ function Viewer(props: ViewerProps) {
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
 
-    // Setup all the Event Listener Callbacks
+    // Setup all the Event Listener Callbacks for the different App-States
     const eventListeners: EventListeners = {
         "0": {
             click: useCallback((e: any) => { }, []),

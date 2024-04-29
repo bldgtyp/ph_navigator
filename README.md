@@ -26,12 +26,14 @@
 - [ ] Hot Water Tanks and Heaters
 
 #### UI:
-- [ ] Refactor App-State and Mouse-Events
-   - [ ] State as Enum? 'State' Pattern?
+- [x] Refactor App-State and Mouse-Events
+   - [x] State as Enum? 'State' Pattern?
+- [ ] Add all app-state event listeners
 - [ ] Fix Measurement Vertex Selector behavior. Super jankey right now.
 - [ ] Add Sun-path diagram State
   - [ ] Time of Day control (connect to sunlight position)
-- [ ] Comments
+- [ ] Comments State
+- [ ]Face Data - truncate names / identifiers
 
 #### Scene:
 - [x] Add Shadows on Ground Plane
