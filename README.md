@@ -46,8 +46,8 @@
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin
-- [ ] Add comments field to all relevant honeybee-objects
-- [ ] Integrate comments library into app
+- [ ] Add 'comments' storage to all relevant honeybee-objects `.properties`
+- [ ] Integrate comments library into ph-navigator
    - [ ] Try: [react-chat-window](https://www.npmjs.com/package/react-chat-window?activeTab=readme)
 
 #### Scene:
