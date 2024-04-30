@@ -13,13 +13,14 @@ import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
+import { states, AppState, addEventHandler } from './AppState';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
     selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>;
     selectedObject: THREE.Object3D | null;
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
-    appStateRef: React.MutableRefObject<number | null>;
+    appStateRef: React.MutableRefObject<AppState>;
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>;
     dimensionLinesRef: React.MutableRefObject<THREE.Group>;
 }
@@ -48,44 +49,46 @@ function Viewer(props: ViewerProps) {
 
     // ------------------------------------------------------------------------
     // Setup all the Event Listener Callbacks for the different App-States
-    const eventListeners: EventListeners = {
-        "0": {
-            click: useCallback((e: any) => { }, []),
-        },
-        "1": {
-            click: useCallback(
-                (e: any) => {
-                    surfaceSelectModeOnMouseClick(
-                        e, ray_caster, world.current, selectedObjectRef, setSelectedObject)
-                }, [world.current, selectedObjectRef, setSelectedObject]
-            ),
-        },
-        "2": {
-            click: useCallback(
-                (e: any) => {
-                    measureModeOnMouseClick(hoveringVertex, dimensionLinesRef)
-                }, [world.current, hoveringVertex]
-            ),
-            pointermove: useCallback(
-                (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }, []
-            ),
-        }
-    }
+    addEventHandler(1, "click",
+        useCallback(
+            (e: any) => {
+                surfaceSelectModeOnMouseClick(
+                    e, ray_caster, world.current, selectedObjectRef, setSelectedObject)
+            }, [world.current, selectedObjectRef, setSelectedObject]
+        )
+    );
+    addEventHandler(2, "click",
+        useCallback(
+            (e: any) => {
+                measureModeOnMouseClick(hoveringVertex, dimensionLinesRef)
+            }, [world.current, hoveringVertex]
+        )
+    );
+    addEventHandler(2, "pointermove",
+        useCallback(
+            (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }, []
+        )
+    );
 
-    // Setup Event Listeners based on the App-State
+    // ------------------------------------------------------------------------
     useEffect(() => {
-        resetView(selectedObjectRef, setSelectedObject, hoveringVertex, dimensionLinesRef);
-        for (let state in eventListeners) {
-            for (let event in eventListeners[state]) {
-                if (state !== appStateRef.current?.toString()) {
-                    window.removeEventListener(event, eventListeners[state][event]);
-                } else {
-                    window.addEventListener(event, eventListeners[state][event]);
-                }
-            }
+        // Add the new state's event listeners
+        for (let key in appStateRef.current.eventHandlers) {
+            let handler: any = appStateRef.current.eventHandlers[key];
+            window.addEventListener(key, handler);
         }
 
-    }, [appStateRef.current]);
+        // Return a cleanup function that will be called before the next time the effect is run
+        const prevState = appStateRef.current;
+        return () => {
+            // Remove the previous state's event listeners
+            for (let key in prevState.eventHandlers) {
+                let handler: any = prevState.eventHandlers[key];
+                window.removeEventListener(key, handler);
+            }
+        };
+    }, [appStateRef.current]); // Re-run the effect when appStateRef.current changes
+
 
     // ------------------------------------------------------------------------
     // Setup the THREE Scene, Load in the Model data
@@ -133,7 +136,6 @@ function Viewer(props: ViewerProps) {
                 world.current.sunPathDiagram.add(arc1);
             });
             data.compass.major_azimuth_ticks.forEach((lbtLineSegment2D) => {
-                console.log(lbtLineSegment2D)
                 const line = convertLBTLineSegment2DtoLine(lbtLineSegment2D)
                 world.current.sunPathDiagram.add(line);
             });
@@ -141,6 +143,7 @@ function Viewer(props: ViewerProps) {
                 const line = convertLBTLineSegment2DtoLine(lbtLineSegment2D)
                 world.current.sunPathDiagram.add(line);
             });
+            world.current.sunPathDiagram.visible = false;
         });
 
         // THREE Animation Loop

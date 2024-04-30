@@ -1,12 +1,14 @@
 import './styles/App.css';
+import * as THREE from 'three';
+import { useRef, useState } from 'react';
 import Viewer from './components/Viewer';
 import FaceDataPanel from './components/FaceDataPanel';
 import Toolbar from './components/Toolbar';
-import { useRef, useState } from 'react';
-import * as THREE from 'three';
-import { AppState } from './types/AppState';
+import { AppState, states } from './components/AppState';
 import { SceneSetup } from './scene/SceneSetup';
 
+// ----------------------------------------------------------------------------
+// Start the App
 function App() {
   const world = useRef(new SceneSetup());
 
@@ -14,8 +16,8 @@ function App() {
   const selectedObjectRef = useRef<THREE.Object3D | null>(null); // For THREE.js Rendering
   const hoveringVertex = useRef<THREE.Vector3 | null>(null); // For THREE.js Rendering
 
-  const appStateRef = useRef(null); // For THREE.js Rendering
-  const [appState, setAppState] = useState<number | null>(AppState.None); // For React Rendering
+  const appStateRef = useRef(states[0]); // For THREE.js Rendering
+  const [appState, setAppState] = useState<AppState>(states[0]); // For React Rendering
 
   const dimensionLinesRef = useRef(new THREE.Group()); // For THREE.js Rendering
   world.current.scene.add(dimensionLinesRef.current);

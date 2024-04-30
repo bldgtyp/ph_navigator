@@ -8,13 +8,15 @@ import { ReactComponent as DuctIcon } from '../icons/Ducts.svg';
 import { ReactComponent as PipeIcon } from '../icons/Piping.svg';
 import { ReactComponent as SpaceIcon } from '../icons/Space.svg';
 import { ReactComponent as SunPathIcon } from '../icons/SunPath.svg';
+import { states, AppState } from './AppState';
+
 
 const icons = [<SurfaceIcon />, <RulerIcon />, <NoteIcon />, <SpaceIcon />, <SunPathIcon />, <DuctIcon />, <PipeIcon />];
 
 interface ToolbarProps {
-    appStateRef: React.MutableRefObject<number | null>;
-    appState: number | null;
-    setAppState: React.Dispatch<React.SetStateAction<number | null>>;
+    appStateRef: React.MutableRefObject<AppState>;
+    appState: AppState;
+    setAppState: React.Dispatch<React.SetStateAction<AppState>>;
 }
 
 const Toolbar = (props: ToolbarProps) => {
@@ -29,16 +31,16 @@ const Toolbar = (props: ToolbarProps) => {
                     className={`round-button ${activeButton === index ? 'active' : ''}`}
                     onClick={() => {
                         // Toolbar Index starts ay 0, but AppState starts at 1
-                        if (index + 1 === appState) {
+                        if (index + 1 === appState.state) {
                             // Turn the Current State 'Off'
-                            appStateRef.current = 0; // TODO: Remove?
-                            setAppState(0);
+                            appStateRef.current = states[0];
+                            setAppState(states[0]);
                             setActiveButton(null);
                         } else {
                             // Set the new State 'On'
-                            var new_app_state_number: number | null = index + 1;
-                            appStateRef.current = new_app_state_number; // TODO: Remove?
-                            setAppState(new_app_state_number);
+                            var new_app_state_number: number = index + 1;
+                            appStateRef.current = states[new_app_state_number];
+                            setAppState(states[new_app_state_number]);
                             setActiveButton(index);
                         }
                     }}

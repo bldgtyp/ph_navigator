@@ -1,4 +1,4 @@
-export enum AppState {
+export enum AppStateTypes {
     None = 0,
     SurfaceQuery = 1,
     Measurement = 2,
@@ -9,4 +9,4 @@ export enum AppState {
     Ventilation = 7,
     HotWaterPiping = 8,
     ThermalBridging = 9,
-}
+};

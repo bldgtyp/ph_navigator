@@ -43,6 +43,7 @@
   - [ ] Add rubber-band line
   - [ ] Add 'first vertex' persistent marker
   - [ ] Add guard against 0-length markers
+  - [ ] Add State to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
 
 #### Comments 

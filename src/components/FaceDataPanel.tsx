@@ -1,13 +1,14 @@
 import '../styles/FaceDataPanel.css';
+import React from 'react';
 import * as THREE from 'three';
 import { Stack, Paper } from "@mui/material";
-import React from 'react';
+import { states, AppState } from './AppState';
 
 interface FaceDataPanelProps {
     selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>;
     selectedObject: THREE.Object3D | null
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
-    appStateRef: React.MutableRefObject<number | null>;
+    appStateRef: React.MutableRefObject<AppState>;
 }
 
 function PanelItem(props: { label: React.ReactNode, value: string }) {
