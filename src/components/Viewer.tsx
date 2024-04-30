@@ -5,8 +5,9 @@ import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHel
 import { SceneSetup } from '../scene/SceneSetup';
 import { convertHBFaceToMesh } from '../loaders/HoneybeeFaces';
 import { onResize } from '../handlers/onResize';
-import { surfaceSelectModeOnMouseClick } from '../handlers/surfaceSelectEvents';
-import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/measure';
+import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
+import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
+import { handleClearSelectedMesh } from '../handlers/selectMesh';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -15,6 +16,7 @@ interface ViewerProps {
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
     appStateRef: React.MutableRefObject<number | null>;
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>;
+    dimensionLinesRef: React.MutableRefObject<THREE.Group>;
 }
 
 type EventListeners = {
@@ -23,8 +25,19 @@ type EventListeners = {
     };
 };
 
+function resetView(
+    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>,
+    setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>,
+    hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
+    dimensionLines: React.MutableRefObject<THREE.Group>,
+) {
+    handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+    hoveringVertex.current = null;
+    dimensionLines.current.clear()
+}
+
 function Viewer(props: ViewerProps) {
-    const { world, selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef, hoveringVertex } = props;
+    const { world, selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
 
@@ -45,9 +58,8 @@ function Viewer(props: ViewerProps) {
         "2": {
             click: useCallback(
                 (e: any) => {
-                    measureModeOnMouseClick(
-                        e, world.current, selectedObjectRef, setSelectedObject, hoveringVertex)
-                }, [world.current, selectedObjectRef, setSelectedObject, hoveringVertex]
+                    measureModeOnMouseClick(hoveringVertex, dimensionLinesRef)
+                }, [world.current, hoveringVertex]
             ),
             pointermove: useCallback(
                 (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }, []
@@ -57,6 +69,7 @@ function Viewer(props: ViewerProps) {
 
     // Setup Event Listeners based on the App-State
     useEffect(() => {
+        resetView(selectedObjectRef, setSelectedObject, hoveringVertex, dimensionLinesRef);
         for (let state in eventListeners) {
             for (let event in eventListeners[state]) {
                 if (state !== appStateRef.current?.toString()) {

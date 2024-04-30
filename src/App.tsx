@@ -11,11 +11,14 @@ function App() {
   const world = useRef(new SceneSetup());
 
   const [selectedObject, setSelectedObject] = useState<any>(null); // For React Rendering
-  const selectedObjectRef = useRef<THREE.Object3D | null>(null); // For Three.js Rendering
-  const hoveringVertex = useRef<THREE.Vector3 | null>(null); // For Three.js Rendering
+  const selectedObjectRef = useRef<THREE.Object3D | null>(null); // For THREE.js Rendering
+  const hoveringVertex = useRef<THREE.Vector3 | null>(null); // For THREE.js Rendering
 
-  const appStateRef = useRef(null); // For Three.js Rendering
+  const appStateRef = useRef(null); // For THREE.js Rendering
   const [appState, setAppState] = useState<number | null>(AppState.None); // For React Rendering
+
+  const dimensionLinesRef = useRef(new THREE.Group()); // For THREE.js Rendering
+  world.current.scene.add(dimensionLinesRef.current);
 
   return (
     <div className="App">
@@ -26,6 +29,7 @@ function App() {
         setSelectedObject={setSelectedObject}
         appStateRef={appStateRef}
         hoveringVertex={hoveringVertex}
+        dimensionLinesRef={dimensionLinesRef}
       />
       <FaceDataPanel
         selectedObjectRef={selectedObjectRef}

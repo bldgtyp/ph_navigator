@@ -1,7 +1,7 @@
 import '../styles/DimensionLines.css';
 import * as THREE from 'three';
 import { SceneSetup } from '../scene/SceneSetup';
-import { handleClearSelectedMesh, handleMeshSelect } from './meshSelection';
+import { handleClearSelectedMesh, handleMeshSelect } from './selectMesh';
 
 export function surfaceSelectModeOnMouseClick(
     event: any,

@@ -28,9 +28,9 @@
 #### UI:
 - [x] Refactor App-State and Mouse-Events
    - [x] State as Enum? 'State' Pattern?
-- [ ] Add all app-state event listeners
-- [ ] Fix Measurement Vertex Selector behavior. Super jankey right now.
-  - [ ] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
+- [x] Add all app-state event listeners
+- [x] Fix Measurement Vertex Selector behavior. Super jankey right now.
+  - [x] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
 - [ ] Add Sun-path diagram State
   - [ ] Time of Day control (connect to sunlight position)
 - [ ] Face Data - truncate names / identifiers

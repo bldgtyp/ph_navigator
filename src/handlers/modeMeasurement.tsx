@@ -1,23 +1,22 @@
 import '../styles/DimensionLines.css';
-import { SceneSetup } from '../scene/SceneSetup';
 import * as THREE from 'three';
-import { appMaterials } from '../scene/Materials';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer'
-import { handleClearSelectedMesh, getNearestFaceVertex } from './meshSelection';
+import { SceneSetup } from '../scene/SceneSetup';
+import { appMaterials } from '../scene/Materials';
+import { selectPoint } from './selectPoint'
 
-const dimensionLines = new THREE.Group();
-dimensionLines.renderOrder = 1;
 var selectedVertices: THREE.Vector3[] = [];
 var drawingLine = false;
 var marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 12, 12), new THREE.MeshBasicMaterial({
     color: 0xe600e6
 }));
 marker.position.setScalar(1000);
+var pointer = new THREE.Vector2();
+
 
 function handleMeasureDistance(
-    dimensionLines: any,
+    dimensionLinesRef: THREE.Group,
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
-    world: SceneSetup,
 ) {
     if (hoveringVertex.current === null) {
         return null
@@ -26,7 +25,7 @@ function handleMeasureDistance(
     if (selectedVertices.length === 0) {
         drawingLine = true;
         selectedVertices[0] = hoveringVertex.current
-        dimensionLines.add(marker);
+        dimensionLinesRef.add(marker);
         marker.position.copy(hoveringVertex.current);
     } else if (selectedVertices.length === 1) {
         selectedVertices[1] = hoveringVertex.current
@@ -36,7 +35,7 @@ function handleMeasureDistance(
         );
         line.frustumCulled = false;
         line.renderOrder = 1;
-        dimensionLines.add(line);
+        dimensionLinesRef.add(line);
 
         // Build the Label
         const measurementDiv = document.createElement(
@@ -54,7 +53,7 @@ function handleMeasureDistance(
         measurementLabel.position.lerpVectors(selectedVertices[0], selectedVertices[1], 0.5)
 
         // Cleanup
-        dimensionLines.add(measurementLabel)
+        dimensionLinesRef.add(measurementLabel)
         selectedVertices = [];
         drawingLine = false;
     }
@@ -62,30 +61,29 @@ function handleMeasureDistance(
 
 export function measureModeOnMouseMove(
     event: any,
-    ray_caster: THREE.Raycaster,
     world: SceneSetup,
-    appState: React.MutableRefObject<number | null>,
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
 ) {
-    const faceVertex = getNearestFaceVertex(event, ray_caster, world);
-    if (faceVertex) {
-        hoveringVertex.current = faceVertex;
-        world.scene.add(marker);
-        marker.position.copy(faceVertex);
-    } else {
+
+    // Get the updated mouse position
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    // Set the hovering-vertex indicator
+    const selectedPoint = selectPoint(pointer, world)
+    if (selectedPoint === null) {
+        hoveringVertex.current = null;
         world.scene.remove(marker);
+    } else {
+        hoveringVertex.current = selectedPoint;
+        world.scene.add(marker);
+        marker.position.copy(selectedPoint);
     }
 }
 
-
 export function measureModeOnMouseClick(
-    event: any,
-    world: SceneSetup,
-    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>,
-    setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>,
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
+    dimensionLinesRef: React.MutableRefObject<THREE.Group>,
 ) {
-    world.scene.add(dimensionLines);
-    handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
-    handleMeasureDistance(dimensionLines, hoveringVertex, world)
+    handleMeasureDistance(dimensionLinesRef.current, hoveringVertex)
 }

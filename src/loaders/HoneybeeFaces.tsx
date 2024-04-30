@@ -70,7 +70,7 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { 
     threeWireframe.renderOrder = 1; // Ensure wireframe is rendered behind the surface
 
     // ------------------------------------------------------------------------
-    // Vertices as Points
+    // Vertices as Points to allow for user-selection
     var verticesGeometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
     verticesGeometry.deleteAttribute('normal');
     verticesGeometry.deleteAttribute('uv');
@@ -78,8 +78,9 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { 
     const positionAttribute = verticesGeometry.getAttribute('position');
     const particleGeometry = new THREE.BufferGeometry();
     particleGeometry.setAttribute('position', positionAttribute);
-    const particles = new THREE.Points(particleGeometry);
+    const cornerVertices = new THREE.Points(particleGeometry);
+    cornerVertices.visible = false;
 
     // ------------------------------------------------------------------------
-    return { mesh: threeMesh, wireframe: threeWireframe, vertices: particles };
+    return { mesh: threeMesh, wireframe: threeWireframe, vertices: cornerVertices };
 }
