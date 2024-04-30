@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { appMaterials } from '../scene/Materials';
 import { HoneybeeFace3D, HoneybeeAperture } from '../types/HoneybeeFace3D';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
-export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop } {
+export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points } {
     // ------------------------------------------------------------------------
     // Build up the Surface Mesh
     const vertices: THREE.Vector3[] = [];
@@ -64,10 +65,21 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { 
     boundaryVertices.push(boundaryVertices[0].clone());
 
     // Create the Outline from the boundary Points
-    const geometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
-    const threeWireframe = new THREE.LineLoop(geometry, appMaterials.wireframeMaterial);
+    const wireframeGeometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
+    const threeWireframe = new THREE.LineLoop(wireframeGeometry, appMaterials.wireframeMaterial);
     threeWireframe.renderOrder = 1; // Ensure wireframe is rendered behind the surface
 
     // ------------------------------------------------------------------------
-    return { mesh: threeMesh, wireframe: threeWireframe };
+    // Vertices as Points
+    var verticesGeometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
+    verticesGeometry.deleteAttribute('normal');
+    verticesGeometry.deleteAttribute('uv');
+    verticesGeometry = mergeVertices(verticesGeometry);
+    const positionAttribute = verticesGeometry.getAttribute('position');
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute('position', positionAttribute);
+    const particles = new THREE.Points(particleGeometry);
+
+    // ------------------------------------------------------------------------
+    return { mesh: threeMesh, wireframe: threeWireframe, vertices: particles };
 }

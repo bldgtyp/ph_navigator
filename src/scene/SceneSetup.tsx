@@ -14,7 +14,9 @@ export class SceneSetup {
     camera: THREE.PerspectiveCamera;
     controls: OrbitControls;
     groundGeometry: THREE.Group;
-    buildingGeometry: THREE.Group;
+    buildingGeometryMeshes: THREE.Group;
+    buildingGeometryOutlines: THREE.Group;
+    buildingGeometryVertices: THREE.Group;
 
     constructor() {
         // -- Scene
@@ -67,7 +69,7 @@ export class SceneSetup {
         this.scene.add(grid);
 
         // --- Hemisphere Light
-        const light_1 = new THREE.AmbientLight(appColors.SURFACE_WHITE, 0.5);
+        const light_1 = new THREE.AmbientLight(appColors.SURFACE_WHITE, defaultLightConfiguration.indirectLightIntensity);
         this.scene.add(light_1);
 
         // -- Sunlight
@@ -92,9 +94,15 @@ export class SceneSetup {
         this.groundGeometry.add(ground);
         this.scene.add(this.groundGeometry);
 
-        // -- Group for the Loaded Geometry
-        this.buildingGeometry = new THREE.Group();
-        this.scene.add(this.buildingGeometry);
+        // -- Groups for the Loaded Geometry
+        this.buildingGeometryMeshes = new THREE.Group();
+        this.scene.add(this.buildingGeometryMeshes);
+
+        this.buildingGeometryOutlines = new THREE.Group();
+        this.scene.add(this.buildingGeometryOutlines);
+
+        this.buildingGeometryVertices = new THREE.Group();
+        this.scene.add(this.buildingGeometryVertices);
 
         // -- Show Helpers
         // const lightHelper = new THREE.DirectionalLightHelper(light_2, 5);

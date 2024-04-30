@@ -13,8 +13,6 @@ var marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 12, 12), new THREE.Me
     color: 0xe600e6
 }));
 marker.position.setScalar(1000);
-var pointer = new THREE.Vector2();
-var raycaster = new THREE.Raycaster();
 
 function handleMeasureDistance(
     dimensionLines: any,
@@ -64,41 +62,19 @@ function handleMeasureDistance(
 
 export function measureModeOnMouseMove(
     event: any,
+    ray_caster: THREE.Raycaster,
     world: SceneSetup,
+    appState: React.MutableRefObject<number | null>,
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
 ) {
-    const TOLERANCE = 0.5;
-
-    // Get the updated ,mouse position
-    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-    // Perform the ray-cast intersection
-    raycaster.setFromCamera(pointer, world.camera);
-    const intersects = raycaster.intersectObject(world.buildingGeometryVertices, true);
-    const intersect = intersects.find(intersect => intersect.object instanceof THREE.Points) || null;
-    if (!intersect || intersect.distanceToRay === undefined || intersect.distanceToRay > TOLERANCE) {
-        return;
-    }
-
-    const { object, index } = intersect;
-
-    if (!(object instanceof THREE.Points) || index === undefined) {
+    const faceVertex = getNearestFaceVertex(event, ray_caster, world);
+    if (faceVertex) {
+        hoveringVertex.current = faceVertex;
+        world.scene.add(marker);
+        marker.position.copy(faceVertex);
+    } else {
         world.scene.remove(marker);
-        return;
     }
-
-    // Get the vertex position and build a new Vector3
-    const geom: THREE.BufferGeometry = object.geometry;
-    const values: THREE.TypedArray = geom.attributes.position.array;
-    const startingIndex = index * geom.attributes.position.itemSize;
-    const v = new THREE.Vector3(values[startingIndex], values[startingIndex + 1], values[startingIndex + 2]);
-
-    // Set the hovering vertex indicator
-    hoveringVertex.current = v;
-    world.scene.add(marker);
-    marker.position.copy(v);
-
 }
 
 
@@ -110,6 +86,6 @@ export function measureModeOnMouseClick(
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
 ) {
     world.scene.add(dimensionLines);
-    // handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+    handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
     handleMeasureDistance(dimensionLines, hoveringVertex, world)
 }

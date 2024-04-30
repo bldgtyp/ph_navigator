@@ -28,6 +28,7 @@ function Viewer(props: ViewerProps) {
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
 
+    // ------------------------------------------------------------------------
     // Setup all the Event Listener Callbacks for the different App-States
     const eventListeners: EventListeners = {
         "0": {
@@ -49,11 +50,27 @@ function Viewer(props: ViewerProps) {
                 }, [world.current, selectedObjectRef, setSelectedObject, hoveringVertex]
             ),
             pointermove: useCallback(
-                (e: any) => { measureModeOnMouseMove(e, ray_caster, world.current, appStateRef, hoveringVertex) }, []
+                (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }, []
             ),
         }
     }
 
+    // Setup Event Listeners based on the App-State
+    useEffect(() => {
+        for (let state in eventListeners) {
+            for (let event in eventListeners[state]) {
+                if (state !== appStateRef.current?.toString()) {
+                    window.removeEventListener(event, eventListeners[state][event]);
+                } else {
+                    window.addEventListener(event, eventListeners[state][event]);
+                }
+            }
+        }
+
+    }, [appStateRef.current]);
+
+    // ------------------------------------------------------------------------
+    // Setup the THREE Scene, Load in the Model data
     useEffect(() => {
         // Add the THREE Renderer to the DOM
         if (mountRef.current) {
@@ -67,15 +84,17 @@ function Viewer(props: ViewerProps) {
         fetchModelFaces('model_faces').then(data => {
             data.forEach(face => {
                 const geom = convertHBFaceToMesh(face)
-                world.current.buildingGeometry.add(geom.mesh);
-                world.current.buildingGeometry.add(geom.wireframe);
-                world.current.buildingGeometry.add(new VertexNormalsHelper(geom.mesh, 0.15, 0x000000));
+                world.current.buildingGeometryMeshes.add(geom.mesh);
+                world.current.buildingGeometryMeshes.add(new VertexNormalsHelper(geom.mesh, 0.15, 0x000000));
+                world.current.buildingGeometryOutlines.add(geom.wireframe);
+                world.current.buildingGeometryVertices.add(geom.vertices);
 
                 face.apertures.forEach(aperture => {
                     const apertureGeom = convertHBFaceToMesh(aperture);
-                    world.current.buildingGeometry.add(apertureGeom.mesh);
-                    world.current.buildingGeometry.add(apertureGeom.wireframe);
-                    world.current.buildingGeometry.add(new VertexNormalsHelper(apertureGeom.mesh, 0.15, 0x000000));
+                    world.current.buildingGeometryMeshes.add(apertureGeom.mesh);
+                    world.current.buildingGeometryMeshes.add(new VertexNormalsHelper(apertureGeom.mesh, 0.15, 0x000000));
+                    world.current.buildingGeometryOutlines.add(apertureGeom.wireframe);
+                    world.current.buildingGeometryVertices.add(apertureGeom.vertices);
                 });
 
             });
@@ -92,21 +111,6 @@ function Viewer(props: ViewerProps) {
         animate();
 
     }, []);
-
-    useEffect(() => {
-        // Setup Event Listeners based on the App-State
-        for (let state in eventListeners) {
-            for (let event in eventListeners[state]) {
-                if (state !== appStateRef.current?.toString()) {
-                    window.removeEventListener(event, eventListeners[state][event]);
-                } else {
-                    window.addEventListener(event, eventListeners[state][event]);
-                }
-            }
-        }
-
-    }, [appStateRef.current]);
-
 
     return <div ref={mountRef} />;
 

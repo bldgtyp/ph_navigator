@@ -18,7 +18,7 @@ function getSelectedMeshFromMouseClick(
     ray_caster.setFromCamera(pointer, world.camera);
 
     // Find the First (closets to camera) object intersecting the picking ray
-    const intersects = ray_caster.intersectObjects(world.buildingGeometry.children);
+    const intersects = ray_caster.intersectObjects(world.buildingGeometryMeshes.children);
     const mesh = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
     return mesh ? mesh.object as THREE.Mesh : null;
 };
@@ -107,7 +107,7 @@ function getIntersectionObjectFromMouseClick(
     ray_caster.setFromCamera(pointer, world.camera);
 
     // Find the first (closest to camera) object intersecting the ray-cast
-    const intersects = ray_caster.intersectObjects(world.buildingGeometry.children);
+    const intersects = ray_caster.intersectObjects(world.buildingGeometryMeshes.children);
     const intersect = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
     return intersect ? intersect : null;
 };
