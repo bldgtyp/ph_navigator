@@ -31,7 +31,7 @@
 - [x] Add all app-state event listeners
 - [x] Fix Measurement Vertex Selector behavior. Super jankey right now.
   - [x] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
-- [ ] Add Sun-path diagram State
+- [x] Add Sun-path diagram State
   - [ ] Time of Day control (connect to sunlight position)
 - [ ] Face Data - truncate names / identifiers
 - [ ] Constructions Table (with Materials)
@@ -43,7 +43,7 @@
   - [ ] Add rubber-band line
   - [ ] Add 'first vertex' persistent marker
   - [ ] Add guard against 0-length markers
-  - [ ] Add State to select face, show face-id/name and aut-dimension all edges
+  - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
 
 #### Comments 
