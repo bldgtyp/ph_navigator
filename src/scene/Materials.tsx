@@ -33,9 +33,12 @@ export const appMaterials = {
             color: appColors.DIMENSION_LINE,
             linewidth: 2,
         }),
-    sunpathLineMaterial: new THREE.LineBasicMaterial(
+    sunpathLineMaterial: new THREE.LineDashedMaterial(
         {
             color: appColors.SUNPATH_LINE_COLOR,
             linewidth: 2,
+            scale: 1,
+            dashSize: 1,
+            gapSize: 0.5,
         }),
 }

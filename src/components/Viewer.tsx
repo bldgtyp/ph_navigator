@@ -145,6 +145,7 @@ function Viewer(props: ViewerProps) {
         fetchSunPath('sun_path').then(data => {
             data.hourly_analemma_polyline3d.forEach((lbtPolyline3D) => {
                 const line = convertLBTPolyline3DtoLine(lbtPolyline3D)
+                line.computeLineDistances(); // Dashes don't work without this
                 world.current.sunPathDiagram.add(line);
             });
             data.monthly_day_arc3d.forEach((lbtArc3D) => {
