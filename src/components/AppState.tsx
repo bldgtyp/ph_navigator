@@ -3,13 +3,19 @@ import { AppStateTypes } from '../types/AppState';
 export class AppState {
     state: AppStateTypes;
     eventHandlers: { [event: string]: Function } = {};
+    dismountHandlers: { [event: string]: Function } = {};
 
     constructor(state: AppStateTypes) {
         this.state = state;
     }
 
     addEventHandler(event: string, handler: Function) {
+        // Will get added when the State is switched 'on'
         this.eventHandlers[event] = handler;
+    }
+    addDismountHandler(event: string, handler: Function) {
+        // Will run when the State is switched 'off'
+        this.dismountHandlers[event] = handler;
     }
 };
 
@@ -28,4 +34,8 @@ export const states: { [key: number]: AppState } = {
 
 export function addEventHandler(appState: number, eventName: string, callbackFunction: any) {
     states[appState].addEventHandler(eventName, callbackFunction);
+}
+
+export function addDismountHandler(appState: number, eventName: string, callbackFunction: any) {
+    states[appState].addDismountHandler(eventName, callbackFunction);
 }

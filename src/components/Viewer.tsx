@@ -13,7 +13,7 @@ import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
-import { states, AppState, addEventHandler } from './AppState';
+import { AppState, addEventHandler, addDismountHandler } from './AppState';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -30,17 +30,6 @@ type EventListeners = {
         [key: string]: (e: any) => void;
     };
 };
-
-function resetView(
-    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>,
-    setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>,
-    hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>,
-    dimensionLines: React.MutableRefObject<THREE.Group>,
-) {
-    handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
-    hoveringVertex.current = null;
-    dimensionLines.current.clear()
-}
 
 function Viewer(props: ViewerProps) {
     const { world, selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef, hoveringVertex, dimensionLinesRef } = props;
@@ -71,7 +60,19 @@ function Viewer(props: ViewerProps) {
     );
 
     // ------------------------------------------------------------------------
+    addDismountHandler(1, "clearSelectedMesh", useCallback(() => {
+        handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+    }, []));
+    addDismountHandler(2, "clearDimensionLines", useCallback(() => {
+        hoveringVertex.current = null;
+        dimensionLinesRef.current.clear()
+    }, []));
+
+    // ------------------------------------------------------------------------
+    // Setup AppState Events and Visibility
     useEffect(() => {
+        // Add in the new state's visibility
+
         // Add the new state's event listeners
         for (let key in appStateRef.current.eventHandlers) {
             let handler: any = appStateRef.current.eventHandlers[key];
@@ -81,6 +82,13 @@ function Viewer(props: ViewerProps) {
         // Return a cleanup function that will be called before the next time the effect is run
         const prevState = appStateRef.current;
         return () => {
+            console.log('Dismounting', prevState);
+
+            // Run the previous State's dismount handlers
+            for (let key in prevState.dismountHandlers) {
+                prevState.dismountHandlers[key]();
+            }
+
             // Remove the previous state's event listeners
             for (let key in prevState.eventHandlers) {
                 let handler: any = prevState.eventHandlers[key];
