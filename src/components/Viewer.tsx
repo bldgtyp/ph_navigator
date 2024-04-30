@@ -13,7 +13,7 @@ import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
-import { AppState, addEventHandler, addDismountHandler } from './AppState';
+import { AppState, addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -25,17 +25,12 @@ interface ViewerProps {
     dimensionLinesRef: React.MutableRefObject<THREE.Group>;
 }
 
-type EventListeners = {
-    [key: number]: {
-        [key: string]: (e: any) => void;
-    };
-};
-
 function Viewer(props: ViewerProps) {
     const { world, selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
 
+    // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Setup all the Event Listener Callbacks for the different App-States
     addEventHandler(1, "click",
@@ -60,6 +55,16 @@ function Viewer(props: ViewerProps) {
     );
 
     // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Mount Handlers for AppStates
+    addMountHandler(5, "showSunPath", useCallback(() => {
+        world.current.sunPathDiagram.visible = true;
+    }, []));
+
+
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Dismount Handlers for AppStates
     addDismountHandler(1, "clearSelectedMesh", useCallback(() => {
         handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
     }, []));
@@ -67,11 +72,19 @@ function Viewer(props: ViewerProps) {
         hoveringVertex.current = null;
         dimensionLinesRef.current.clear()
     }, []));
+    addDismountHandler(5, "hideSunPath", useCallback(() => {
+        world.current.sunPathDiagram.visible = false;
+    }, []));
 
+
+    // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Setup AppState Events and Visibility
     useEffect(() => {
-        // Add in the new state's visibility
+        // Run the new State's mount handlers
+        for (let key in appStateRef.current.mountHandlers) {
+            appStateRef.current.mountHandlers[key]();
+        }
 
         // Add the new state's event listeners
         for (let key in appStateRef.current.eventHandlers) {
@@ -79,11 +92,9 @@ function Viewer(props: ViewerProps) {
             window.addEventListener(key, handler);
         }
 
-        // Return a cleanup function that will be called before the next time the effect is run
+        // Cleanup function to remove the previous States' view and event listeners
         const prevState = appStateRef.current;
         return () => {
-            console.log('Dismounting', prevState);
-
             // Run the previous State's dismount handlers
             for (let key in prevState.dismountHandlers) {
                 prevState.dismountHandlers[key]();
@@ -98,6 +109,7 @@ function Viewer(props: ViewerProps) {
     }, [appStateRef.current]); // Re-run the effect when appStateRef.current changes
 
 
+    // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Setup the THREE Scene, Load in the Model data
     useEffect(() => {
