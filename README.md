@@ -36,6 +36,13 @@
 - [ ] Face Data - truncate names / identifiers
 - [ ] Constructions Table (with Materials)
 - [ ] Windows Table (frames, glass, units)
+- [ ] Surface select should not drop on scene rotate or pan
+- [ ] Add 'escape' to clear surface select
+- Dimensions:
+  - [ ] Add 'escape' to clear current dimension
+  - [ ] Add rubber-band line
+  - [ ] Add 'first vertex' persistent marker
+  - [ ] Add guard against 0-length markers
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin
