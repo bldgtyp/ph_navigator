@@ -75,7 +75,7 @@ export class SceneSetup {
 
         // -- Sunlight
         const light_2 = new THREE.DirectionalLight(defaultLightConfiguration.color, defaultLightConfiguration.intensity);
-        light_2.position.set(10, 10, 25);
+        light_2.position.set(-10, -10, 25);
         light_2.castShadow = defaultLightConfiguration.castShadow;
         light_2.shadow.camera.updateProjectionMatrix();
         light_2.shadow.camera.top = 25;
