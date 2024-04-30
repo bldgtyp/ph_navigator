@@ -1,9 +1,14 @@
 import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
+import { fetchSunPath } from '../hooks/fetchSunPath';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 import { SceneSetup } from '../scene/SceneSetup';
 import { convertHBFaceToMesh } from '../loaders/HoneybeeFaces';
+import { convertLBTPolyline3DtoLine } from '../loaders/LadybugPolyline3D';
+import { convertLBTArc2DtoLine } from '../loaders/LadybugArc2D';
+import { convertLBTLineSegment2DtoLine } from '../loaders/LadybugLineSegment2D';
+import { convertLBTArc3DtoLine } from '../loaders/LadybugArc3D';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
@@ -110,6 +115,31 @@ function Viewer(props: ViewerProps) {
                     world.current.buildingGeometryVertices.add(apertureGeom.vertices);
                 });
 
+            });
+        });
+
+        // Get the SubPath Geometry from the Server and Add it to the THREE Scene
+        fetchSunPath('sun_path').then(data => {
+            data.hourly_analemma_polyline3d.forEach((lbtPolyline3D) => {
+                const line = convertLBTPolyline3DtoLine(lbtPolyline3D)
+                world.current.sunPathDiagram.add(line);
+            });
+            data.monthly_day_arc3d.forEach((lbtArc3D) => {
+                const line = convertLBTArc3DtoLine(lbtArc3D)
+                world.current.sunPathDiagram.add(line);
+            });
+            data.compass.all_boundary_circles.forEach((lbtArc2D) => {
+                const arc1 = convertLBTArc2DtoLine(lbtArc2D)
+                world.current.sunPathDiagram.add(arc1);
+            });
+            data.compass.major_azimuth_ticks.forEach((lbtLineSegment2D) => {
+                console.log(lbtLineSegment2D)
+                const line = convertLBTLineSegment2DtoLine(lbtLineSegment2D)
+                world.current.sunPathDiagram.add(line);
+            });
+            data.compass.minor_azimuth_ticks.forEach((lbtLineSegment2D) => {
+                const line = convertLBTLineSegment2DtoLine(lbtLineSegment2D)
+                world.current.sunPathDiagram.add(line);
             });
         });
 

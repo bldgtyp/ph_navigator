@@ -43,6 +43,7 @@
   - [ ] Add rubber-band line
   - [ ] Add 'first vertex' persistent marker
   - [ ] Add guard against 0-length markers
+- [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin

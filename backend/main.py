@@ -7,6 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 import pathlib
 
+from ladybug_geometry.geometry2d.pointvector import Point2D
+from ladybug import epw
+from ladybug.sunpath import Sunpath
+from ladybug.compass import Compass
+
 from PHX.from_HBJSON import read_HBJSON_file
 
 app = FastAPI()
@@ -70,3 +75,28 @@ def model_faces() -> dict[str, str]:
 
         face_dicts.append(face_dict)
     return {"message": json.dumps(face_dicts)}
+
+
+@app.get("/sun_path")
+def sun_path():
+    SCALE = 0.4
+    NORTH = 0
+    DAYLIGHT_SAVINGS_PERIOD = None
+    CENTER_POINT = Point2D(0, 0)
+    RADIUS = 100 * SCALE
+    SOURCE_FILE = pathlib.Path(
+        "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw"
+    ).resolve()
+
+    epw_object = epw.EPW(SOURCE_FILE)
+    sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
+    compass = Compass(RADIUS, CENTER_POINT, NORTH)
+    geometry = {}
+    geometry["hourly_analemma_polyline3d"] = [_.to_dict() for _ in sun_path.hourly_analemma_polyline3d(radius=RADIUS)]
+    geometry["monthly_day_arc3d"] = [_.to_dict() for _ in sun_path.monthly_day_arc3d(radius=RADIUS)]
+    geometry["compass"] = {}
+    geometry["compass"]["all_boundary_circles"] = [_.to_dict() for _ in compass.all_boundary_circles]
+    geometry["compass"]["major_azimuth_ticks"] = [_.to_dict() for _ in compass.major_azimuth_ticks]
+    geometry["compass"]["minor_azimuth_ticks"] = [_.to_dict() for _ in compass.minor_azimuth_ticks]
+
+    return {"message": json.dumps(geometry)}

@@ -33,4 +33,9 @@ export const appMaterials = {
             color: appColors.DIMENSION_LINE,
             linewidth: 2,
         }),
+    sunpathLineMaterial: new THREE.LineBasicMaterial(
+        {
+            color: appColors.SUNPATH_LINE_COLOR,
+            linewidth: 2,
+        }),
 }
