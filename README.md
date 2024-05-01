@@ -46,12 +46,14 @@
   - [ ] Add guard against 0-length markers
   - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
-- [ ] move the face data panel to the left
-- [ ] add fake 'results' buttons on the right
-- [ ] add a u-value list with sliders to the face data panel 
+- [x] move the face data panel to the left
+- [ ] add 'results' buttons on the right
+- [x] add a u-value list with sliders to the face data panel 
 - [x] Refactor App State to useReducer / useContext
 - [ ] Refactor Selected-Object to useReducer / useContext
 - [ ] Refactor Dimension-Lines to useReducer / useContext
+- [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
+- [ ] Add PH status bar on the top with red/green check marks for heat-demand, etc...
 
 
 #### Comments 

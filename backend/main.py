@@ -11,10 +11,17 @@ from ladybug_geometry.geometry2d.pointvector import Point2D
 from ladybug import epw
 from ladybug.sunpath import Sunpath
 from ladybug.compass import Compass
+from honeybee_energy.properties.face import FaceEnergyProperties
+from honeybee_energy.construction.opaque import OpaqueConstruction
 
 from PHX.from_HBJSON import read_HBJSON_file
 
 app = FastAPI()
+
+SOURCE_FILE = pathlib.Path("/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson").resolve()
+
+hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
+hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict)
 
 origins = [
     "http://localhost:3000",
@@ -41,12 +48,6 @@ def awake() -> dict[str, str]:
 
 @app.get("/model_faces")
 def model_faces() -> dict[str, str]:
-    SOURCE_FILE = pathlib.Path(
-        "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson"
-    ).resolve()
-    hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
-    hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict)
-
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
     for face in hb_model.faces:
@@ -75,6 +76,24 @@ def model_faces() -> dict[str, str]:
 
         face_dicts.append(face_dict)
     return {"message": json.dumps(face_dicts)}
+
+
+@app.get("/model_constructions")
+def model_constructions() -> dict[str, str]:
+    # Get all the unique constructions in the model
+    unique_constructions: dict[str, OpaqueConstruction] = {}
+    for face in hb_model.faces:
+        face_prop_energy: FaceEnergyProperties = getattr(face.properties, "energy")
+        if isinstance(face_prop_energy.construction, OpaqueConstruction):
+            unique_constructions[face_prop_energy.construction.display_name] = face_prop_energy.construction
+
+    constructions = []
+    for construction in unique_constructions.values():
+        d = construction.to_dict()
+        d["u_factor"] = construction.u_factor
+        constructions.append(d)
+
+    return {"message": json.dumps(constructions)}
 
 
 @app.get("/sun_path")

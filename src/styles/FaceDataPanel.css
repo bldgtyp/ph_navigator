@@ -4,10 +4,24 @@
     width: 15%;
     max-width: 15%;
     position: absolute;
-    right: 20px;
+    left: 20px;
     top: 50px;
-    text-align: right;
+    text-align: left;
     padding: 1em;
+}
+
+.panel-select-button {
+    font-size: 0.8em !important;
+    font-weight: bold !important;
+    color: #858585 !important;
+    border-radius: 0 !important;
+}
+
+.button-selected {
+    font-size: 0.8em !important;
+    font-weight: bold !important;
+    color: #161616 !important;
+    border-bottom: 2px solid black !important;
 }
 
 .heading {
@@ -16,13 +30,24 @@
 }
 
 .panel-item-heading {
-    font-size: 0.7em;
-    font-weight: bold;
-    color: #858585;
+    font-size: 0.7em !important;
+    font-weight: bold !important;
+    color: #858585 !important;
     margin-bottom: 0.2em !important;
 }
 
 .panel-item-value {
     margin-top: 0.2em !important;
-    font-size: 0.8em;
+    font-size: 0.8em !important;
+}
+
+.slider-item-heading {
+    font-size: 0.7em !important;
+    font-weight: bold !important;
+    color: #858585 !important;
+    margin-bottom: 0.2em !important;
+}
+
+.MuiSlider-rail {
+    color: #858585 !important;
 }

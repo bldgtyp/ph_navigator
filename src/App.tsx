@@ -1,8 +1,11 @@
 import './styles/App.css';
+import theme from "./styles/theme";
+import { ThemeProvider } from "@mui/material/styles";
+
 import * as THREE from 'three';
 import React, { useRef, useState, useReducer } from 'react';
 import Viewer from './components/Viewer';
-import FaceDataPanel from './components/FaceDataPanel';
+import FacesPanel from './components/FaceDataPanel';
 import AppStateMenubar from './components/AppStateMenubar';
 import { AppState, states } from './components/AppState';
 import { SceneSetup } from './scene/SceneSetup';
@@ -35,19 +38,21 @@ function App() {
   world.current.scene.add(dimensionLinesRef.current);
 
   return (
-    <AppStateContext.Provider value={{ appState: _appState, dispatch: _appStateDispatch }}>
-      <div className="App">
-        <Viewer
-          world={world}
-          selectedObjectRef={selectedObjectRef}
-          setSelectedObject={setSelectedObject}
-          hoveringVertex={hoveringVertex}
-          dimensionLinesRef={dimensionLinesRef}
-        />
-        <FaceDataPanel selectedObject={selectedObject} />
-        <AppStateMenubar />
-      </div>
-    </AppStateContext.Provider>
+    <ThemeProvider theme={theme}>
+      <AppStateContext.Provider value={{ appState: _appState, dispatch: _appStateDispatch }}>
+        <div className="App">
+          <Viewer
+            world={world}
+            selectedObjectRef={selectedObjectRef}
+            setSelectedObject={setSelectedObject}
+            hoveringVertex={hoveringVertex}
+            dimensionLinesRef={dimensionLinesRef}
+          />
+          <FacesPanel selectedObject={selectedObject} />
+          <AppStateMenubar />
+        </div>
+      </AppStateContext.Provider>
+    </ThemeProvider>
   );
 }
 
