@@ -19,6 +19,7 @@
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
+- [ ] Refactor Poly-lines so material gets set in Viewer/useEffect
 
 #### Systems:
 - [ ] Ventilation Ducting

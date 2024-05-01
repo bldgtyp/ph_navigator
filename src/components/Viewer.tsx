@@ -157,6 +157,9 @@ function Viewer(props: ViewerProps) {
                 geom.mesh.visible = true;
                 world.current.buildingGeometryMeshes.add(geom.mesh);
 
+                geom.vertexHelper.visible = true;
+                world.current.buildingGeometryMeshes.add(geom.vertexHelper);
+
                 geom.wireframe.material = appMaterials.wireframeMaterial;
                 geom.wireframe.visible = true;
                 world.current.buildingGeometryOutlines.add(geom.wireframe);
@@ -164,14 +167,14 @@ function Viewer(props: ViewerProps) {
                 geom.vertices.visible = false;
                 world.current.buildingGeometryVertices.add(geom.vertices);
 
-                geom.vertexHelper.visible = true;
-                world.current.buildingGeometryMeshes.add(geom.vertexHelper);
-
                 face.apertures.forEach(aperture => {
                     const apertureGeom = convertHBFaceToMesh(aperture);
                     apertureGeom.mesh.material = appMaterials.geometryWindowMaterial;
                     apertureGeom.mesh.visible = true;
                     world.current.buildingGeometryMeshes.add(apertureGeom.mesh);
+
+                    apertureGeom.vertexHelper.visible = true;
+                    world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper);
 
                     apertureGeom.wireframe.material = appMaterials.wireframeMaterial;
                     apertureGeom.wireframe.visible = true;
@@ -180,8 +183,6 @@ function Viewer(props: ViewerProps) {
                     apertureGeom.vertices.visible = false;
                     world.current.buildingGeometryVertices.add(apertureGeom.vertices);
 
-                    apertureGeom.vertexHelper.visible = true;
-                    world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper);
                 });
             });
         });
@@ -194,6 +195,8 @@ function Viewer(props: ViewerProps) {
                         const geom = convertLBTFace3DToMesh(lbtFace3D)
                         geom.mesh.material = appMaterials.geometryStandardMaterial;
                         world.current.spaceGeometryMeshes.add(geom.mesh);
+                        world.current.spaceGeometryMeshes.add(geom.vertexHelper);
+                        world.current.spaceGeometryMeshes.visible = false;
 
                         geom.wireframe.material = appMaterials.wireframeMaterial;
                         world.current.spaceGeometryOutlines.add(geom.wireframe);
@@ -202,8 +205,6 @@ function Viewer(props: ViewerProps) {
                         world.current.spaceGeometryVertices.add(geom.vertices);
                         world.current.spaceGeometryVertices.visible = false;
 
-                        world.current.spaceGeometryMeshes.add(geom.vertexHelper);
-                        world.current.spaceGeometryMeshes.visible = false;
                     });
                 });
             });
