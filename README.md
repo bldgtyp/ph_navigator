@@ -45,6 +45,10 @@
   - [ ] Add guard against 0-length markers
   - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
+- [ ] move the face data panke to the left
+- [ ] add fake 'results' buttons on the right
+- [ ] add a uvale list with sliders to tue face data panel 
+
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin
