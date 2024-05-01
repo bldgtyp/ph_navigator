@@ -35,17 +35,17 @@ function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null })
 function UValueSliders() {
     const [constructions, setConstructions] = useState<HoneybeeEnergyOpaqueConstruction[]>([]);
     const SLIDER_MIN = 0.01;
-    const SLIDER_MAX = 2.0;
+    const SLIDER_MAX = 1.00;
 
     useEffect(() => {
-        fetchModelUValues('model_constructions').then(data => {
+        fetchModelUValues('model_exterior_constructions').then(data => {
             setConstructions(data);
         });
     });
 
     return (
         <>
-            <p className="heading">U-Value (W/m2k)</p>
+            <p className="heading">U-Values (W/m2k)</p>
             <Stack direction="column">
                 {constructions.map((construction, index) => (
                     // <PanelItem key={index} label={construction.identifier} value={construction.u_factor.toFixed(3)} />

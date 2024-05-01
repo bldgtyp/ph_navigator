@@ -5,7 +5,7 @@
 
 ## TODO:
 #### Deployment:
-- [ ] Create Docker Image or WebService?
+- [ ] Create Docker Image or WebService? 
 - [ ] Test Deployment to Render.com
 
 #### Geometry:
@@ -50,7 +50,7 @@
 - [x] move the face data panel to the left
 - [ ] add 'results' buttons on the right
 - [x] add a u-value list with sliders to the face data panel 
-  - [ ] Make exterior surfaces only
+  - [x] Make exterior surfaces only
   - [ ] Add a Window U-Value section below
 - [x] Refactor App State to useReducer / useContext
 - [ ] Refactor Selected-Object to useReducer / useContext

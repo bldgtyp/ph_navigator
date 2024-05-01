@@ -11,6 +11,8 @@ from ladybug_geometry.geometry2d.pointvector import Point2D
 from ladybug import epw
 from ladybug.sunpath import Sunpath
 from ladybug.compass import Compass
+from honeybee import face
+from honeybee.boundarycondition import Surface
 from honeybee_energy.properties.face import FaceEnergyProperties
 from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_ph.properties.room import RoomPhProperties
@@ -90,11 +92,29 @@ def model_spaces() -> dict[str, str]:
     return {"message": json.dumps(spaces)}
 
 
-@app.get("/model_constructions")
-def model_constructions() -> dict[str, str]:
+def _inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
+    # Make sure it is an 'outside' face.
+    # If its a Surface exposure, it might be a party-wall, so check if its opposite face is in the model
+    if isinstance(_face.boundary_condition, Surface):
+        for srfc_identifier in _face.boundary_condition.boundary_condition_objects:
+            if srfc_identifier in _model_face_ids:
+                return True
+    return False
+
+
+@app.get("/model_exterior_constructions")
+def model_exterior_constructions() -> dict[str, str]:
+    # Get all the Face-IDS in the model
+    model_face_ids = set()
+    for face in hb_model.faces:
+        model_face_ids.add(face.identifier)
+
     # Get all the unique constructions in the model
     unique_constructions: dict[str, OpaqueConstruction] = {}
     for face in hb_model.faces:
+        if _inside_face(face, model_face_ids):
+            continue
+
         face_prop_energy: FaceEnergyProperties = getattr(face.properties, "energy")
         if isinstance(face_prop_energy.construction, OpaqueConstruction):
             unique_constructions[face_prop_energy.construction.display_name] = face_prop_energy.construction
