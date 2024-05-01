@@ -18,6 +18,7 @@
 - [ ] Spaces
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
+- [ ] add north arrow and north text to sunpath
 
 #### Systems:
 - [ ] Ventilation Ducting
