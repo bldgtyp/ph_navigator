@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useContext } from 'react';
+import { AppStateContext as AppStateContext } from '../App';
 import * as THREE from 'three';
 import { fetchSunPath } from '../hooks/fetchSunPath';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
@@ -13,20 +14,20 @@ import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
-import { AppState, addEventHandler, addMountHandler, addDismountHandler } from './AppState';
+import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
     selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>;
-    selectedObject: THREE.Object3D | null;
     setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
-    appStateRef: React.MutableRefObject<AppState>;
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>;
     dimensionLinesRef: React.MutableRefObject<THREE.Group>;
 }
 
 function Viewer(props: ViewerProps) {
-    const { world, selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef, hoveringVertex, dimensionLinesRef } = props;
+    const appStateContext = useContext(AppStateContext)
+
+    const { world, selectedObjectRef, setSelectedObject, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
     const ray_caster = new THREE.Raycaster();
 
@@ -54,6 +55,7 @@ function Viewer(props: ViewerProps) {
         )
     );
 
+
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Mount Handlers for AppStates
@@ -79,21 +81,21 @@ function Viewer(props: ViewerProps) {
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
-    // Setup AppState Events and Visibility
+    // Add the App-State event-listeners and run the state's mount/un-mount actions
     useEffect(() => {
         // Run the new State's mount handlers
-        for (let key in appStateRef.current.mountHandlers) {
-            appStateRef.current.mountHandlers[key]();
+        for (let key in appStateContext.appState.mountHandlers) {
+            appStateContext.appState.mountHandlers[key]();
         }
 
         // Add the new state's event listeners
-        for (let key in appStateRef.current.eventHandlers) {
-            let handler: any = appStateRef.current.eventHandlers[key];
+        for (let key in appStateContext.appState.eventHandlers) {
+            let handler: any = appStateContext.appState.eventHandlers[key];
             window.addEventListener(key, handler);
         }
 
         // Cleanup function to remove the previous States' view and event listeners
-        const prevState = appStateRef.current;
+        const prevState = appStateContext.appState;
         return () => {
             // Run the previous State's dismount handlers
             for (let key in prevState.dismountHandlers) {
@@ -106,7 +108,7 @@ function Viewer(props: ViewerProps) {
                 window.removeEventListener(key, handler);
             }
         };
-    }, [appStateRef.current]); // Re-run the effect when appStateRef.current changes
+    }, [appStateContext.appState]);
 
 
     // ------------------------------------------------------------------------

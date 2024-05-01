@@ -2,14 +2,8 @@ import '../styles/FaceDataPanel.css';
 import React from 'react';
 import * as THREE from 'three';
 import { Stack, Paper } from "@mui/material";
-import { states, AppState } from './AppState';
 
-interface FaceDataPanelProps {
-    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>;
-    selectedObject: THREE.Object3D | null
-    setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
-    appStateRef: React.MutableRefObject<AppState>;
-}
+interface FaceDataPanelProps { selectedObject: THREE.Object3D | null }
 
 function PanelItem(props: { label: React.ReactNode, value: string }) {
     return (
@@ -20,8 +14,8 @@ function PanelItem(props: { label: React.ReactNode, value: string }) {
     );
 }
 
-function Sidebar(props: FaceDataPanelProps) {
-    const { selectedObjectRef, selectedObject, setSelectedObject, appStateRef: appStateRef } = props;
+function FaceDatePanel(props: FaceDataPanelProps) {
+    const { selectedObject } = props;
     return (
         <Paper className="face-data-panel">
             <p className='heading'>Face Attributes</p>
@@ -37,4 +31,4 @@ function Sidebar(props: FaceDataPanelProps) {
     );
 }
 
-export default Sidebar;
+export default FaceDatePanel;

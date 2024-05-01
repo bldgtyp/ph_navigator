@@ -11,15 +11,16 @@ export class AppState {
     }
 
     addEventHandler(event: string, handler: Function) {
-        // Will get added when the State is switched 'on'
+        // All these will get added when the State is switched 'on'
+        // They will all get removed when the State is switched 'off'
         this.eventHandlers[event] = handler;
     }
     addMountHandler(event: string, handler: Function) {
-        // Will run when the State is switched 'on'
+        // All these will run when the State is switched 'on'
         this.mountHandlers[event] = handler;
     }
     addDismountHandler(event: string, handler: Function) {
-        // Will run when the State is switched 'off'
+        // All these will run when the State is switched 'off'
         this.dismountHandlers[event] = handler;
     }
 
