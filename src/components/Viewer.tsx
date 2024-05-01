@@ -3,18 +3,20 @@ import { AppStateContext as AppStateContext } from '../App';
 import * as THREE from 'three';
 import { fetchSunPath } from '../hooks/fetchSunPath';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
-import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
+import { fetchModelSpaces } from '../hooks/fetchModelSpaces';
 import { SceneSetup } from '../scene/SceneSetup';
-import { convertHBFaceToMesh } from '../loaders/HoneybeeFaces';
+import { convertHBFaceToMesh } from '../loaders/HoneybeeFace3D';
 import { convertLBTPolyline3DtoLine } from '../loaders/LadybugPolyline3D';
 import { convertLBTArc2DtoLine } from '../loaders/LadybugArc2D';
 import { convertLBTLineSegment2DtoLine } from '../loaders/LadybugLineSegment2D';
 import { convertLBTArc3DtoLine } from '../loaders/LadybugArc3D';
+import { convertLBTFace3DToMesh } from '../loaders/LadybugFace3D';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
+import { appMaterials } from '../scene/Materials';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -59,6 +61,30 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Mount Handlers for AppStates
+    addMountHandler(1, "showFaces", useCallback(() => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
+        world.current.spaceGeometryMeshes.visible = false;
+        world.current.spaceGeometryOutlines.visible = false;
+        world.current.spaceGeometryVertices.visible = false;
+    }, []));
+    addMountHandler(2, "showFaces", useCallback(() => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
+        world.current.spaceGeometryMeshes.visible = false;
+        world.current.spaceGeometryOutlines.visible = false;
+        world.current.spaceGeometryVertices.visible = false;
+    }, []));
+    addMountHandler(4, "showSpaces", useCallback(() => {
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+        world.current.spaceGeometryMeshes.visible = true;
+        world.current.spaceGeometryOutlines.visible = true;
+        world.current.spaceGeometryVertices.visible = true;
+    }, []));
     addMountHandler(5, "showSunPath", useCallback(() => {
         world.current.sunPathDiagram.visible = true;
     }, []));
@@ -123,23 +149,63 @@ function Viewer(props: ViewerProps) {
         // Handle Window Resize
         window.addEventListener('resize', (e) => onResize(world.current));
 
-        // Get the Honeybee Faces from the Server and Add them to the THREE Scene
+        // Get the Honeybee-Room-Face Geometry from the Server and Add them to the THREE Scene
         fetchModelFaces('model_faces').then(data => {
             data.forEach(face => {
                 const geom = convertHBFaceToMesh(face)
+                geom.mesh.material = appMaterials.geometryStandardMaterial;
+                geom.mesh.visible = true;
                 world.current.buildingGeometryMeshes.add(geom.mesh);
-                world.current.buildingGeometryMeshes.add(new VertexNormalsHelper(geom.mesh, 0.15, 0x000000));
+
+                geom.wireframe.material = appMaterials.wireframeMaterial;
+                geom.wireframe.visible = true;
                 world.current.buildingGeometryOutlines.add(geom.wireframe);
+
+                geom.vertices.visible = false;
                 world.current.buildingGeometryVertices.add(geom.vertices);
+
+                geom.vertexHelper.visible = true;
+                world.current.buildingGeometryMeshes.add(geom.vertexHelper);
 
                 face.apertures.forEach(aperture => {
                     const apertureGeom = convertHBFaceToMesh(aperture);
+                    apertureGeom.mesh.material = appMaterials.geometryWindowMaterial;
+                    apertureGeom.mesh.visible = true;
                     world.current.buildingGeometryMeshes.add(apertureGeom.mesh);
-                    world.current.buildingGeometryMeshes.add(new VertexNormalsHelper(apertureGeom.mesh, 0.15, 0x000000));
-                    world.current.buildingGeometryOutlines.add(apertureGeom.wireframe);
-                    world.current.buildingGeometryVertices.add(apertureGeom.vertices);
-                });
 
+                    apertureGeom.wireframe.material = appMaterials.wireframeMaterial;
+                    apertureGeom.wireframe.visible = true;
+                    world.current.buildingGeometryOutlines.add(apertureGeom.wireframe);
+
+                    apertureGeom.vertices.visible = false;
+                    world.current.buildingGeometryVertices.add(apertureGeom.vertices);
+
+                    apertureGeom.vertexHelper.visible = true;
+                    world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper);
+                });
+            });
+        });
+
+        // Get the Honeybee-PH-Space Geometry from the Server and Add it to the THREE Scene
+        fetchModelSpaces('model_spaces').then(data => {
+            data.forEach(space => {
+                space.volumes.forEach(volume => {
+                    volume.geometry.forEach(lbtFace3D => {
+                        const geom = convertLBTFace3DToMesh(lbtFace3D)
+                        geom.mesh.material = appMaterials.geometryStandardMaterial;
+                        world.current.spaceGeometryMeshes.add(geom.mesh);
+
+                        geom.wireframe.material = appMaterials.wireframeMaterial;
+                        world.current.spaceGeometryOutlines.add(geom.wireframe);
+                        world.current.spaceGeometryOutlines.visible = false;
+
+                        world.current.spaceGeometryVertices.add(geom.vertices);
+                        world.current.spaceGeometryVertices.visible = false;
+
+                        world.current.spaceGeometryMeshes.add(geom.vertexHelper);
+                        world.current.spaceGeometryMeshes.visible = false;
+                    });
+                });
             });
         });
 

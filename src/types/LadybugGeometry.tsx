@@ -8,7 +8,7 @@ export type lbtVector3D = [number, number, number];
 
 export type lbtVector2D = [number, number];
 
-export type LadybugPlane = {
+export type lbtPlane = {
     type: string,
     n: lbtVector3D,
     o: lbtPoint3D,
@@ -17,7 +17,7 @@ export type LadybugPlane = {
 
 export type lbtArc3D = {
     type: string,
-    plane: LadybugPlane,
+    plane: lbtPlane,
     radius: number,
     a1: number,
     a2: number,
@@ -43,7 +43,7 @@ export type lbtPolyline3D = {
     interpolated: boolean,
 }
 
-export type lbtMesh = {
+export type lbtMesh3D = {
     type: string,
     faces: number[],
     vertices: lbtPoint3D[],
@@ -52,7 +52,7 @@ export type lbtMesh = {
 export type lbtFace3D = {
     type: string,
     boundary: lbtPoint3D[],
-    plane: LadybugPlane,
-    mesh: lbtMesh,
+    plane: lbtPlane,
+    mesh: lbtMesh3D,
     area: number,
 }

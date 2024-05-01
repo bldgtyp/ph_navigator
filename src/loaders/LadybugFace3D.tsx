@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { appMaterials } from '../scene/Materials';
-import { HoneybeeFace3D, HoneybeeAperture } from '../types/HoneybeeFace3D';
+import { lbtFace3D } from '../types/LadybugGeometry';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 
-export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points } {
+export function convertLBTFace3DToMesh(lbtFace3D: lbtFace3D): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } {
     // ------------------------------------------------------------------------
-    // Build up the Surface Mesh
+    // Build up the Surface Mesh from an input Ladybug-Face3D
     const vertices: THREE.Vector3[] = [];
-    face.geometry.mesh.vertices.forEach((point: any) => {
+    lbtFace3D.mesh.vertices.forEach((point: any) => {
         const vertex = new THREE.Vector3(point[0], point[1], point[2]);
         vertices.push(vertex);
     });
@@ -26,37 +26,21 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { 
     buffGeometry.setAttribute('position', new THREE.BufferAttribute(verticesArray, vertSize));
 
     // Define faces using vertex indices
-    buffGeometry.setIndex(face.geometry.mesh.faces.flat());
+    buffGeometry.setIndex(lbtFace3D.mesh.faces.flat());
 
     // Be sure to set the surface normals, otherwise it won't render correctly
     buffGeometry.computeVertexNormals();
 
     // Create Surface Mesh
-    const threeMesh = new THREE.Mesh(buffGeometry, face.face_type === 'Aperture' ? appMaterials.geometryWindowMaterial : appMaterials.geometryStandardMaterial);
-    threeMesh.castShadow = true;
+    const threeMesh = new THREE.Mesh(buffGeometry);
     threeMesh.geometry.computeBoundingBox();
-
-    // Add the HB-Face properties to the Mesh's user-data
-    threeMesh.userData['display_name'] = face.display_name;
-    threeMesh.userData['identifier'] = face.identifier;
-    threeMesh.userData['face_type'] = face.face_type;
-    threeMesh.userData['type'] = face.type;
-    threeMesh.userData['area'] = face.geometry.area;
-    threeMesh.userData['boundary_condition'] = face.boundary_condition;
-    threeMesh.userData['properties'] = {
-        energy: {
-            construction: {
-                identifier: face.properties.energy.construction.identifier,
-                r_factor: face.properties.energy.construction.r_factor,
-                u_factor: face.properties.energy.construction.u_factor,
-            }
-        }
-    };
+    threeMesh.visible = true;
+    threeMesh.castShadow = true;
 
     // ------------------------------------------------------------------------
     // Build up the Wireframe Boundary
     const boundaryVertices: THREE.Vector3[] = [];
-    face.geometry.boundary.forEach((point: any) => {
+    lbtFace3D.boundary.forEach((point: any) => {
         const vertex = new THREE.Vector3(point[0], point[1], point[2]);
         boundaryVertices.push(vertex);
     });
@@ -66,8 +50,10 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { 
 
     // Create the Outline from the boundary Points
     const wireframeGeometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
-    const threeWireframe = new THREE.LineLoop(wireframeGeometry, appMaterials.wireframeMaterial);
-    threeWireframe.renderOrder = 1; // Ensure wireframe is rendered behind the surface
+    const threeWireframe = new THREE.LineLoop(wireframeGeometry);
+    threeWireframe.geometry.computeBoundingBox();
+    threeWireframe.visible = true;
+    threeWireframe.renderOrder = 1;
 
     // ------------------------------------------------------------------------
     // Vertices as Points to allow for user-selection
@@ -80,7 +66,12 @@ export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { 
     particleGeometry.setAttribute('position', positionAttribute);
     const cornerVertices = new THREE.Points(particleGeometry);
     cornerVertices.visible = false;
+    cornerVertices.geometry.computeBoundingBox();
 
     // ------------------------------------------------------------------------
-    return { mesh: threeMesh, wireframe: threeWireframe, vertices: cornerVertices };
+    const vertexHelper = new VertexNormalsHelper(threeMesh, 0.15, 0x000000)
+    vertexHelper.visible = true;
+
+    // ------------------------------------------------------------------------
+    return { mesh: threeMesh, wireframe: threeWireframe, vertices: cornerVertices, vertexHelper: vertexHelper };
 }

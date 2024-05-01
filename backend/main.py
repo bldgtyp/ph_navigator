@@ -13,6 +13,7 @@ from ladybug.sunpath import Sunpath
 from ladybug.compass import Compass
 from honeybee_energy.properties.face import FaceEnergyProperties
 from honeybee_energy.construction.opaque import OpaqueConstruction
+from honeybee_ph.properties.room import RoomPhProperties
 
 from PHX.from_HBJSON import read_HBJSON_file
 
@@ -76,6 +77,17 @@ def model_faces() -> dict[str, str]:
 
         face_dicts.append(face_dict)
     return {"message": json.dumps(face_dicts)}
+
+
+@app.get("/model_spaces")
+def model_spaces() -> dict[str, str]:
+    # Get all the interior spaces in the model
+    spaces = []
+    for room in hb_model.rooms:
+        room_ph_prop: RoomPhProperties = getattr(room.properties, "ph")
+        for space in room_ph_prop.spaces:
+            spaces.append(space.to_dict(include_mesh=True))
+    return {"message": json.dumps(spaces)}
 
 
 @app.get("/model_constructions")

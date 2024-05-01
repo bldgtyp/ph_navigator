@@ -15,7 +15,7 @@
 - [x] Get HB-Construction Name and Props
 - [ ] Get Outdoor Shades
 - [ ] Get Doors
-- [ ] Spaces
+- [x] Spaces
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
@@ -49,6 +49,8 @@
 - [x] move the face data panel to the left
 - [ ] add 'results' buttons on the right
 - [x] add a u-value list with sliders to the face data panel 
+  - [ ] Make exterior surfaces only
+  - [ ] Add a Window U-Value section below
 - [x] Refactor App State to useReducer / useContext
 - [ ] Refactor Selected-Object to useReducer / useContext
 - [ ] Refactor Dimension-Lines to useReducer / useContext
