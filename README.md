@@ -4,6 +4,10 @@
 
 
 ## TODO:
+
+## BUG:
+- [ ] Check Exterior Construction API Calls?
+
 #### Deployment:
 - [ ] Create Docker Image or WebService? 
 - [ ] Test Deployment to Render.com
