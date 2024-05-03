@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 3.11 -*-
 
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import json
@@ -16,12 +15,16 @@ from honeybee.boundarycondition import Surface
 from honeybee_energy.properties.face import FaceEnergyProperties
 from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_ph.properties.room import RoomPhProperties
+from honeybee_phhvac.properties.room import RoomPhHvacProperties
 
 from PHX.from_HBJSON import read_HBJSON_file
 
 app = FastAPI()
 
 SOURCE_FILE = pathlib.Path("/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson").resolve()
+SOURCE_FILE = pathlib.Path(
+    "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/409_SACKETT_240502.hbjson"
+).resolve()
 
 hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
 hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict)
@@ -151,3 +154,19 @@ def sun_path():
     geometry["compass"]["minor_azimuth_ticks"] = [_.to_dict() for _ in compass.minor_azimuth_ticks]
 
     return {"message": json.dumps(geometry)}
+
+
+@app.get("/hot_water_systems")
+def hot_water_systems():
+    # Get each unique HW system in the model
+    hw_systems = {}
+    for room in hb_model.rooms:
+        room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
+        if not room_prop_phhvac.hot_water_system:
+            continue
+        hw_systems[room_prop_phhvac.hot_water_system.display_name] = room_prop_phhvac.hot_water_system
+
+    hw_system_dicts = []
+    for hw_system in hw_systems.values():
+        hw_system_dicts.append(hw_system.to_dict())
+    return {"message": json.dumps(hw_system_dicts)}

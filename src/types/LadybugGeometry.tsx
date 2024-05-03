@@ -32,6 +32,11 @@ export type lbtArc2D = {
 
 }
 
+export type lbtLineSegment3D = {
+    p: lbtPoint3D,
+    v: lbtVector3D,
+}
+
 export type lbtLineSegment2D = {
     p: lbtPoint2D,
     v: lbtVector2D,

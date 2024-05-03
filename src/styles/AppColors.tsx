@@ -12,4 +12,5 @@ export const appColors = {
     GRID_LINE_DARK: new THREE.Color(0x919191),
     DIMENSION_LINE: new THREE.Color(0xe600e6),
     SUNPATH_LINE_COLOR: new THREE.Color(0xe600e6),
+    PIPE_LINE_COLOR: new THREE.Color(0x000000),
 };

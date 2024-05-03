@@ -4,19 +4,22 @@ import * as THREE from 'three';
 import { fetchSunPath } from '../hooks/fetchSunPath';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
 import { fetchModelSpaces } from '../hooks/fetchModelSpaces';
+import { fetchModelHotWaterPiping } from '../hooks/fetchModelHotWaterPiping';
 import { SceneSetup } from '../scene/SceneSetup';
 import { convertHBFaceToMesh } from '../loaders/HoneybeeFace3D';
 import { convertLBTPolyline3DtoLine } from '../loaders/LadybugPolyline3D';
 import { convertLBTArc2DtoLine } from '../loaders/LadybugArc2D';
 import { convertLBTLineSegment2DtoLine } from '../loaders/LadybugLineSegment2D';
+import { convertLBTLineSegment3DtoLine } from '../loaders/LadybugLineSegment3D';
 import { convertLBTArc3DtoLine } from '../loaders/LadybugArc3D';
 import { convertLBTFace3DToMesh } from '../loaders/LadybugFace3D';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
-import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 import { appMaterials } from '../scene/Materials';
+import { PhHvacPipeTrunk } from '../types/PhHvacPipeTrunk';
+import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -83,7 +86,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryVertices.visible = false;
         world.current.spaceGeometryMeshes.visible = true;
         world.current.spaceGeometryOutlines.visible = true;
-        world.current.spaceGeometryVertices.visible = true;
+        world.current.spaceGeometryVertices.visible = false;
     }, []));
     addMountHandler(5, "showSunPath", useCallback(() => {
         world.current.sunPathDiagram.visible = true;
@@ -195,15 +198,17 @@ function Viewer(props: ViewerProps) {
                         const geom = convertLBTFace3DToMesh(lbtFace3D)
                         geom.mesh.material = appMaterials.geometryStandardMaterial;
                         world.current.spaceGeometryMeshes.add(geom.mesh);
-                        world.current.spaceGeometryMeshes.add(geom.vertexHelper);
                         world.current.spaceGeometryMeshes.visible = false;
+                        world.current.spaceGeometryMeshes.castShadow = false;
 
                         geom.wireframe.material = appMaterials.wireframeMaterial;
                         world.current.spaceGeometryOutlines.add(geom.wireframe);
                         world.current.spaceGeometryOutlines.visible = false;
+                        world.current.spaceGeometryOutlines.castShadow = false;
 
                         world.current.spaceGeometryVertices.add(geom.vertices);
                         world.current.spaceGeometryVertices.visible = false;
+                        world.current.spaceGeometryVertices.castShadow = false;
 
                     });
                 });
@@ -236,7 +241,28 @@ function Viewer(props: ViewerProps) {
             world.current.sunPathDiagram.visible = false;
         });
 
-        // THREE Animation Loop
+        // Get the Hot-Water Piping from the Server and Add it to the THREE Scene
+        fetchModelHotWaterPiping('hot_water_systems').then(data => {
+            data.forEach((hw_system) => {
+                for (let key in hw_system.distribution_piping) {
+                    const trunk: PhHvacPipeTrunk = hw_system.distribution_piping[key];
+                    for (let key in trunk.branches) {
+                        const branch = trunk.branches[key]
+                        for (let key in branch.fixtures) {
+                            const fixture = branch.fixtures[key]
+                            for (let key in fixture.segments) {
+                                const segment = fixture.segments[key]
+                                const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
+                                seg.material = appMaterials.geometryStandardMaterial;
+                                world.current.pipeGeometry.add(seg);
+                            }
+                        };
+                    };
+                };
+            });
+        });
+
+        // THREE Animation Loop 
         const animate = function () {
             requestAnimationFrame(animate);
             world.current.controls.update();

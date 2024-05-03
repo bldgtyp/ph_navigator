@@ -41,4 +41,9 @@ export const appMaterials = {
             dashSize: 1,
             gapSize: 0.5,
         }),
+    pipeLineMaterial: new THREE.LineBasicMaterial(
+        {
+            color: appColors.PIPE_LINE_COLOR,
+            linewidth: 2,
+        }),
 }

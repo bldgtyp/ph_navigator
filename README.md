@@ -16,6 +16,7 @@
 - [ ] Get Outdoor Shades
 - [ ] Get Doors
 - [x] Spaces
+  - [ ] Spaces need to be Rotated in hp-ph
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
@@ -56,8 +57,8 @@
 - [ ] Refactor Selected-Object to useReducer / useContext
 - [ ] Refactor Dimension-Lines to useReducer / useContext
 - [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
-- [ ] Add PH status bar on the top with red/green check marks for heat-demand, etc...
-
+- [ ] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
+- [ ] Select Rooms, display room-data in panel on left side
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin

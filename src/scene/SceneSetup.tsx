@@ -21,6 +21,7 @@ export class SceneSetup {
     spaceGeometryOutlines: THREE.Group;
     spaceGeometryVertices: THREE.Group;
     sunPathDiagram: THREE.Group;
+    pipeGeometry: THREE.Group;
 
     constructor() {
         // -- Scene
@@ -119,6 +120,9 @@ export class SceneSetup {
 
         this.spaceGeometryVertices = new THREE.Group();
         this.scene.add(this.spaceGeometryVertices);
+
+        this.pipeGeometry = new THREE.Group();
+        this.scene.add(this.pipeGeometry);
 
         // -- Show Helpers
         // const lightHelper = new THREE.DirectionalLightHelper(light_2, 5);

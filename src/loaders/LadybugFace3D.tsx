@@ -69,7 +69,7 @@ export function convertLBTFace3DToMesh(lbtFace3D: lbtFace3D): { mesh: THREE.Mesh
     cornerVertices.geometry.computeBoundingBox();
 
     // ------------------------------------------------------------------------
-    const vertexHelper = new VertexNormalsHelper(threeMesh, 0.15, 0x000000)
+    const vertexHelper = new VertexNormalsHelper(threeMesh, 0.10, 0x000000)
     vertexHelper.visible = true;
 
     // ------------------------------------------------------------------------
