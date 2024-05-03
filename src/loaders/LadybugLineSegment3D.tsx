@@ -1,11 +1,15 @@
 import * as THREE from 'three';
 import { lbtLineSegment3D } from "../types/LadybugGeometry"
 import { appMaterials } from '../scene/Materials';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+
 
 export function convertLBTLineSegment3DtoLine(
     lbtLineSegment2D: lbtLineSegment3D,
     smooth: boolean = false,
-): THREE.Line {
+): LineSegmentsGeometry {
     const points: THREE.Vector3[] = [];
     const v1 = new THREE.Vector3(lbtLineSegment2D.p[0], lbtLineSegment2D.p[1], lbtLineSegment2D.p[2],)
     const v2 = new THREE.Vector3(
@@ -20,11 +24,16 @@ export function convertLBTLineSegment3DtoLine(
         // Create a smooth(ish) curve through the points
         const curve = new THREE.CatmullRomCurve3(points);
         const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(50));
-        const line = new THREE.Line(geometry);
-        return line
+        const eg = new THREE.EdgesGeometry(geometry);
+        return new LineSegmentsGeometry().fromEdgesGeometry(eg);
+        //const line = new THREE.Line(geometry);
+        // return line
     } else {
         // Create a straight line through the points
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geometry);
+        const eg = new THREE.EdgesGeometry(geometry);
+        return new LineSegmentsGeometry().fromEdgesGeometry(eg);
+        // const line = new THREE.Line(geometry);
+        // return line;
     };
 };

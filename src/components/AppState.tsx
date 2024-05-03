@@ -33,10 +33,8 @@ export const states: { [key: number]: AppState } = {
     3: new AppState(AppStateTypes.Comments),
     4: new AppState(AppStateTypes.Spaces),
     5: new AppState(AppStateTypes.SunPath),
-    6: new AppState(AppStateTypes.WindowRadiation),
-    7: new AppState(AppStateTypes.Ventilation),
-    8: new AppState(AppStateTypes.HotWaterPiping),
-    9: new AppState(AppStateTypes.ThermalBridging),
+    6: new AppState(AppStateTypes.Ventilation),
+    7: new AppState(AppStateTypes.HotWaterPiping),
 };
 
 export function addEventHandler(appState: number, eventName: string, callbackFunction: any) {

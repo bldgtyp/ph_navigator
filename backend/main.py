@@ -23,7 +23,7 @@ app = FastAPI()
 
 SOURCE_FILE = pathlib.Path("/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson").resolve()
 SOURCE_FILE = pathlib.Path(
-    "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/409_SACKETT_240502.hbjson"
+    "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/409_SACKETT_240503.hbjson"
 ).resolve()
 
 hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
@@ -158,6 +158,22 @@ def sun_path():
 
 @app.get("/hot_water_systems")
 def hot_water_systems():
+    # Get each unique HW system in the model
+    hw_systems = {}
+    for room in hb_model.rooms:
+        room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
+        if not room_prop_phhvac.hot_water_system:
+            continue
+        hw_systems[room_prop_phhvac.hot_water_system.display_name] = room_prop_phhvac.hot_water_system
+
+    hw_system_dicts = []
+    for hw_system in hw_systems.values():
+        hw_system_dicts.append(hw_system.to_dict())
+    return {"message": json.dumps(hw_system_dicts)}
+
+
+@app.get("/ventilation_systems")
+def ventilation_systems():
     # Get each unique HW system in the model
     hw_systems = {}
     for room in hb_model.rooms:

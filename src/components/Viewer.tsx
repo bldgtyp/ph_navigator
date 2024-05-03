@@ -5,6 +5,7 @@ import { fetchSunPath } from '../hooks/fetchSunPath';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
 import { fetchModelSpaces } from '../hooks/fetchModelSpaces';
 import { fetchModelHotWaterPiping } from '../hooks/fetchModelHotWaterPiping';
+import { fetchModelERVDucting } from '../hooks/fetchModelERVDucting';
 import { SceneSetup } from '../scene/SceneSetup';
 import { convertHBFaceToMesh } from '../loaders/HoneybeeFace3D';
 import { convertLBTPolyline3DtoLine } from '../loaders/LadybugPolyline3D';
@@ -20,6 +21,7 @@ import { handleClearSelectedMesh } from '../handlers/selectMesh';
 import { appMaterials } from '../scene/Materials';
 import { PhHvacPipeTrunk } from '../types/PhHvacPipeTrunk';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -64,47 +66,82 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Mount Handlers for AppStates
+    addMountHandler(0, "showDefault", useCallback(() => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
+    }, []));
     addMountHandler(1, "showFaces", useCallback(() => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
-        world.current.spaceGeometryMeshes.visible = false;
-        world.current.spaceGeometryOutlines.visible = false;
-        world.current.spaceGeometryVertices.visible = false;
     }, []));
     addMountHandler(2, "showFaces", useCallback(() => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
-        world.current.spaceGeometryMeshes.visible = false;
-        world.current.spaceGeometryOutlines.visible = false;
-        world.current.spaceGeometryVertices.visible = false;
     }, []));
+    addMountHandler(3, "showComments", useCallback(() => { }, []));
     addMountHandler(4, "showSpaces", useCallback(() => {
-        world.current.buildingGeometryMeshes.visible = false;
-        world.current.buildingGeometryOutlines.visible = false;
-        world.current.buildingGeometryVertices.visible = false;
         world.current.spaceGeometryMeshes.visible = true;
         world.current.spaceGeometryOutlines.visible = true;
         world.current.spaceGeometryVertices.visible = false;
+        world.current.buildingGeometryOutlines.visible = true
     }, []));
     addMountHandler(5, "showSunPath", useCallback(() => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
         world.current.sunPathDiagram.visible = true;
+    }, []));
+    addMountHandler(6, "showERVDucting", useCallback(() => { }, []));
+    addMountHandler(7, "showHotWaterPiping", useCallback(() => {
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.pipeGeometry.visible = true
     }, []));
 
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Dismount Handlers for AppStates
-    addDismountHandler(1, "clearSelectedMesh", useCallback(() => {
+    addDismountHandler(0, "hideDefault", useCallback(() => {
         handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
-    }, []));
-    addDismountHandler(2, "clearDimensionLines", useCallback(() => {
         hoveringVertex.current = null;
         dimensionLinesRef.current.clear()
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    }, []));
+    addDismountHandler(1, "hideSurfaceQuery", useCallback(() => {
+        handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    }, []));
+    addDismountHandler(2, "hideDimensionLines", useCallback(() => {
+        hoveringVertex.current = null;
+        dimensionLinesRef.current.clear()
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    }, []));
+    addDismountHandler(3, "hideComments", useCallback(() => { }, []));
+    addDismountHandler(4, "hideSpaces", useCallback(() => {
+        world.current.spaceGeometryMeshes.visible = false;
+        world.current.spaceGeometryOutlines.visible = false;
+        world.current.spaceGeometryVertices.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
     }, []));
     addDismountHandler(5, "hideSunPath", useCallback(() => {
         world.current.sunPathDiagram.visible = false;
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    }, []));
+    addDismountHandler(6, "hideERVDucting", useCallback(() => { }, []));
+    addDismountHandler(7, "hideHotWaterPiping", useCallback(() => {
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.pipeGeometry.visible = false
     }, []));
 
 
@@ -148,6 +185,7 @@ function Viewer(props: ViewerProps) {
         if (mountRef.current) {
             mountRef.current.appendChild(world.current.renderer.domElement);
         }
+
 
         // Handle Window Resize
         window.addEventListener('resize', (e) => onResize(world.current));
@@ -253,13 +291,28 @@ function Viewer(props: ViewerProps) {
                             for (let key in fixture.segments) {
                                 const segment = fixture.segments[key]
                                 const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                                seg.material = appMaterials.geometryStandardMaterial;
-                                world.current.pipeGeometry.add(seg);
+                                const fl = new LineSegments2(seg, appMaterials.pipeLineMaterial);
+                                world.current.pipeGeometry.add(fl);
                             }
                         };
                     };
                 };
+                for (let key in hw_system.recirc_piping) {
+                    const fixture = hw_system.recirc_piping[key]
+                    for (let key in fixture.segments) {
+                        const segment = fixture.segments[key]
+                        const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
+                        const fl = new LineSegments2(seg, appMaterials.pipeLineMaterial);
+                        world.current.pipeGeometry.add(fl);
+                    }
+                }
             });
+            world.current.pipeGeometry.visible = false;
+        });
+
+        // Get the ERV Ducting from the Server and Add it to the THREE Scene
+        fetchModelERVDucting('ventilation_systems').then(data => {
+            console.log(data)
         });
 
         // THREE Animation Loop 

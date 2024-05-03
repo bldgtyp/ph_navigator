@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { appColors } from '../styles/AppColors';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 
 export const appMaterials = {
+    // Surfaces
     groundShadowMaterial: new THREE.ShadowMaterial(
         {
             opacity: 0.3,
@@ -23,6 +25,8 @@ export const appMaterials = {
             color: appColors.SURFACE_HIGHLIGHT,
             side: THREE.DoubleSide,
         }),
+
+    // Lines
     wireframeMaterial: new THREE.LineBasicMaterial(
         {
             color: appColors.OUTLINE,
@@ -41,9 +45,16 @@ export const appMaterials = {
             dashSize: 1,
             gapSize: 0.5,
         }),
-    pipeLineMaterial: new THREE.LineBasicMaterial(
+    pipeLineMaterial: new LineMaterial(
         {
             color: appColors.PIPE_LINE_COLOR,
-            linewidth: 2,
+            linewidth: 0.04,
+            worldUnits: true
+        }),
+    ductLineMaterial: new LineMaterial(
+        {
+            color: appColors.DUCT_LINE_COLOR,
+            linewidth: 0.06,
+            worldUnits: true
         }),
 }
