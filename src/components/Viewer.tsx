@@ -312,8 +312,30 @@ function Viewer(props: ViewerProps) {
 
         // Get the ERV Ducting from the Server and Add it to the THREE Scene
         fetchModelERVDucting('ventilation_systems').then(data => {
-            console.log(data)
-        });
+            data.forEach(hw_system => {
+                hw_system.supply_ducting.forEach((duct) => {
+                    console.log(duct)
+                    for (let key in duct.segments) {
+                        const segment = duct.segments[key]
+                        const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
+                        const fl = new LineSegments2(seg, appMaterials.ductLineMaterial);
+                        world.current.ventilationGeometry.add(fl);
+                    }
+                })
+                hw_system.exhaust_ducting.forEach((duct) => {
+                    console.log(duct)
+                    for (let key in duct.segments) {
+                        const segment = duct.segments[key]
+                        const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
+                        const fl = new LineSegments2(seg, appMaterials.ductLineMaterial);
+                        world.current.ventilationGeometry.add(fl);
+                    }
+                })
+            });
+            world.current.pipeGeometry.visible = false;
+        }
+        );
+
 
         // THREE Animation Loop 
         const animate = function () {
