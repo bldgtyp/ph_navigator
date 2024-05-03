@@ -94,7 +94,10 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryVertices.visible = true;
         world.current.sunPathDiagram.visible = true;
     }, []));
-    addMountHandler(6, "showERVDucting", useCallback(() => { }, []));
+    addMountHandler(6, "showERVDucting", useCallback(() => {
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.ventilationGeometry.visible = true
+    }, []));
     addMountHandler(7, "showHotWaterPiping", useCallback(() => {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.pipeGeometry.visible = true
@@ -138,7 +141,10 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
     }, []));
-    addDismountHandler(6, "hideERVDucting", useCallback(() => { }, []));
+    addDismountHandler(6, "hideERVDucting", useCallback(() => {
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.ventilationGeometry.visible = false
+    }, []));
     addDismountHandler(7, "hideHotWaterPiping", useCallback(() => {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
@@ -332,7 +338,7 @@ function Viewer(props: ViewerProps) {
                     }
                 })
             });
-            world.current.pipeGeometry.visible = false;
+            world.current.ventilationGeometry.visible = false;
         }
         );
 
