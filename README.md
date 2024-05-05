@@ -6,13 +6,14 @@
 ## TODO:
 
 #### BUG:
-- [ ] Check Exterior Construction API Calls?
+- [ ] Check Exterior Construction API Calls (circular)?
+- [ ] Check the Polyline3D Geometry errors
 
 #### Deployment:
-- [ ] Create Docker Image or WebService? 
-- [ ] Test Deployment to Render.com
+- [x] Create WebService 
+- [x] Test Deployment to Render.com
 
-#### Geometry:
+#### Get Geometry:
 - [x] Add Ground Plane
 - [x] Windows & Material
 - [x] Get Boundary Condition
@@ -26,11 +27,13 @@
 - [ ] add north arrow and north text to sunpath
 - [ ] Refactor Poly-lines so material gets set in Viewer/useEffect
 
-#### Systems:
-- [ ] Ventilation Ducting
-- [ ] Ventilation Equipment
-- [ ] Plumbing Piping
-- [ ] Hot Water Tanks and Heaters
+#### Get Systems:
+- [ ] Ventilation
+  - [x] Ducting
+  - [ ] ERV unit
+- [ ] Plumbing
+  - [x] Piping
+  - [ ] Hot Water Tanks and Heaters
 
 #### UI:
 - [x] Refactor App-State and Mouse-Events
@@ -45,7 +48,7 @@
 - [ ] Windows Table (frames, glass, units)
 - [ ] Surface select should not drop on scene rotate or pan
 - [ ] Add 'escape' to clear surface select
-- Dimensions:
+- [ ] Dimensions:
   - [ ] Add 'escape' to clear current dimension
   - [ ] Add rubber-band line
   - [ ] Add 'first vertex' persistent marker
