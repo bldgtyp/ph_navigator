@@ -6,7 +6,6 @@ import { appMaterials } from '../scene/Materials';
 import { selectPoint } from './selectPoint'
 
 let selectedVertices: THREE.Vector3[] = [];
-let drawingLine = false;
 const marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 12, 12), new THREE.MeshBasicMaterial({
     color: 0xe600e6
 }));
@@ -23,7 +22,6 @@ function handleMeasureDistance(
     }
 
     if (selectedVertices.length === 0) {
-        drawingLine = true;
         selectedVertices[0] = hoveringVertex.current
         dimensionLinesRef.add(marker);
         marker.position.copy(hoveringVertex.current);
@@ -55,7 +53,6 @@ function handleMeasureDistance(
         // Cleanup
         dimensionLinesRef.add(measurementLabel)
         selectedVertices = [];
-        drawingLine = false;
     }
 }
 

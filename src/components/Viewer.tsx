@@ -51,7 +51,7 @@ function Viewer(props: ViewerProps) {
     );
     addEventHandler(2, "click",
         useCallback(
-            (e: any) => { measureModeOnMouseClick(hoveringVertex, dimensionLinesRef) }
+            () => { measureModeOnMouseClick(hoveringVertex, dimensionLinesRef) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
@@ -81,7 +81,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
     });
-    addMountHandler(3, "showComments", () => { });
+    addMountHandler(3, "showComments", () => { console.log("Show Comments") });
     addMountHandler(4, "showSpaces", () => {
         world.current.spaceGeometryMeshes.visible = true;
         world.current.spaceGeometryOutlines.visible = true;
@@ -128,7 +128,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
     });
-    addDismountHandler(3, "hideComments", () => { });
+    addDismountHandler(3, "hideComments", () => { console.log("Hide Comments") });
     addDismountHandler(4, "hideSpaces", () => {
         world.current.spaceGeometryMeshes.visible = false;
         world.current.spaceGeometryOutlines.visible = false;
@@ -194,7 +194,7 @@ function Viewer(props: ViewerProps) {
         }
 
         // Handle Window Resize
-        window.addEventListener('resize', (e) => onResize(world.current));
+        window.addEventListener('resize', () => onResize(world.current));
 
         // Get the Honeybee-Room-Face Geometry from the Server and Add them to the THREE Scene
         fetchModelFaces(`${projectId}/model_faces`).then(data => {

@@ -2,8 +2,6 @@ import * as THREE from 'three';
 import { lbtArc3D } from "../types/LadybugGeometry"
 import { appMaterials } from '../scene/Materials';
 
-const material = new THREE.LineBasicMaterial({ color: 0xff1100 });
-
 export function convertLBTArc3DtoLine(lbtArc3D: lbtArc3D): THREE.Line {
     // Solution provided by GitHub CoPilot.
 
