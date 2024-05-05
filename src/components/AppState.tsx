@@ -1,30 +1,33 @@
 import { AppStateTypes } from '../types/AppState';
 
+type EventHandlerFunction = (event: any) => void;
+type MountHandlerFunction = () => void;
+type DismountHandlerFunction = () => void;
+
 export class AppState {
     state: AppStateTypes;
-    eventHandlers: { [event: string]: Function } = {};
-    mountHandlers: { [event: string]: Function } = {};
-    dismountHandlers: { [event: string]: Function } = {};
+    eventHandlers: { [event: string]: EventHandlerFunction } = {};
+    mountHandlers: { [event: string]: MountHandlerFunction } = {};
+    dismountHandlers: { [event: string]: DismountHandlerFunction } = {};
 
     constructor(state: AppStateTypes) {
         this.state = state;
     }
 
-    addEventHandler(event: string, handler: Function) {
+    addEventHandler(event: string, handler: EventHandlerFunction) {
         // All these will get added when the State is switched 'on'
         // They will all get removed when the State is switched 'off'
         this.eventHandlers[event] = handler;
     }
-    addMountHandler(event: string, handler: Function) {
+    addMountHandler(event: string, handler: MountHandlerFunction) {
         // All these will run when the State is switched 'on'
         this.mountHandlers[event] = handler;
     }
-    addDismountHandler(event: string, handler: Function) {
+    addDismountHandler(event: string, handler: DismountHandlerFunction) {
         // All these will run when the State is switched 'off'
         this.dismountHandlers[event] = handler;
     }
-
-};
+}
 
 export const states: { [key: number]: AppState } = {
     0: new AppState(AppStateTypes.None),
@@ -37,14 +40,14 @@ export const states: { [key: number]: AppState } = {
     7: new AppState(AppStateTypes.HotWaterPiping),
 };
 
-export function addEventHandler(appState: number, eventName: string, callbackFunction: any) {
+export function addEventHandler(appState: number, eventName: string, callbackFunction: EventHandlerFunction) {
     states[appState].addEventHandler(eventName, callbackFunction);
 }
 
-export function addMountHandler(appState: number, eventName: string, callbackFunction: any) {
+export function addMountHandler(appState: number, eventName: string, callbackFunction: MountHandlerFunction) {
     states[appState].addMountHandler(eventName, callbackFunction);
 }
 
-export function addDismountHandler(appState: number, eventName: string, callbackFunction: any) {
+export function addDismountHandler(appState: number, eventName: string, callbackFunction: DismountHandlerFunction) {
     states[appState].addDismountHandler(eventName, callbackFunction);
 }

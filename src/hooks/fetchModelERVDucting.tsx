@@ -3,6 +3,7 @@ import { PhVentilationSystem } from "../types/PhVentilationSystem";
 
 
 export async function fetchModelERVDucting(endpoint: string): Promise<PhVentilationSystem[]> {
+    // https://bldgtyp.github.io/PH_View/#/proj_2305/ventilation_systems
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     const response = await fetch(API_ENDPOINT);

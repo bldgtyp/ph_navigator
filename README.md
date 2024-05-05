@@ -5,7 +5,7 @@
 
 ## TODO:
 
-## BUG:
+#### BUG:
 - [ ] Check Exterior Construction API Calls?
 
 #### Deployment:
@@ -97,12 +97,27 @@
 # Frontend Setup (React)
 #### Setup:
 1. `npx create-react-app --template typescript`
+1. Set `./tsconfig.json` "target": "es6",`
 1. `npm install three`
-#### Run:
+
+#### Run Locally:
+1. Make sure `./.env.development.local` includes:
+	- `"REACT_APP_API_URL=http://localhost:8000"`
 1. `npm start`
+1. View at [http://localhost:3000]()
+
+# Deploy to GitHub Pages:
+1. `src/data/constants.json` includes:
+	- `"RENDER_API_BASE_URL": "https://ph-navigator.onrender.com/"`
+1. `./package.json` includes:
+	- `"name": "ph_navigator"`
+	- `"homepage": "https://ph-tools.github.io/ph_navigator/"`
+1. Setup `deploy_app.yml` file in `./.github/workflows`
+1. Deployed to GitHub Pages at: https://ph-tools.github.io/ph_navigator/
 
 
 # Deployment as Web-service
+
 1. Make sure origins = [..., "https://bldgtyp.github.io"] is set in [`main.py`](https://github.com/bldgtyp/ph_navigator/blob/main/backend/main.py) to fix CORS
 1. Push changes to [GitHub](https://github.com/bldgtyp/ph_navigator)
 1. [Render.com](https://render.com/) | Settings:

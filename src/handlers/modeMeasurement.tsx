@@ -5,13 +5,13 @@ import { SceneSetup } from '../scene/SceneSetup';
 import { appMaterials } from '../scene/Materials';
 import { selectPoint } from './selectPoint'
 
-var selectedVertices: THREE.Vector3[] = [];
-var drawingLine = false;
-var marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 12, 12), new THREE.MeshBasicMaterial({
+let selectedVertices: THREE.Vector3[] = [];
+let drawingLine = false;
+const marker = new THREE.Mesh(new THREE.SphereGeometry(0.20, 12, 12), new THREE.MeshBasicMaterial({
     color: 0xe600e6
 }));
 marker.position.setScalar(1000);
-var pointer = new THREE.Vector2();
+const pointer = new THREE.Vector2();
 
 
 function handleMeasureDistance(

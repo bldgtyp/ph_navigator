@@ -8,9 +8,17 @@ import { ReactComponent as DuctIcon } from '../icons/Ducts.svg';
 import { ReactComponent as PipeIcon } from '../icons/Piping.svg';
 import { ReactComponent as SpaceIcon } from '../icons/Space.svg';
 import { ReactComponent as SunPathIcon } from '../icons/SunPath.svg';
-import { AppStateContext } from '../App';
+import { AppStateContext } from '../components/Project';
 
-const icons = [<SurfaceIcon />, <RulerIcon />, <NoteIcon />, <SpaceIcon />, <SunPathIcon />, <DuctIcon />, <PipeIcon />];
+const icons = [
+    <SurfaceIcon key={0} />,
+    <RulerIcon key={1} />,
+    <NoteIcon key={2} />,
+    <SpaceIcon key={3} />,
+    <SunPathIcon key={4} />,
+    <DuctIcon key={5} />,
+    <PipeIcon key={6} />
+];
 
 const AppStateMenubar = () => {
     const [activeButton, setActiveButton] = useState<number | null>(null);

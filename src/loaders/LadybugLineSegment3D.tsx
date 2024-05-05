@@ -35,5 +35,5 @@ export function convertLBTLineSegment3DtoLine(
         return new LineSegmentsGeometry().fromEdgesGeometry(eg);
         // const line = new THREE.Line(geometry);
         // return line;
-    };
-};
+    }
+}

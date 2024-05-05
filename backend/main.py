@@ -42,15 +42,15 @@ app.add_middleware(
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-SOURCE_FILE = pathlib.Path("/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson").resolve()
-SOURCE_FILE = pathlib.Path(
-    "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/409_SACKETT_240503.hbjson"
-).resolve()
+SOURCE_FILE_2305 = pathlib.Path("backend/409_SACKETT_240503.hbjson").resolve()
+SOURCE_FILE_2306 = pathlib.Path("backend/test_model.hbjson").resolve()
 
-hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
+hb_json_dict_2305 = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE_2305)
+hb_json_dict_2306 = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE_2306)
 
 hbjson_models: dict[str, model.Model] = {
-    "2305": read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict),
+    "proj_2305": read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict_2305),
+    "proj_2306": read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict_2306),
 }
 
 

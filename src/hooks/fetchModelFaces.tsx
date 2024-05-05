@@ -4,6 +4,8 @@ import { HoneybeeFace3D } from "../types/HoneybeeFace3D";
 
 
 export async function fetchModelFaces(endpoint: string): Promise<HoneybeeFace3D[]> {
+    // https://ph-navigator.onrender.com/#/2305/model_faces
+    // http://localhost:8000/#/2305/model_faces
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     const response = await fetch(API_ENDPOINT);

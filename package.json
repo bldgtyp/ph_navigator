@@ -1,5 +1,6 @@
 {
   "name": "ph_navigator",
+  "homepage": "https://bldgtyp.github.io/ph_navigator/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -14,6 +15,7 @@
     "@types/react-dom": "^18.2.25",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.0",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
     "three": "^0.163.0",

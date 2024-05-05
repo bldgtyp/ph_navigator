@@ -7,4 +7,4 @@ export enum AppStateTypes {
     SunPath = 5,
     Ventilation = 6,
     HotWaterPiping = 7,
-};
+}

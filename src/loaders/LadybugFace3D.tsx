@@ -18,7 +18,7 @@ export function convertLBTFace3DToMesh(lbtFace3D: lbtFace3D): { mesh: THREE.Mesh
     // Convert LadybugMesh vertices array to a flattened Float32Array
     const vertSize = 3; // X, Y, Z
     const verticesArray = new Float32Array(vertices.length * vertSize);
-    for (var i = 0; i < vertices.length; i++) {
+    for (let i = 0; i < vertices.length; i++) {
         vertices[i].toArray(verticesArray, i * vertSize);
     }
 
@@ -57,7 +57,7 @@ export function convertLBTFace3DToMesh(lbtFace3D: lbtFace3D): { mesh: THREE.Mesh
 
     // ------------------------------------------------------------------------
     // Vertices as Points to allow for user-selection
-    var verticesGeometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
+    let verticesGeometry = new THREE.BufferGeometry().setFromPoints(boundaryVertices);
     verticesGeometry.deleteAttribute('normal');
     verticesGeometry.deleteAttribute('uv');
     verticesGeometry = mergeVertices(verticesGeometry);
