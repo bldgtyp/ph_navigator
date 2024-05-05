@@ -10,7 +10,7 @@ from ladybug_geometry.geometry2d.pointvector import Point2D
 from ladybug import epw
 from ladybug.sunpath import Sunpath
 from ladybug.compass import Compass
-from honeybee import face
+from honeybee import face, model
 from honeybee.boundarycondition import Surface
 from honeybee_energy.properties.face import FaceEnergyProperties
 from honeybee_energy.construction.opaque import OpaqueConstruction
@@ -21,13 +21,6 @@ from PHX.from_HBJSON import read_HBJSON_file
 
 app = FastAPI()
 
-SOURCE_FILE = pathlib.Path("/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson").resolve()
-SOURCE_FILE = pathlib.Path(
-    "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/409_SACKETT_240503.hbjson"
-).resolve()
-
-hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
-hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict)
 
 origins = [
     "http://localhost:3000",
@@ -46,14 +39,26 @@ app.add_middleware(
 )
 
 
-@app.get("/server_ready")
-def awake() -> dict[str, str]:
-    """Check if the server is ready to go."""
-    return {"message": "Server is ready"}
+# ----------------------------------------------------------------------------------------------------------------------
 
 
-@app.get("/model_faces")
-def model_faces() -> dict[str, str]:
+SOURCE_FILE = pathlib.Path("/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/test_model.hbjson").resolve()
+SOURCE_FILE = pathlib.Path(
+    "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/409_SACKETT_240503.hbjson"
+).resolve()
+
+hb_json_dict = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE)
+
+hbjson_models: dict[str, model.Model] = {
+    "2305": read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict),
+}
+
+
+@app.get("/{project_id}/model_faces")
+def model_faces(project_id: str) -> dict[str, str]:
+    # -- Get the right project model
+    hb_model = hbjson_models[project_id]
+
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
     for face in hb_model.faces:
@@ -84,9 +89,12 @@ def model_faces() -> dict[str, str]:
     return {"message": json.dumps(face_dicts)}
 
 
-@app.get("/model_spaces")
-def model_spaces() -> dict[str, str]:
-    # Get all the interior spaces in the model
+@app.get("/{project_id}/model_spaces")
+def model_spaces(project_id: str) -> dict[str, str]:
+    # -- Get the right project model
+    hb_model = hbjson_models[project_id]
+
+    # -- Get all the interior spaces in the model
     spaces = []
     for room in hb_model.rooms:
         room_ph_prop: RoomPhProperties = getattr(room.properties, "ph")
@@ -105,14 +113,17 @@ def _inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
     return False
 
 
-@app.get("/model_exterior_constructions")
-def model_exterior_constructions() -> dict[str, str]:
-    # Get all the Face-IDS in the model
+@app.get("/{project_id}/model_exterior_constructions")
+def model_exterior_constructions(project_id: str) -> dict[str, str]:
+    # -- Get the right project model
+    hb_model = hbjson_models[project_id]
+
+    # -- Get all the Face-IDS in the model
     model_face_ids = set()
     for face in hb_model.faces:
         model_face_ids.add(face.identifier)
 
-    # Get all the unique constructions in the model
+    # -- Get all the unique constructions in the model
     unique_constructions: dict[str, OpaqueConstruction] = {}
     for face in hb_model.faces:
         if _inside_face(face, model_face_ids):
@@ -131,8 +142,8 @@ def model_exterior_constructions() -> dict[str, str]:
     return {"message": json.dumps(constructions)}
 
 
-@app.get("/sun_path")
-def sun_path():
+@app.get("/{project_id}/sun_path")
+def sun_path(project_id: str):
     SCALE = 0.4
     NORTH = 0
     DAYLIGHT_SAVINGS_PERIOD = None
@@ -141,6 +152,8 @@ def sun_path():
     SOURCE_FILE = pathlib.Path(
         "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw"
     ).resolve()
+    # -- Get the right project model
+    hb_model = hbjson_models[project_id]
 
     epw_object = epw.EPW(SOURCE_FILE)
     sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
@@ -156,9 +169,12 @@ def sun_path():
     return {"message": json.dumps(geometry)}
 
 
-@app.get("/hot_water_systems")
-def hot_water_systems():
-    # Get each unique HW system in the model
+@app.get("/{project_id}/hot_water_systems")
+def hot_water_systems(project_id: str):
+    # -- Get the right project model
+    hb_model = hbjson_models[project_id]
+
+    # -- Get each unique HW system in the model
     hw_systems = {}
     for room in hb_model.rooms:
         room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
@@ -172,9 +188,12 @@ def hot_water_systems():
     return {"message": json.dumps(hw_system_dicts)}
 
 
-@app.get("/ventilation_systems")
-def ventilation_systems():
-    # Get each unique HW system in the model
+@app.get("/{project_id}/ventilation_systems")
+def ventilation_systems(project_id: str):
+    # -- Get the right project model
+    hb_model = hbjson_models[project_id]
+
+    # -- Get each unique HW system in the model
     ventilation_systems = {}
     for room in hb_model.rooms:
         room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")

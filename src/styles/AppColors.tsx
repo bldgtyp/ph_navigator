@@ -4,7 +4,7 @@ export const appColors = {
     // Scene
     LIGHT_GREY: new THREE.Color(0xededed),
     BLACK: new THREE.Color(0x000000),
-    BACKGROUND_WHITE: new THREE.Color(0xf0f1f2),
+    BACKGROUND_WHITE: new THREE.Color(0xffffff),
     GRID_LINE_LIGHT: new THREE.Color(0xc9c9c9),
     GRID_LINE_DARK: new THREE.Color(0x919191),
 

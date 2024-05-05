@@ -347,6 +347,7 @@ function Viewer(props: ViewerProps) {
         const animate = function () {
             requestAnimationFrame(animate);
             world.current.controls.update();
+            // world.current.composer.render();
             world.current.renderer.render(world.current.scene, world.current.camera);
             world.current.labelRenderer.render(world.current.scene, world.current.camera)
         };
