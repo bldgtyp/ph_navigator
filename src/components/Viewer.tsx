@@ -42,114 +42,113 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Setup all the Event Listener Callbacks for the different App-States
+    // For some reason, this does not work unless these are all wrapped in useCallback?
     addEventHandler(1, "click",
         useCallback(
-            (e: any) => {
-                surfaceSelectModeOnMouseClick(
-                    e, world.current, selectedObjectRef, setSelectedObject)
-            }, [world, selectedObjectRef, setSelectedObject]
-        )
+            (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectRef, setSelectedObject) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
     );
-    // addEventHandler(2, "click",
-    //     useCallback(
-    //         (e: any) => {
-    //             measureModeOnMouseClick(hoveringVertex, dimensionLinesRef)
-    //         }, [world, hoveringVertex]
-    //     )
-    // );
-    // addEventHandler(2, "pointermove",
-    //     useCallback(
-    //         (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }, []
-    //     )
-    // );
+    addEventHandler(2, "click",
+        useCallback(
+            (e: any) => { measureModeOnMouseClick(hoveringVertex, dimensionLinesRef) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
+    );
+    addEventHandler(2, "pointermove",
+        useCallback(
+            (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
+    );
 
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Mount Handlers for AppStates
-    addMountHandler(0, "showDefault", useCallback(() => {
+    addMountHandler(0, "showDefault", () => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
-    }, []));
-    addMountHandler(1, "showFaces", useCallback(() => {
+    });
+    addMountHandler(1, "showFaces", () => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
-    }, []));
-    // addMountHandler(2, "showFaces", useCallback(() => {
-    //     world.current.buildingGeometryMeshes.visible = true;
-    //     world.current.buildingGeometryOutlines.visible = true;
-    //     world.current.buildingGeometryVertices.visible = true;
-    // }, []));
-    // addMountHandler(3, "showComments", useCallback(() => { }, []));
-    // addMountHandler(4, "showSpaces", useCallback(() => {
-    //     world.current.spaceGeometryMeshes.visible = true;
-    //     world.current.spaceGeometryOutlines.visible = true;
-    //     world.current.spaceGeometryVertices.visible = false;
-    //     world.current.buildingGeometryOutlines.visible = true
-    // }, []));
-    // addMountHandler(5, "showSunPath", useCallback(() => {
-    //     world.current.buildingGeometryMeshes.visible = true;
-    //     world.current.buildingGeometryOutlines.visible = true;
-    //     world.current.buildingGeometryVertices.visible = true;
-    //     world.current.sunPathDiagram.visible = true;
-    // }, []));
-    // addMountHandler(6, "showERVDucting", useCallback(() => {
-    //     world.current.buildingGeometryOutlines.visible = true;
-    //     world.current.ventilationGeometry.visible = true
-    // }, []));
-    // addMountHandler(7, "showHotWaterPiping", useCallback(() => {
-    //     world.current.buildingGeometryOutlines.visible = true;
-    //     world.current.pipeGeometry.visible = true
-    // }, []));
+    });
+    addMountHandler(2, "showDimensionLines", () => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
+    });
+    addMountHandler(3, "showComments", () => { });
+    addMountHandler(4, "showSpaces", () => {
+        world.current.spaceGeometryMeshes.visible = true;
+        world.current.spaceGeometryOutlines.visible = true;
+        world.current.spaceGeometryVertices.visible = false;
+        world.current.buildingGeometryOutlines.visible = true
+    });
+    addMountHandler(5, "showSunPath", () => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
+        world.current.sunPathDiagram.visible = true;
+    });
+    addMountHandler(6, "showERVDucting", () => {
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.ventilationGeometry.visible = true
+    });
+    addMountHandler(7, "showHotWaterPiping", () => {
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.pipeGeometry.visible = true
+    });
 
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // Dismount Handlers for AppStates
-    addDismountHandler(0, "hideDefault", useCallback(() => {
+    addDismountHandler(0, "hideDefault", () => {
         handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
         hoveringVertex.current = null;
         dimensionLinesRef.current.clear()
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
-    }, []));
-    addDismountHandler(1, "hideSurfaceQuery", useCallback(() => {
+    });
+    addDismountHandler(1, "hideSurfaceQuery", () => {
         handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
-    }, []));
-    // addDismountHandler(2, "hideDimensionLines", useCallback(() => {
-    //     hoveringVertex.current = null;
-    //     dimensionLinesRef.current.clear()
-    //     world.current.buildingGeometryMeshes.visible = false;
-    //     world.current.buildingGeometryOutlines.visible = false;
-    //     world.current.buildingGeometryVertices.visible = false;
-    // }, []));
-    // addDismountHandler(3, "hideComments", useCallback(() => { }, []));
-    // addDismountHandler(4, "hideSpaces", useCallback(() => {
-    //     world.current.spaceGeometryMeshes.visible = false;
-    //     world.current.spaceGeometryOutlines.visible = false;
-    //     world.current.spaceGeometryVertices.visible = false;
-    //     world.current.buildingGeometryOutlines.visible = false;
-    // }, []));
-    // addDismountHandler(5, "hideSunPath", useCallback(() => {
-    //     world.current.sunPathDiagram.visible = false;
-    //     world.current.buildingGeometryMeshes.visible = false;
-    //     world.current.buildingGeometryOutlines.visible = false;
-    //     world.current.buildingGeometryVertices.visible = false;
-    // }, []));
-    // addDismountHandler(6, "hideERVDucting", useCallback(() => {
-    //     world.current.buildingGeometryOutlines.visible = false;
-    //     world.current.ventilationGeometry.visible = false
-    // }, []));
-    // addDismountHandler(7, "hideHotWaterPiping", useCallback(() => {
-    //     world.current.buildingGeometryOutlines.visible = false;
-    //     world.current.pipeGeometry.visible = false
-    // }, []));
+    });
+    addDismountHandler(2, "hideDimensionLines", () => {
+        hoveringVertex.current = null;
+        dimensionLinesRef.current.clear()
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    });
+    addDismountHandler(3, "hideComments", () => { });
+    addDismountHandler(4, "hideSpaces", () => {
+        world.current.spaceGeometryMeshes.visible = false;
+        world.current.spaceGeometryOutlines.visible = false;
+        world.current.spaceGeometryVertices.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+    });
+    addDismountHandler(5, "hideSunPath", () => {
+        world.current.sunPathDiagram.visible = false;
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    });
+    addDismountHandler(6, "hideERVDucting", () => {
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.ventilationGeometry.visible = false
+    });
+    addDismountHandler(7, "hideHotWaterPiping", () => {
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.pipeGeometry.visible = false
+    });
 
 
     // ------------------------------------------------------------------------
@@ -178,6 +177,7 @@ function Viewer(props: ViewerProps) {
             // Remove the previous state's event listeners
             for (const key in prevState.eventHandlers) {
                 const handler: any = prevState.eventHandlers[key];
+                console.log(key, handler)
                 window.removeEventListener(key, handler);
             }
         };
@@ -354,7 +354,8 @@ function Viewer(props: ViewerProps) {
 
         animate();
 
-    }, [world, projectId]); // remove? 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [projectId]);
 
     return <div ref={mountRef} />;
 

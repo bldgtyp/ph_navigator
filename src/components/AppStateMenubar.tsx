@@ -1,3 +1,5 @@
+// Menu Bar for setting the App State and Visibility
+
 import '../styles/Toolbar.css';
 import { useState, useContext } from 'react';
 import { Stack } from "@mui/material";

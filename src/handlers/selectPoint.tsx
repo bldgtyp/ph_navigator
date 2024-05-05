@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-var raycaster = new THREE.Raycaster();
+const raycaster = new THREE.Raycaster();
 
 export function selectPoint(pointer: any, world: any, tolerance: number = 0.5): THREE.Vector3 | null {
     // Perform the ray-cast intersection
@@ -22,4 +22,4 @@ export function selectPoint(pointer: any, world: any, tolerance: number = 0.5): 
     const startingIndex = index * geom.attributes.position.itemSize;
     const updatedVertex = new THREE.Vector3(values[startingIndex], values[startingIndex + 1], values[startingIndex + 2]);
     return updatedVertex
-};
+}

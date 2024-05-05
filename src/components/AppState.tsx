@@ -1,3 +1,8 @@
+// The App can be in many 'states'. Each State will mount an arbitrary number of 
+// event handlers, and visibility settings when activated. The AppState class
+// will also unmount these event-handlers and visibility settings when the State is
+// deactivated.
+
 import { AppStateTypes } from '../types/AppState';
 
 type EventHandlerFunction = (event: any) => void;
@@ -13,6 +18,7 @@ export class AppState {
     constructor(state: AppStateTypes) {
         this.state = state;
     }
+
 
     addEventHandler(event: string, handler: EventHandlerFunction) {
         // All these will get added when the State is switched 'on'
