@@ -15,6 +15,12 @@ type ResultsItemProps = {
     graphSeries: any[];
 }
 
+/**
+ * Renders a single item in the Model-Results sidebar.
+ *
+ * @param {ResultsItemProps} props - The props for the ResultsItem component.
+ * @returns {JSX.Element} The rendered ResultsItem component.
+ */
 function ResultsItem(props: ResultsItemProps) {
     const { buttonTitle: displayName, graphTitle, results_type, limit, current, graphSeries } = props
     const passing = current <= limit;
@@ -42,6 +48,10 @@ function ResultsItem(props: ResultsItemProps) {
 }
 
 
+/**
+ * Renders the Model-Results sidebar component.
+ * This component displays various energy demand and peak load results.
+ */
 function ResultsSidebar() {
     return (
         <Stack direction="column" spacing={2} className="results-sidebar">
