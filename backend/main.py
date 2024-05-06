@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# -*- Python Version: 3.11 -*-
+# -*- Python Version: 3.10 -*-
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
