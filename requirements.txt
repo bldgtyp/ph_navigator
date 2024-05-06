@@ -1,7 +1,8 @@
+black
 fastapi
+isort
+pyairtable
 python-multipart
 python-dotenv
 PHX
 uvicorn
-isort
-black

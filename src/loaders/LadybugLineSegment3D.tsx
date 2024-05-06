@@ -20,17 +20,18 @@ export function convertLBTLineSegment3DtoLine(
     if (smooth == true) {
         // Create a smooth(ish) curve through the points
         const curve = new THREE.CatmullRomCurve3(points);
-        const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(50));
-        const eg = new THREE.EdgesGeometry(geometry);
-        return new LineSegmentsGeometry().fromEdgesGeometry(eg);
-        //const line = new THREE.Line(geometry);
+        const bufferGeometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(50));
+        const edgeGeometry = new THREE.EdgesGeometry(bufferGeometry);
+        return new LineSegmentsGeometry().fromEdgesGeometry(edgeGeometry);
+        // const line = new THREE.Line(bufferGeometry);
         // return line
     } else {
         // Create a straight line through the points
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const eg = new THREE.EdgesGeometry(geometry);
-        return new LineSegmentsGeometry().fromEdgesGeometry(eg);
-        // const line = new THREE.Line(geometry);
+        const curve = new THREE.CatmullRomCurve3(points);
+        const bufferGeometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(2));
+        const edgeGeometry = new THREE.EdgesGeometry(bufferGeometry);
+        return new LineSegmentsGeometry().fromEdgesGeometry(edgeGeometry);
+        // const line = new THREE.Line(bufferGeometry);
         // return line;
     }
 }

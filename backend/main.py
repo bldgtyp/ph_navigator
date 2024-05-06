@@ -4,7 +4,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import os
 import pathlib
+from pyairtable import Api
+from pyairtable.api.types import RecordDict
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except Exception as e:
+    print(e)
 
 from ladybug_geometry.geometry2d.pointvector import Point2D
 from ladybug import epw
@@ -40,28 +50,99 @@ app.add_middleware(
 
 
 # ----------------------------------------------------------------------------------------------------------------------
+# -- TEMPORARY INPUT DATA FOR TESTING
+
+
+class InputDataItem:
+    def __init__(self, project_number: str, hb_model: model.Model, airtable_ids: dict[str, str]):
+        self.project_number = project_number
+        self.hb_model = hb_model
+        self.airtable_ids = airtable_ids
+
+    @property
+    def airtable_base_id(self) -> str:
+        return self.airtable_ids["app"]
+
+
+class InputDataDispatcher:
+
+    def __init__(self):
+        self.input_data: dict[str, InputDataItem] = {}
+
+    def add_input_item(self, _input_item: InputDataItem):
+        self.input_data[_input_item.project_number] = _input_item
+
+    def get_input_item(self, project_number: str) -> InputDataItem:
+        return self.input_data[project_number]
 
 
 SOURCE_FILE_2305 = pathlib.Path("backend/409_SACKETT_240503.hbjson").resolve()
 SOURCE_FILE_2306 = pathlib.Path("backend/test_model.hbjson").resolve()
 
+
 hb_json_dict_2305 = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE_2305)
 hb_json_dict_2306 = read_HBJSON_file.read_hb_json_from_file(SOURCE_FILE_2306)
 
-hbjson_models: dict[str, model.Model] = {
-    "proj_2305": read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict_2305),
-    "proj_2306": read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict_2306),
-}
+
+proj_2305 = InputDataItem(
+    "proj_2305",
+    read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict_2305),
+    {
+        "app": "app64a1JuYVBs7Z1m",
+        "summary": "tblapLjAFgm7RIllz",
+        "config": "tblRMar5uK7mDZ8yM",
+        "cert_results": "tbluEAhlFEuhfuE5v",
+        "materials": "tblkWxg3xXMjzjO32",
+        "window_unit_types": "tblGOpIen7MnCuQRe",
+        "frame_types": "tblejOjMq62zdRT3D",
+        "glazing_types": "tbl3JAeRMqiloWQ65",
+        "appliances": "tblqfzzcqc3o2IcD4",
+        "lighting": "tblkLN5vn6fcXnTRT",
+        "fans": "tbldbadmmNca7E1Nr",
+        "pumps": "tbliRO0hZim8oQ2qw",
+        "erv_units": "tblkIaP1TspndVI5f",
+        "hot_water_tanks": "tbl3EYwyh6HhmlbqP",
+    },
+)
+proj_2306 = InputDataItem(
+    "proj_2306",
+    read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json_dict_2306),
+    {
+        "app": "app64a1JuYVBs7Z1m",
+        "summary": "tblapLjAFgm7RIllz",
+        "config": "tblRMar5uK7mDZ8yM",
+        "cert_results": "tbluEAhlFEuhfuE5v",
+        "materials": "tblkWxg3xXMjzjO32",
+        "window_unit_types": "tblGOpIen7MnCuQRe",
+        "frame_types": "tblejOjMq62zdRT3D",
+        "glazing_types": "tbl3JAeRMqiloWQ65",
+        "appliances": "tblqfzzcqc3o2IcD4",
+        "lighting": "tblkLN5vn6fcXnTRT",
+        "fans": "tbldbadmmNca7E1Nr",
+        "pumps": "tbliRO0hZim8oQ2qw",
+        "erv_units": "tblkIaP1TspndVI5f",
+        "hot_water_tanks": "tbl3EYwyh6HhmlbqP",
+    },
+)
+
+
+input_data = InputDataDispatcher()
+input_data.add_input_item(proj_2305)
+input_data.add_input_item(proj_2306)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- THREE.js API ENDPOINTS
 
 
 @app.get("/{project_id}/model_faces")
 def model_faces(project_id: str) -> dict[str, str]:
     # -- Get the right project model
-    hb_model = hbjson_models[project_id]
+    proj = input_data.get_input_item(project_id)
 
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
-    for face in hb_model.faces:
+    for face in proj.hb_model.faces:
         face_dict = face.to_dict()
         face_dict["geometry"]["mesh"] = face.punched_geometry.triangulated_mesh3d.to_dict()
         face_dict["geometry"]["area"] = face.punched_geometry.area
@@ -92,11 +173,11 @@ def model_faces(project_id: str) -> dict[str, str]:
 @app.get("/{project_id}/model_spaces")
 def model_spaces(project_id: str) -> dict[str, str]:
     # -- Get the right project model
-    hb_model = hbjson_models[project_id]
+    proj = input_data.get_input_item(project_id)
 
     # -- Get all the interior spaces in the model
     spaces = []
-    for room in hb_model.rooms:
+    for room in proj.hb_model.rooms:
         room_ph_prop: RoomPhProperties = getattr(room.properties, "ph")
         for space in room_ph_prop.spaces:
             spaces.append(space.to_dict(include_mesh=True))
@@ -116,16 +197,16 @@ def _inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
 @app.get("/{project_id}/model_exterior_constructions")
 def model_exterior_constructions(project_id: str) -> dict[str, str]:
     # -- Get the right project model
-    hb_model = hbjson_models[project_id]
+    proj = input_data.get_input_item(project_id)
 
     # -- Get all the Face-IDS in the model
     model_face_ids = set()
-    for face in hb_model.faces:
+    for face in proj.hb_model.faces:
         model_face_ids.add(face.identifier)
 
     # -- Get all the unique constructions in the model
     unique_constructions: dict[str, OpaqueConstruction] = {}
-    for face in hb_model.faces:
+    for face in proj.hb_model.faces:
         if _inside_face(face, model_face_ids):
             continue
 
@@ -149,11 +230,9 @@ def sun_path(project_id: str):
     DAYLIGHT_SAVINGS_PERIOD = None
     CENTER_POINT = Point2D(0, 0)
     RADIUS = 100 * SCALE
-    SOURCE_FILE = pathlib.Path(
-        "/Users/em/Dropbox/bldgtyp-00/00_PH_Tools/ph_navigator/backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw"
-    ).resolve()
+    SOURCE_FILE = pathlib.Path("backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw").resolve()
     # -- Get the right project model
-    hb_model = hbjson_models[project_id]
+    proj = input_data.get_input_item(project_id)
 
     epw_object = epw.EPW(SOURCE_FILE)
     sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
@@ -172,11 +251,11 @@ def sun_path(project_id: str):
 @app.get("/{project_id}/hot_water_systems")
 def hot_water_systems(project_id: str):
     # -- Get the right project model
-    hb_model = hbjson_models[project_id]
+    proj = input_data.get_input_item(project_id)
 
     # -- Get each unique HW system in the model
     hw_systems = {}
-    for room in hb_model.rooms:
+    for room in proj.hb_model.rooms:
         room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
         if not room_prop_phhvac.hot_water_system:
             continue
@@ -191,11 +270,11 @@ def hot_water_systems(project_id: str):
 @app.get("/{project_id}/ventilation_systems")
 def ventilation_systems(project_id: str):
     # -- Get the right project model
-    hb_model = hbjson_models[project_id]
+    proj = input_data.get_input_item(project_id)
 
     # -- Get each unique HW system in the model
     ventilation_systems = {}
-    for room in hb_model.rooms:
+    for room in proj.hb_model.rooms:
         room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
         if not room_prop_phhvac.ventilation_system:
             continue
@@ -205,3 +284,16 @@ def ventilation_systems(project_id: str):
     for ventilation_system in ventilation_systems.values():
         ventilation_system_dicts.append(ventilation_system.to_dict())
     return {"message": json.dumps(ventilation_system_dicts)}
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- AirTable API ENDPOINTS
+
+
+@app.get("/{project_id}/cert_results/{result_type}")
+def get_certification_results(project_id: str) -> list[RecordDict]:
+    proj = input_data.get_input_item(project_id)
+    api = Api(os.environ["PH_VIEW_GET"])
+    table = api.table(proj.airtable_base_id, proj.airtable_ids["cert_results"])
+    data = table.all()
+    return data

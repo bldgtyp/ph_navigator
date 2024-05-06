@@ -320,7 +320,6 @@ function Viewer(props: ViewerProps) {
         fetchModelERVDucting(`${projectId}/ventilation_systems`).then(data => {
             data.forEach(hw_system => {
                 hw_system.supply_ducting.forEach((duct) => {
-                    console.log(duct)
                     for (const key in duct.segments) {
                         const segment = duct.segments[key]
                         const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
@@ -329,7 +328,6 @@ function Viewer(props: ViewerProps) {
                     }
                 })
                 hw_system.exhaust_ducting.forEach((duct) => {
-                    console.log(duct)
                     for (const key in duct.segments) {
                         const segment = duct.segments[key]
                         const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
