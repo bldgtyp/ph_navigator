@@ -2,11 +2,11 @@ import "../styles/ResultsSidebar.css";
 import { useState } from 'react';
 import { Stack } from "@mui/material";
 import ResultsView from "./ResultsView";
-
+import { ResultType } from "../types/AirTableResultsRecord";
 
 type ResultsItemProps = {
     displayName: string;
-    results_type: "HEATING_DEMAND" | "COOLING_DEMAND" | "PEAK_HEATING_LOAD" | "PEAK_COOLING_LOAD" | "SOURCE_ENERGY" | "SITE_ENERGY" | "CO2E";
+    results_type: ResultType;
     limit: number;
     current: number;
 }

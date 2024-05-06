@@ -177,7 +177,6 @@ function Viewer(props: ViewerProps) {
             // Remove the previous state's event listeners
             for (const key in prevState.eventHandlers) {
                 const handler: any = prevState.eventHandlers[key];
-                console.log(key, handler)
                 window.removeEventListener(key, handler);
             }
         };
