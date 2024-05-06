@@ -1,5 +1,6 @@
 import { BarChart } from "@mui/x-charts/BarChart";
 import { GraphProps } from "./CertificationResultsGraph";
+import { appColors } from "../styles/AppColors";
 
 /**
  * Prepares the data for plotting by re-shaping it based on the dated 'RESULT' elements.
@@ -68,6 +69,7 @@ export function GraphAnnualDemand(graphProps: {
             highlighted: "series",
             faded: "global",
           },
+          color: appColors.COOLING_2,
         },
         {
           dataKey: "VENTILATION LOSS",
@@ -77,6 +79,7 @@ export function GraphAnnualDemand(graphProps: {
             highlighted: "series",
             faded: "global",
           },
+          color: appColors.COOLING_3,
         },
         {
           dataKey: "HEAT DEMAND",
@@ -86,6 +89,7 @@ export function GraphAnnualDemand(graphProps: {
             highlighted: "series",
             faded: "global",
           },
+          color: appColors.HEATING_1,
         },
         {
           dataKey: "INTERNAL GAIN",
@@ -95,6 +99,7 @@ export function GraphAnnualDemand(graphProps: {
             highlighted: "series",
             faded: "global",
           },
+          color: appColors.HEATING_3,
         },
         {
           dataKey: "SOLAR GAIN",
@@ -104,6 +109,7 @@ export function GraphAnnualDemand(graphProps: {
             highlighted: "series",
             faded: "global",
           },
+          color: appColors.HEATING_4,
         },
       ]}
       {...graphProps.chartSettings}

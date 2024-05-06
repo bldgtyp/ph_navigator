@@ -1,5 +1,6 @@
 import { Stack } from "@mui/material";
 import { GraphAnnualDemand } from "./EnergyDemandGraph";
+import { DataGridRow } from "../components/ResultsView";
 
 export type GraphProps = {
   key: string;
@@ -10,17 +11,7 @@ export type GraphProps = {
 };
 
 const chartSettings = {
-  colors: [
-    "#CB6D69", // Heating
-    "#82B2D9", // Cooling
-    "#d3d19d", // Green 1
-    "#a3c087", // Green 2
-    "#6ab07d", // Green 3
-    "#529c66", // Green 4
-    "#3b824e", // Green 5
-  ],
-  height: 350,
-  margin: { top: 5, bottom: 70, left: 70, right: 15 },
+  margin: { top: 30, bottom: 50, left: 70, right: 50 },
   tooltip: { trigger: "item" },
   sx: {
     "& .MuiChartsLegend-series text": { fontSize: "0.7em !important" },
@@ -54,14 +45,12 @@ const chartSettings = {
 };
 
 function CertificationResultsGraph(props: {
-  title: string;
-  variant: "energy" | "demand" | "load";
-  plotData: any[];
+  plotData: DataGridRow[];
 }) {
 
   return (
     <>
-      <Stack direction="column" sx={{ width: "100%" }}>
+      <Stack direction="column" sx={{ width: "100%", height: "90%" }}>
         <GraphAnnualDemand data={props.plotData} chartSettings={chartSettings} />
       </Stack>
     </>

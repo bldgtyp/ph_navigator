@@ -53,7 +53,7 @@ function ResultsSidebar() {
                 <h3 className="results-section-heading">Total:</h3>
                 <ResultsItem displayName="Site" results_type="SITE_ENERGY" limit={15.0} current={14.3} />
                 <ResultsItem displayName="Primary" results_type="SOURCE_ENERGY" limit={15.0} current={14.3} />
-                <ResultsItem displayName="CO2<sub>e<sub>" results_type="CO2E" limit={12.0} current={14.3} />
+                <ResultsItem displayName="CO2e" results_type="CO2E" limit={12.0} current={14.3} />
             </Stack>
         </Stack>
     );

@@ -1,7 +1,7 @@
 import "../styles/ResultsView.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Paper, IconButton } from "@mui/material";
+import { Paper, IconButton, Stack } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import fetchData from "../hooks/fetchAirTable";
 import { AirTableResultsRecord, ResultType } from "../types/AirTableResultsRecord";
@@ -9,12 +9,8 @@ import { generateDefaultRow } from "./DataGridFunctions";
 import { TooltipWithInfo } from "./TooltipWithInfo";
 import CertificationResultsGraph from "../graphs/CertificationResultsGraph";
 
-type ResultsViewProps = {
-    setShowResultsView: (value: boolean) => void;
-    results_type: ResultType;
-}
 
-type DataGridRow = {
+export type DataGridRow = {
     key: string;
     id: string;
     display_name: string;
@@ -54,9 +50,9 @@ const defaultRow = generateDefaultRow(tableFields);
 
 // ----------------------------------------------------------------------------
 /**
- * Creates row data array for the CertificationResultsDataGrid component.
- * @param data An array of CertResultFields objects from AirTable.
- * @returns An array of row data objects.
+ * Creates row-data array for the CertificationResultsDataGrid component.
+ * @param data An array of AirTableResultsRecord objects from AirTable.
+ * @returns An array of DataGridRow objects.
  */
 function createRowDataArray(data: AirTableResultsRecord[]) {
     return data.map((item: AirTableResultsRecord) => {
@@ -79,6 +75,12 @@ function createRowDataArray(data: AirTableResultsRecord[]) {
     });
 }
 
+
+// ----------------------------------------------------------------------------
+type ResultsViewProps = {
+    setShowResultsView: (value: boolean) => void;
+    results_type: ResultType;
+}
 function ResultsView(props: ResultsViewProps) {
     const { setShowResultsView, results_type } = props;
     const { projectId } = useParams();
@@ -94,11 +96,11 @@ function ResultsView(props: ResultsViewProps) {
             // Build all of the new Rows
             const newRowData: DataGridRow[] = createRowDataArray(filteredData);
 
-            // ----------------------------------------------------------------------
+            // ----------------------------------------------------------------
             // Set the row state
             newRowData.length > 0 ? setRowData(newRowData) : setRowData(defaultRow);
 
-            // ----------------------------------------------------------------------
+            // ----------------------------------------------------------------
             // Set the 'Limits' for each of the graphs
             // setSourceEnergyLimits(createAnnualEnergyLimits(sourceEnergyData));
 
@@ -107,15 +109,13 @@ function ResultsView(props: ResultsViewProps) {
 
     return (
         <Paper className="results-view">
-            <IconButton className="close-button" aria-label="close" onClick={() => setShowResultsView(false)}>
-                <CloseIcon />
-            </IconButton>
-            <p>{results_type}</p>
-            <CertificationResultsGraph
-                title="Source Energy [kWh/a]"
-                plotData={rowData}
-                variant="energy"
-            />
+            <Stack className="results-view-titlebar" direction="row" justifyContent="space-between">
+                <p className="results-view-title">Heating Energy Demand</p>
+                <IconButton className="close-button" aria-label="close" onClick={() => setShowResultsView(false)}>
+                    <CloseIcon />
+                </IconButton>
+            </Stack>
+            <CertificationResultsGraph plotData={rowData} />
         </Paper>
     )
 }

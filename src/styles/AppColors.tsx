@@ -19,4 +19,18 @@ export const appColors = {
     SUNPATH_LINE_COLOR: new THREE.Color(0xe600e6),
     PIPE_LINE_COLOR: new THREE.Color(0xf07d60),
     DUCT_LINE_COLOR: new THREE.Color(0x3f13ed),
+
+    // Graphs
+    HEATING_1: "#CB6D69",
+    HEATING_2: "#d68a87",
+    HEATING_3: "#dba7a4",
+    HEATING_4: "#e8c3c1",
+    COOLING_1: "#82B2D9",
+    COOLING_2: "#9bc1e0",
+    COOLING_3: "#afcbe3",
+    GREEN_1: "#d3d19d",
+    GREEN_2: "#a3c087",
+    GREEN_3: "#6ab07d",
+    GREEN_4: "#529c66",
+    GREEN_5: "#3b824e",
 };
