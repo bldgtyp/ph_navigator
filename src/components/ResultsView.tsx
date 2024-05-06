@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import fetchData from "../hooks/fetchAirTable";
 import { AirTableResultsRecord, ResultType } from "../types/AirTableResultsRecord";
 import { generateDefaultRow } from "./DataGridFunctions";
-import { TooltipWithInfo } from "./TooltipWithInfo";
 import CertificationResultsGraph from "../graphs/CertificationResultsGraph";
 
 
@@ -26,20 +25,16 @@ const tableFields = [
         key: "display_name",
         field: "Name",
         headerName: "ID",
-        flex: 1,
-        renderCell: (params: any) => TooltipWithInfo(params),
     },
     {
         key: "unit",
         field: "units",
         headerName: "Unit",
-        flex: 1,
     },
     {
         key: "type",
         field: "type",
         headerName: "Type",
-        flex: 1,
     },
 ];
 

@@ -1,5 +1,6 @@
 import '../styles/FaceDataPanel.css';
 import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
 import * as THREE from 'three';
 import { Stack, Paper, Button, Slider, Typography } from "@mui/material";
 import { fetchModelUValues } from '../hooks/fetchModelUValues';
@@ -33,12 +34,13 @@ function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null })
 }
 
 function UValueSliders() {
+    const { projectId } = useParams();
     const [constructions, setConstructions] = useState<HoneybeeEnergyOpaqueConstruction[]>([]);
     const SLIDER_MIN = 0.01;
     const SLIDER_MAX = 1.00;
 
     useEffect(() => {
-        fetchModelUValues('model_exterior_constructions').then(data => {
+        fetchModelUValues(`${projectId}/model_exterior_constructions`).then(data => {
             setConstructions(data);
         });
     });
