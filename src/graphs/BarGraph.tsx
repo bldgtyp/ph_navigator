@@ -1,6 +1,12 @@
 import { BarChart } from "@mui/x-charts/BarChart";
-import { GraphProps } from "./CertificationResultsGraph";
-import { appColors } from "../styles/AppColors";
+
+export type GraphProps = {
+  key: string;
+  id: string;
+  display_name: string;
+  type: string;
+  [key: string]: any;
+};
 
 /**
  * Prepares the data for plotting by re-shaping it based on the dated 'RESULT' elements.
@@ -47,9 +53,10 @@ export function prepareDataForPlot(data: GraphProps[]) {
   return dataByDatedResult;
 }
 
-export function GraphAnnualDemand(graphProps: {
+export function BarGraph(graphProps: {
   data: any[];
   chartSettings: any;
+  graphSeries: any[];
 }) {
   if (graphProps.data.length < 3) {
     return <div>No Data.</div>;
@@ -60,58 +67,7 @@ export function GraphAnnualDemand(graphProps: {
   return (
     <BarChart
       dataset={dataByDatedResult}
-      series={[
-        {
-          dataKey: "TRANSMISSION LOSS",
-          label: "Transmission Loss",
-          stack: "A",
-          highlightScope: {
-            highlighted: "series",
-            faded: "global",
-          },
-          color: appColors.COOLING_2,
-        },
-        {
-          dataKey: "VENTILATION LOSS",
-          label: "Ventilation Loss",
-          stack: "A",
-          highlightScope: {
-            highlighted: "series",
-            faded: "global",
-          },
-          color: appColors.COOLING_3,
-        },
-        {
-          dataKey: "HEAT DEMAND",
-          label: "Heating Demand",
-          stack: "B",
-          highlightScope: {
-            highlighted: "series",
-            faded: "global",
-          },
-          color: appColors.HEATING_1,
-        },
-        {
-          dataKey: "INTERNAL GAIN",
-          label: "Internal Gain",
-          stack: "B",
-          highlightScope: {
-            highlighted: "series",
-            faded: "global",
-          },
-          color: appColors.HEATING_3,
-        },
-        {
-          dataKey: "SOLAR GAIN",
-          label: "Solar Gain",
-          stack: "B",
-          highlightScope: {
-            highlighted: "series",
-            faded: "global",
-          },
-          color: appColors.HEATING_4,
-        },
-      ]}
+      series={graphProps.graphSeries}
       {...graphProps.chartSettings}
       yAxis={[{ ...graphProps.chartSettings.yAxis[0], max: 30000 }]}
     >

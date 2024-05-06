@@ -6,8 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import fetchData from "../hooks/fetchAirTable";
 import { AirTableResultsRecord, ResultType } from "../types/AirTableResultsRecord";
 import { generateDefaultRow } from "./DataGridFunctions";
-import CertificationResultsGraph from "../graphs/CertificationResultsGraph";
-
+import { BarGraph } from "../graphs/BarGraph";
+import { barChartSettings } from "../styles/BarCharts";
 
 export type DataGridRow = {
     key: string;
@@ -74,10 +74,13 @@ function createRowDataArray(data: AirTableResultsRecord[]) {
 // ----------------------------------------------------------------------------
 type ResultsViewProps = {
     setShowResultsView: (value: boolean) => void;
-    results_type: ResultType;
+    resultsType: ResultType;
+    graphTitle: string;
+    graphSeries: any[];
 }
+
 function ResultsView(props: ResultsViewProps) {
-    const { setShowResultsView, results_type } = props;
+    const { setShowResultsView, resultsType: results_type, graphTitle, graphSeries } = props;
     const { projectId } = useParams();
     const [rowData, setRowData] = useState<Array<DataGridRow>>(defaultRow);
 
@@ -105,12 +108,18 @@ function ResultsView(props: ResultsViewProps) {
     return (
         <Paper className="results-view">
             <Stack className="results-view-titlebar" direction="row" justifyContent="space-between">
-                <p className="results-view-title">Heating Energy Demand</p>
+                <p className="results-view-title">{graphTitle}</p>
                 <IconButton className="close-button" aria-label="close" onClick={() => setShowResultsView(false)}>
                     <CloseIcon />
                 </IconButton>
             </Stack>
-            <CertificationResultsGraph plotData={rowData} />
+            <Stack sx={{ width: "100%", height: "90%" }}>
+                <BarGraph
+                    data={rowData}
+                    chartSettings={barChartSettings}
+                    graphSeries={graphSeries}
+                />
+            </Stack>
         </Paper>
     )
 }
