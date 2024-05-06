@@ -43,7 +43,7 @@ function UValueSliders() {
         fetchModelUValues(`${projectId}/model_exterior_constructions`).then(data => {
             setConstructions(data);
         });
-    });
+    }, [projectId]);
 
     return (
         <>
