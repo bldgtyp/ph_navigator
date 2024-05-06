@@ -13,6 +13,7 @@ type ResultsItemProps = {
     limit: number;
     current: number;
     graphSeries: any[];
+    handleShowResultsView: (resultsType: ResultType, graphTitle: string, graphSeries: any[]) => void;
 }
 
 /**
@@ -22,28 +23,22 @@ type ResultsItemProps = {
  * @returns {JSX.Element} The rendered ResultsItem component.
  */
 function ResultsItem(props: ResultsItemProps) {
-    const { buttonTitle: displayName, graphTitle, results_type, limit, current, graphSeries } = props
+    const { buttonTitle: displayName, graphTitle, results_type, limit, current, graphSeries, handleShowResultsView } = props;
+    // function ResultsItem(props: ResultsItemProps) {
+    //     const { buttonTitle: displayName, graphTitle, results_type, limit, current, graphSeries } = props
     const passing = current <= limit;
     const itemTypeName = passing ? "results-item results-item-pass" : "results-item results-item-fail";
 
-    const [showResultsView, setShowResultsView] = useState(false);
+    // const [showResultsView, setShowResultsView] = useState(false);
 
     return (
-        <>
-            <button className={itemTypeName} onClick={() => setShowResultsView(true)}>
-                <Stack direction="column" spacing={2} >
-                    <p className="results-item-heading">{displayName}</p>
-                    <p className="results-item-value">{current.toFixed(1)} / {limit.toFixed(1)}</p>
-                </Stack>
-            </button>
-
-            {showResultsView && (<ResultsView
-                setShowResultsView={setShowResultsView}
-                resultsType={results_type}
-                graphTitle={graphTitle}
-                graphSeries={graphSeries}
-            />)}
-        </>
+        <button className={itemTypeName} onClick={() => handleShowResultsView(results_type, graphTitle, graphSeries)}>
+            {/* <button className={itemTypeName} onClick={() => setShowResultsView(true)}> */}
+            <Stack direction="column" spacing={2} >
+                <p className="results-item-heading">{displayName}</p>
+                <p className="results-item-value">{current.toFixed(1)} / {limit.toFixed(1)}</p>
+            </Stack>
+        </button>
     );
 }
 
@@ -53,6 +48,17 @@ function ResultsItem(props: ResultsItemProps) {
  * This component displays various energy demand and peak load results.
  */
 function ResultsSidebar() {
+    const [showResultsView, setShowResultsView] = useState(false);
+    const [activeResultsType, setActiveResultsType] = useState<ResultType | null>(null);
+    const [activeGraphTitle, setActiveGraphTitle] = useState("");
+    const [activeGraphSeries, setActiveGraphSeries] = useState<any[]>([]);
+
+    const handleShowResultsView = (resultsType: ResultType, graphTitle: string, graphSeries: any[]) => {
+        setActiveResultsType(resultsType);
+        setActiveGraphTitle(graphTitle);
+        setActiveGraphSeries(graphSeries);
+        setShowResultsView(true);
+    };
     return (
         <Stack direction="column" spacing={2} className="results-sidebar">
             <Stack direction="column" spacing={1}>
@@ -64,6 +70,7 @@ function ResultsSidebar() {
                     limit={15.0}
                     current={14.3}
                     graphSeries={HeatingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
                 <ResultsItem
                     buttonTitle="Cooling"
@@ -72,6 +79,7 @@ function ResultsSidebar() {
                     limit={12.0}
                     current={14.3}
                     graphSeries={CoolingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
             </Stack>
             <Stack direction="column" spacing={1}>
@@ -83,6 +91,7 @@ function ResultsSidebar() {
                     limit={10.0}
                     current={6.4}
                     graphSeries={HeatingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
                 <ResultsItem
                     buttonTitle="Cooling"
@@ -91,6 +100,7 @@ function ResultsSidebar() {
                     limit={9.3}
                     current={8.5}
                     graphSeries={HeatingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
             </Stack>
             <Stack direction="column" spacing={1}>
@@ -102,6 +112,7 @@ function ResultsSidebar() {
                     limit={15.0}
                     current={14.3}
                     graphSeries={HeatingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
                 <ResultsItem
                     buttonTitle="Primary"
@@ -110,6 +121,7 @@ function ResultsSidebar() {
                     limit={15.0}
                     current={14.3}
                     graphSeries={HeatingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
                 <ResultsItem
                     buttonTitle="CO2e"
@@ -118,8 +130,16 @@ function ResultsSidebar() {
                     limit={12.0}
                     current={14.3}
                     graphSeries={HeatingDemandSeries}
+                    handleShowResultsView={handleShowResultsView}
                 />
             </Stack>
+
+            {showResultsView && (<ResultsView
+                setShowResultsView={setShowResultsView}
+                resultsType={activeResultsType}
+                graphTitle={activeGraphTitle}
+                graphSeries={activeGraphSeries}
+            />)}
         </Stack>
     );
 }

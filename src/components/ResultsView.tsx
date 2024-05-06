@@ -74,7 +74,7 @@ function createRowDataArray(data: AirTableResultsRecord[]) {
 // ----------------------------------------------------------------------------
 type ResultsViewProps = {
     setShowResultsView: (value: boolean) => void;
-    resultsType: ResultType;
+    resultsType: ResultType | null;
     graphTitle: string;
     graphSeries: any[];
 }
