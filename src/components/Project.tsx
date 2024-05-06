@@ -5,6 +5,7 @@ import React, { useRef, useState, useReducer } from 'react';
 import Viewer from './Viewer';
 import FacesPanel from './FaceDataPanel';
 import AppStateMenubar from './AppStateMenubar';
+import ResultsSidebar from './ResultsSidebar';
 import { AppState, states } from './AppState';
 import { SceneSetup } from '../scene/SceneSetup';
 
@@ -39,6 +40,7 @@ function Project() {
             />
             <FacesPanel selectedObject={selectedObject} />
             <AppStateMenubar />
+            <ResultsSidebar />
         </AppStateContext.Provider>
     );
 }

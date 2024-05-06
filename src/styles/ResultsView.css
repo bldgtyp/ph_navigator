@@ -1,0 +1,9 @@
+.results-view {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 600px;
+    background-color: rgba(248, 248, 248, 0.9) !important;
+}
