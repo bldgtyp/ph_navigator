@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { lbtLineSegment3D } from "../types/LadybugGeometry"
+import { lbtLineSegment3D } from "../types/ladybug_geometry/geometry3d/line";
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { lbtPolyline3D } from "../types/LadybugGeometry"
+import { lbtPolyline3D } from "../types/ladybug_geometry/geometry3d/polyline";
 import { appMaterials } from '../scene/Materials';
 
 export function convertLBTPolyline3DtoLine(lbtPolyline3D: lbtPolyline3D): THREE.Line {

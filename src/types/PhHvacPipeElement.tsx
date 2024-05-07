@@ -1,4 +1,4 @@
-import { lbtLineSegment3D } from "./LadybugGeometry";
+import { lbtLineSegment3D } from "./ladybug_geometry/geometry3d/line";
 
 type PhHvacPipeSegment = {
     geometry: lbtLineSegment3D

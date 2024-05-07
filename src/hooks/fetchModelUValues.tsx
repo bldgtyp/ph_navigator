@@ -1,9 +1,8 @@
 import constants from "../data/constants.json";
-import { HoneybeeEnergyOpaqueConstruction } from "../types/HoneybeeEnergyOpaqueConstruction";
+import { hbEnergyOpaqueConstruction } from "../types/honeybee_energy/construction/opaque";
 
 
-
-export async function fetchModelUValues(endpoint: string): Promise<HoneybeeEnergyOpaqueConstruction[]> {
+export async function fetchModelUValues(endpoint: string): Promise<hbEnergyOpaqueConstruction[]> {
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     const response = await fetch(API_ENDPOINT);

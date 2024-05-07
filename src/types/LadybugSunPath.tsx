@@ -1,4 +1,8 @@
-import { lbtPolyline3D, lbtArc3D, lbtPoint3D, lbtArc2D, lbtLineSegment2D } from "./LadybugGeometry";
+import { lbtPolyline3D } from "./ladybug_geometry/geometry3d/polyline";
+import { lbtLineSegment2D } from "./ladybug_geometry/geometry2d/line";
+import { lbtArc3D } from "./ladybug_geometry/geometry3d/arc";
+import { lbtArc2D } from "./ladybug_geometry/geometry2d/arc";
+import { lbtPoint3D } from "./ladybug_geometry/geometry3d/pointvector";
 
 type LadyBugCompass = {
     radius: number

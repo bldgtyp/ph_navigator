@@ -1,4 +1,5 @@
-import { lbtFace3D, lbtMesh3D } from './LadybugGeometry';
+import { lbtFace3D } from "./ladybug_geometry/geometry3d/face";
+import { lbtMesh3D } from "./ladybug_geometry/geometry3d/mesh";
 
 type HoneybeePhSpaceVolume = {
     identifier: string;

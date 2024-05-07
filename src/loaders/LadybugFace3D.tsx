@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { lbtFace3D } from '../types/LadybugGeometry';
+import { lbtFace3D } from "../types/ladybug_geometry/geometry3d/face";
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 

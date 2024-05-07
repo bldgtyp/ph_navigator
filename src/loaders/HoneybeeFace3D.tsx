@@ -1,10 +1,11 @@
 import * as THREE from 'three';
-import { HoneybeeFace3D, HoneybeeAperture } from '../types/HoneybeeFace3D';
+import { hbAperture } from "../types/honeybee/aperture";
+import { hbFace } from "../types/honeybee/face";
 import { convertLBTFace3DToMesh } from './LadybugFace3D';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 
 
-export function convertHBFaceToMesh(face: HoneybeeFace3D | HoneybeeAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } {
+export function convertHBFaceToMesh(face: hbFace | hbAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } {
     // ------------------------------------------------------------------------
     // Build the Surface geometry elements
     const lbtFace3D = face.geometry

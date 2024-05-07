@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import * as THREE from 'three';
 import { Stack, Paper, Button, Slider, Typography } from "@mui/material";
 import { fetchModelUValues } from '../hooks/fetchModelUValues';
-import { HoneybeeEnergyOpaqueConstruction } from '../types/HoneybeeEnergyOpaqueConstruction';
+import { hbEnergyOpaqueConstruction } from '../types/honeybee_energy/construction/opaque';
 
 interface FaceDataPanelProps { selectedObject: THREE.Object3D | null }
 
@@ -35,7 +35,7 @@ function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null })
 
 function UValueSliders() {
     const { projectId } = useParams();
-    const [constructions, setConstructions] = useState<HoneybeeEnergyOpaqueConstruction[]>([]);
+    const [constructions, setConstructions] = useState<hbEnergyOpaqueConstruction[]>([]);
     const SLIDER_MIN = 0.01;
     const SLIDER_MAX = 1.00;
 

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { lbtLineSegment2D } from "../types/LadybugGeometry"
+import { lbtLineSegment2D } from "../types/ladybug_geometry/geometry2d/line";
 import { appMaterials } from '../scene/Materials';
 
 export function convertLBTLineSegment2DtoLine(lbtLineSegment2D: lbtLineSegment2D): THREE.Line {

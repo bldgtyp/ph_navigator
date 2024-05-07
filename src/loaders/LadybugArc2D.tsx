@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { lbtArc2D } from "../types/LadybugGeometry"
+import { lbtArc2D } from "../types/ladybug_geometry/geometry2d/arc";
 import { appMaterials } from '../scene/Materials';
 
 export function convertLBTArc2DtoLine(lbtArc2D: lbtArc2D): THREE.Line {

@@ -1,9 +1,9 @@
 import constants from "../data/constants.json";
-import { HoneybeeFace3D } from "../types/HoneybeeFace3D";
+import { hbFace } from "../types/honeybee/face";
 
 
 
-export async function fetchModelFaces(endpoint: string): Promise<HoneybeeFace3D[]> {
+export async function fetchModelFaces(endpoint: string): Promise<hbFace[]> {
     // https://ph-navigator.onrender.com/#/2305/model_faces
     // http://localhost:8000/#/2305/model_faces
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;

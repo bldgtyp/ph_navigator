@@ -6,22 +6,22 @@
 ## TODO:
 
 #### Bugs:
-- [x] Check Exterior Construction API Calls (circular)?
-- [x] Check the Polyline3D Geometry errors
+- [X] Check Exterior Construction API Calls (circular)?
+- [X] Check the Polyline3D Geometry errors
 
 #### Deployment:
-- [x] Create WebService 
-- [x] Test Deployment to Render.com
+- [X] Create WebService 
+- [X] Test Deployment to Render.com
 
 #### Get Geometry:
-- [x] Add Ground Plane
-- [x] Windows & Material
-- [x] Get Boundary Condition
-- [x] Get HB-Construction Name and Props
-- [ ] Get Outdoor Shades
+- [X] Add Ground Plane
+- [X] Windows & Material
+- [X] Get Boundary Condition
+- [X] Get HB-Construction Name and Props
+- [X] Get Outdoor Shades
 - [ ] Get Doors
-- [x] Spaces
-  - [x] Spaces need to be Rotated in hp-ph
+- [X] Spaces
+  - [X] Spaces need to be Rotated in hp-ph
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
@@ -29,19 +29,19 @@
 
 #### Get Systems:
 - [ ] Ventilation
-  - [x] Ducting
+  - [X] Ducting
   - [ ] ERV unit
 - [ ] Plumbing
-  - [x] Piping
+  - [X] Piping
   - [ ] Hot Water Tanks and Heaters
 
 #### UI:
-- [x] Refactor App-State and Mouse-Events
-   - [x] State as Enum? 'State' Pattern?
-- [x] Add all app-state event listeners
-- [x] Fix Measurement Vertex Selector behavior. Super jankey right now.
-  - [x] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
-- [x] Add Sun-path diagram State
+- [X] Refactor App-State and Mouse-Events
+   - [X] State as Enum? 'State' Pattern?
+- [X] Add all app-state event listeners
+- [X] Fix Measurement Vertex Selector behavior. Super jankey right now.
+  - [X] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
+- [X] Add Sun-path diagram State
   - [ ] Time of Day control (connect to sunlight position)
 - [ ] Face Data - truncate names / identifiers
 - [ ] Constructions Table (with Materials)
@@ -55,18 +55,18 @@
   - [ ] Add guard against 0-length markers
   - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
-- [x] move the face data panel to the left
-- [x] add 'results' buttons on the right
-- [x] add a u-value list with sliders to the face data panel 
-  - [x] Make exterior surfaces only
+- [X] move the face data panel to the left
+- [X] add 'results' buttons on the right
+- [X] add a u-value list with sliders to the face data panel 
+  - [X] Make exterior surfaces only
   - [ ] Add a Window U-Value section below
-- [x] Refactor App State to useReducer / useContext
+- [X] Refactor App State to useReducer / useContext
 - [ ] Refactor to Custom-Context
   - [ ] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
 - [ ] Refactor Selected-Object to useReducer / useContext
 - [ ] Refactor Dimension-Lines to useReducer / useContext
 - [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
-- [x] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
+- [X] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
 - [ ] Select Rooms, display room-data in panel on left side
 
 #### Comments 
@@ -76,7 +76,7 @@
    - [ ] Try: [react-chat-window](https://www.npmjs.com/package/react-chat-window?activeTab=readme)
 
 #### Scene:
-- [x] Add Shadows on Ground Plane
+- [X] Add Shadows on Ground Plane
 - [ ] AO Shadows Pass?
 - [ ] Add Outline Pass?
   - [ ] Review: [https://youtu.be/1wiv3kF78Go?si=HpYGNYy6lxgoSj43](https://youtu.be/1wiv3kF78Go?si=HpYGNYy6lxgoSj43)

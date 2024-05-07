@@ -1,4 +1,4 @@
-import { lbtFace3D } from './LadybugGeometry';
+import { lbtFace3D } from "./ladybug_geometry/geometry3d/face";
 
 export type HoneybeeShadeGroup = {
     [key: string]: HoneybeeShade
