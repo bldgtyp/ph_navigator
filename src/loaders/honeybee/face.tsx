@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { hbAperture } from "../types/honeybee/aperture";
-import { hbFace } from "../types/honeybee/face";
-import { convertLBTFace3DToMesh } from './LadybugFace3D';
+import { hbAperture } from "../../types/honeybee/aperture";
+import { hbFace } from "../../types/honeybee/face";
+import { convertLBTFace3DToMesh } from '../ladybug_geometry/geometry3d/face';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 
 

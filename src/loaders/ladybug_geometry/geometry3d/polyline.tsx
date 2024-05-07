@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { lbtPolyline3D } from "../types/ladybug_geometry/geometry3d/polyline";
-import { appMaterials } from '../scene/Materials';
+import { lbtPolyline3D } from "../../../types/ladybug_geometry/geometry3d/polyline";
 
 export function convertLBTPolyline3DtoLine(lbtPolyline3D: lbtPolyline3D): THREE.Line {
 
@@ -13,6 +12,6 @@ export function convertLBTPolyline3DtoLine(lbtPolyline3D: lbtPolyline3D): THREE.
     // Create a smooth(ish) curve through the points
     const curve = new THREE.CatmullRomCurve3(points);
     const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(50));
-    const line = new THREE.Line(geometry, appMaterials.sunpathLineMaterial);
+    const line = new THREE.Line(geometry);
     return line
 }

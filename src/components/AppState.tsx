@@ -3,7 +3,7 @@
 // will also unmount these event-handlers and visibility settings when the State is
 // deactivated.
 
-import { AppStateTypes } from '../types/AppState';
+import { AppStateTypes } from '../enums/AppState';
 
 type EventHandlerFunction = (event: any) => void;
 type MountHandlerFunction = () => void;

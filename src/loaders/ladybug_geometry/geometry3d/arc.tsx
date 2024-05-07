@@ -1,17 +1,16 @@
 import * as THREE from 'three';
-import { lbtArc2D } from "../types/ladybug_geometry/geometry2d/arc";
-import { appMaterials } from '../scene/Materials';
+import { lbtArc3D } from "../../../types/ladybug_geometry/geometry3d/arc";
 
-export function convertLBTArc2DtoLine(lbtArc2D: lbtArc2D): THREE.Line {
+export function convertLBTArc3DtoLine(lbtArc3D: lbtArc3D): THREE.Line {
     // Solution provided by GitHub CoPilot.
 
     // Assuming lbtArc3D is your object with radius, a1, a2, and LadybugPlane information
-    const { r, c, a1, a2 } = lbtArc2D;
+    const { radius, a1, a2, plane } = lbtArc3D;
 
     // Create an elliptical curve
     const curve = new THREE.EllipseCurve(
         0, 0, // aX, aY
-        r, r, // xRadius, yRadius
+        radius, radius, // xRadius, yRadius
         a1, a2, // aStartAngle, aEndAngle
         false, // aClockwise
         0 // aRotation
@@ -28,16 +27,25 @@ export function convertLBTArc2DtoLine(lbtArc2D: lbtArc2D): THREE.Line {
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
     // Create the line
-    const line = new THREE.Line(geometry, appMaterials.sunpathLineMaterial);
+    const line = new THREE.Line(geometry);
 
     // Create a matrix for the transformation
     const matrix = new THREE.Matrix4();
 
     // Set the matrix to the transformation you want
-    matrix.makeTranslation(c[0], c[1], 0);
+    matrix.makeTranslation(plane.o[0], plane.o[1], plane.o[2]);
 
     // Apply the transformation to the line
     line.applyMatrix4(matrix);
+
+    // Set the matrix to the rotation you want
+    matrix.makeRotationX(Math.PI / 2); // Rotate 90 degrees around the X axis
+
+    // Create a vector for the plane's normal
+    const normal = new THREE.Vector3(plane.n[0], plane.n[1], plane.n[2]);
+
+    // Orient the line to face the plane's normal
+    line.lookAt(normal);
 
     return line
 }
