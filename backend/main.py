@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Python Version: 3.10 -*-
 
+from collections import defaultdict
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import json
@@ -76,7 +77,7 @@ class InputDataDispatcher:
         return self.input_data[project_number]
 
 
-SOURCE_FILE_2305 = pathlib.Path("backend/409_SACKETT_240503.hbjson").resolve()
+SOURCE_FILE_2305 = pathlib.Path("backend/409_SACKETT_240507.hbjson").resolve()
 SOURCE_FILE_2306 = pathlib.Path("backend/test_model.hbjson").resolve()
 
 
@@ -284,6 +285,22 @@ def ventilation_systems(project_id: str):
     for ventilation_system in ventilation_systems.values():
         ventilation_system_dicts.append(ventilation_system.to_dict())
     return {"message": json.dumps(ventilation_system_dicts)}
+
+
+@app.get("/{project_id}/shading_elements")
+def shading_elements(project_id: str):
+    # -- Get the right project model
+    proj = input_data.get_input_item(project_id)
+
+    # -- Pull out all the model-level shades
+    # -- Group them by display-name
+    shades = defaultdict(list)
+    for shade in proj.hb_model.shades:
+        d = shade.to_dict()
+        d["geometry"]["mesh"] = shade.geometry.triangulated_mesh3d.to_dict()
+        shades[shade.display_name].append(d)
+
+    return {"message": json.dumps(shades)}
 
 
 # ----------------------------------------------------------------------------------------------------------------------

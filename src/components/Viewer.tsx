@@ -7,6 +7,7 @@ import { fetchModelFaces } from '../hooks/fetchModelFaces';
 import { fetchModelSpaces } from '../hooks/fetchModelSpaces';
 import { fetchModelHotWaterPiping } from '../hooks/fetchModelHotWaterPiping';
 import { fetchModelERVDucting } from '../hooks/fetchModelERVDucting';
+import { fetchModelShades } from '../hooks/fetchModelShades';
 import { SceneSetup } from '../scene/SceneSetup';
 import { convertHBFaceToMesh } from '../loaders/HoneybeeFace3D';
 import { convertLBTPolyline3DtoLine } from '../loaders/LadybugPolyline3D';
@@ -93,6 +94,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
         world.current.sunPathDiagram.visible = true;
+        world.current.shadingGeometry.visible = true;
     });
     addMountHandler(6, "showERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = true;
@@ -140,6 +142,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
+        world.current.shadingGeometry.visible = false;
     });
     addDismountHandler(6, "hideERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = false;
@@ -339,6 +342,21 @@ function Viewer(props: ViewerProps) {
         }
         );
 
+        // Get the Shading Elements from the Server and Add them to the THREE Scene
+        fetchModelShades(`${projectId}/shading_elements`).then(data => {
+            for (const key in data) {
+
+                const gr = data[key]
+                for (const key in gr) {
+                    const lbtFace3D = gr[key]
+                    const geom = convertLBTFace3DToMesh(lbtFace3D.geometry)
+                    geom.mesh.material = appMaterials.geometryShadingMaterial;
+                    world.current.shadingGeometry.add(geom.mesh);
+                    world.current.shadingGeometry.visible = false;
+                    world.current.shadingGeometry.castShadow = false;
+                }
+            }
+        });
 
         // THREE Animation Loop 
         const animate = function () {

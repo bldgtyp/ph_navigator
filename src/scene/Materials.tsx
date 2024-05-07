@@ -22,6 +22,13 @@ export const appMaterials = {
             transparent: true,
             side: THREE.DoubleSide,
         }),
+    geometryShadingMaterial: new THREE.MeshStandardMaterial(
+        {
+            color: appColors.SURFACE_WHITE,
+            opacity: 0.60,
+            transparent: true,
+            side: THREE.DoubleSide,
+        }),
     geometryHighlightMaterial: new THREE.MeshBasicMaterial(
         {
             color: appColors.SURFACE_HIGHLIGHT,
