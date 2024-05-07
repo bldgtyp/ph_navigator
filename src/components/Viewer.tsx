@@ -1,6 +1,7 @@
-import { useEffect, useRef, useCallback, useContext } from 'react';
+// A PH-Navigator Project's 3D Viewer Component
+
+import { useEffect, useRef, useCallback } from 'react';
 import { useParams } from "react-router-dom";
-import { AppStateContext } from '../components/Project';
 import * as THREE from 'three';
 import { fetchSunPath } from '../hooks/fetchSunPath';
 import { fetchModelFaces } from '../hooks/fetchModelFaces';
@@ -20,6 +21,7 @@ import { loadModelSunPath } from '../loaders/load_sun_path';
 import { loadModelHotWaterPiping } from '../loaders/load_hot_water_piping';
 import { loadModelERVDucting } from '../loaders/load_erv_ducting';
 import { loadModelShades } from '../loaders/load_model_shades';
+import { useAppStateContext } from '../contexts/app_state_context';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -31,7 +33,7 @@ interface ViewerProps {
 
 function Viewer(props: ViewerProps) {
     const { projectId } = useParams();
-    const appStateContext = useContext(AppStateContext)
+    const appStateContext = useAppStateContext();
 
     const { world, selectedObjectRef, setSelectedObject, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
@@ -192,6 +194,7 @@ function Viewer(props: ViewerProps) {
     }, [projectId]);
 
 
+
     // Setup the THREE Scene, Run the Animation
     // ------------------------------------------------------------------------
     useEffect(() => {
@@ -199,6 +202,7 @@ function Viewer(props: ViewerProps) {
         if (mountRef.current) {
             mountRef.current.appendChild(world.current.renderer.domElement);
         }
+
 
         // Handle Window Resize
         window.addEventListener('resize', () => onResize(world.current));

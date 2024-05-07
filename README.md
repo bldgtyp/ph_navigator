@@ -61,10 +61,10 @@
   - [X] Make exterior surfaces only
   - [ ] Add a Window U-Value section below
 - [X] Refactor App State to useReducer / useContext
-- [ ] Refactor to Custom-Context
-  - [ ] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
-- [ ] Refactor Selected-Object to useReducer / useContext
-- [ ] Refactor Dimension-Lines to useReducer / useContext
+- [X] Refactor AppState to Custom-Context
+  - [X] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
+- [ ] Refactor Selected-Object to useReducer / useContext / Custom-Context
+- [ ] Refactor Dimension-Lines to useReducer / useContext / Custom-Context
 - [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
 - [X] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
 - [ ] Select Rooms, display room-data in panel on left side
