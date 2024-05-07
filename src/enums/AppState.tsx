@@ -1,4 +1,4 @@
-export enum AppStateTypes {
+export enum appStateTypeEnum {
     None = 0,
     SurfaceQuery = 1,
     Measurement = 2,

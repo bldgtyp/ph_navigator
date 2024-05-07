@@ -3,19 +3,19 @@
 // will also unmount these event-handlers and visibility settings when the State is
 // deactivated.
 
-import { AppStateTypes } from '../enums/AppState';
+import { appStateTypeEnum } from '../enums/appState';
 
 type EventHandlerFunction = (event: any) => void;
 type MountHandlerFunction = () => void;
 type DismountHandlerFunction = () => void;
 
 export class AppState {
-    state: AppStateTypes;
+    state: appStateTypeEnum;
     eventHandlers: { [event: string]: EventHandlerFunction } = {};
     mountHandlers: { [event: string]: MountHandlerFunction } = {};
     dismountHandlers: { [event: string]: DismountHandlerFunction } = {};
 
-    constructor(state: AppStateTypes) {
+    constructor(state: appStateTypeEnum) {
         this.state = state;
     }
 
@@ -36,14 +36,14 @@ export class AppState {
 }
 
 export const states: { [key: number]: AppState } = {
-    0: new AppState(AppStateTypes.None),
-    1: new AppState(AppStateTypes.SurfaceQuery),
-    2: new AppState(AppStateTypes.Measurement),
-    3: new AppState(AppStateTypes.Comments),
-    4: new AppState(AppStateTypes.Spaces),
-    5: new AppState(AppStateTypes.SunPath),
-    6: new AppState(AppStateTypes.Ventilation),
-    7: new AppState(AppStateTypes.HotWaterPiping),
+    0: new AppState(appStateTypeEnum.None),
+    1: new AppState(appStateTypeEnum.SurfaceQuery),
+    2: new AppState(appStateTypeEnum.Measurement),
+    3: new AppState(appStateTypeEnum.Comments),
+    4: new AppState(appStateTypeEnum.Spaces),
+    5: new AppState(appStateTypeEnum.SunPath),
+    6: new AppState(appStateTypeEnum.Ventilation),
+    7: new AppState(appStateTypeEnum.HotWaterPiping),
 };
 
 export function addEventHandler(appState: number, eventName: string, callbackFunction: EventHandlerFunction) {

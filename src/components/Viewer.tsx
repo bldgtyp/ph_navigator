@@ -9,21 +9,17 @@ import { fetchModelHotWaterPiping } from '../hooks/fetchModelHotWaterPiping';
 import { fetchModelERVDucting } from '../hooks/fetchModelERVDucting';
 import { fetchModelShades } from '../hooks/fetchModelShades';
 import { SceneSetup } from '../scene/SceneSetup';
-import { convertHBFaceToMesh } from '../to_three_geometry/honeybee/face';
-import { convertLBTPolyline3DtoLine } from '../to_three_geometry/ladybug_geometry/geometry3d/polyline';
-import { convertLBTArc2DtoLine } from '../to_three_geometry/ladybug_geometry/geometry2d/arc';
-import { convertLBTLineSegment2DtoLine } from '../to_three_geometry/ladybug_geometry/geometry2d/line';
-import { convertLBTLineSegment3DtoLine } from '../to_three_geometry/ladybug_geometry/geometry3d/line';
-import { convertLBTArc3DtoLine } from '../to_three_geometry/ladybug_geometry/geometry3d/arc';
-import { convertLBTFace3DToMesh } from '../to_three_geometry/ladybug_geometry/geometry3d/face';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
-import { appMaterials } from '../scene/Materials';
-import { hbPhHvacPipeTrunk } from '../types/honeybee_phhvac/hot_water_piping';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
-import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { loadModelFaces } from '../loaders/load_model_faces';
+import { loadModelSpaces } from '../loaders/load_model_spaces';
+import { loadModelSunPath } from '../loaders/load_sun_path';
+import { loadModelHotWaterPiping } from '../loaders/load_hot_water_piping';
+import { loadModelERVDucting } from '../loaders/load_erv_ducting';
+import { loadModelShades } from '../loaders/load_model_shades';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -40,10 +36,9 @@ function Viewer(props: ViewerProps) {
     const { world, selectedObjectRef, setSelectedObject, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
 
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
     // Setup all the Event Listener Callbacks for the different App-States
     // For some reason, this does not work unless these are all wrapped in useCallback?
+    // ------------------------------------------------------------------------
     addEventHandler(1, "click",
         useCallback(
             (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectRef, setSelectedObject) }
@@ -64,9 +59,8 @@ function Viewer(props: ViewerProps) {
     );
 
 
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
     // Mount Handlers for AppStates
+    // ------------------------------------------------------------------------
     addMountHandler(0, "showDefault", () => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
@@ -106,9 +100,8 @@ function Viewer(props: ViewerProps) {
     });
 
 
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
     // Dismount Handlers for AppStates
+    // ------------------------------------------------------------------------
     addDismountHandler(0, "hideDefault", () => {
         handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
         hoveringVertex.current = null;
@@ -154,9 +147,8 @@ function Viewer(props: ViewerProps) {
     });
 
 
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
     // Add the App-State event-listeners and run the state's mount/un-mount actions
+    // ------------------------------------------------------------------------
     useEffect(() => {
         // Run the new State's mount handlers
         for (const key in appStateContext.appState.mountHandlers) {
@@ -186,9 +178,22 @@ function Viewer(props: ViewerProps) {
     }, [appStateContext.appState]);
 
 
+    // Load the Model from the Server
     // ------------------------------------------------------------------------
+    useEffect(() => {
+        // Get the Honeybee JSON Model Elements and add them to the THREE Scene
+        fetchModelFaces(`${projectId}/model_faces`).then(data => loadModelFaces(world, data))
+        fetchModelSpaces(`${projectId}/model_spaces`).then(data => loadModelSpaces(world, data));
+        fetchSunPath(`${projectId}/sun_path`).then(data => loadModelSunPath(world, data));
+        fetchModelHotWaterPiping(`${projectId}/hot_water_systems`).then(data => loadModelHotWaterPiping(world, data));
+        fetchModelERVDucting(`${projectId}/ventilation_systems`).then(data => loadModelERVDucting(world, data));
+        fetchModelShades(`${projectId}/shading_elements`).then(data => loadModelShades(world, data));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [projectId]);
+
+
+    // Setup the THREE Scene, Run the Animation
     // ------------------------------------------------------------------------
-    // Setup the THREE Scene, Load in the Model data
     useEffect(() => {
         // Add the THREE Renderer to the DOM
         if (mountRef.current) {
@@ -197,166 +202,6 @@ function Viewer(props: ViewerProps) {
 
         // Handle Window Resize
         window.addEventListener('resize', () => onResize(world.current));
-
-        // Get the Honeybee-Room-Face Geometry from the Server and Add them to the THREE Scene
-        fetchModelFaces(`${projectId}/model_faces`).then(data => {
-            data.forEach(face => {
-                const geom = convertHBFaceToMesh(face)
-                geom.mesh.material = appMaterials.geometryStandardMaterial;
-                geom.mesh.visible = true;
-                world.current.buildingGeometryMeshes.add(geom.mesh);
-
-                geom.vertexHelper.visible = true;
-                world.current.buildingGeometryMeshes.add(geom.vertexHelper);
-
-                geom.wireframe.material = appMaterials.wireframeMaterial;
-                geom.wireframe.visible = true;
-                world.current.buildingGeometryOutlines.add(geom.wireframe);
-
-                geom.vertices.visible = false;
-                world.current.buildingGeometryVertices.add(geom.vertices);
-
-                face.apertures.forEach(aperture => {
-                    const apertureGeom = convertHBFaceToMesh(aperture);
-                    apertureGeom.mesh.material = appMaterials.geometryWindowMaterial;
-                    apertureGeom.mesh.visible = true;
-                    world.current.buildingGeometryMeshes.add(apertureGeom.mesh);
-
-                    apertureGeom.vertexHelper.visible = true;
-                    world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper);
-
-                    apertureGeom.wireframe.material = appMaterials.wireframeMaterial;
-                    apertureGeom.wireframe.visible = true;
-                    world.current.buildingGeometryOutlines.add(apertureGeom.wireframe);
-
-                    apertureGeom.vertices.visible = false;
-                    world.current.buildingGeometryVertices.add(apertureGeom.vertices);
-
-                });
-            });
-        });
-
-        // Get the Honeybee-PH-Space Geometry from the Server and Add it to the THREE Scene
-        fetchModelSpaces(`${projectId}/model_spaces`).then(data => {
-            data.forEach(space => {
-                space.volumes.forEach(volume => {
-                    volume.geometry.forEach(lbtFace3D => {
-                        const geom = convertLBTFace3DToMesh(lbtFace3D)
-                        geom.mesh.material = appMaterials.geometryStandardMaterial;
-                        world.current.spaceGeometryMeshes.add(geom.mesh);
-                        world.current.spaceGeometryMeshes.visible = false;
-                        world.current.spaceGeometryMeshes.castShadow = false;
-
-                        geom.wireframe.material = appMaterials.wireframeMaterial;
-                        world.current.spaceGeometryOutlines.add(geom.wireframe);
-                        world.current.spaceGeometryOutlines.visible = false;
-                        world.current.spaceGeometryOutlines.castShadow = false;
-
-                        world.current.spaceGeometryVertices.add(geom.vertices);
-                        world.current.spaceGeometryVertices.visible = false;
-                        world.current.spaceGeometryVertices.castShadow = false;
-
-                    });
-                });
-            });
-        });
-
-        // Get the SubPath Geometry from the Server and Add it to the THREE Scene
-        fetchSunPath(`${projectId}/sun_path`).then(data => {
-            data.hourly_analemma_polyline3d.forEach((lbtPolyline3D) => {
-                const line = convertLBTPolyline3DtoLine(lbtPolyline3D)
-                line.computeLineDistances(); // Dashes don't work without this
-                world.current.sunPathDiagram.add(line);
-            });
-            data.monthly_day_arc3d.forEach((lbtArc3D) => {
-                const line = convertLBTArc3DtoLine(lbtArc3D)
-                world.current.sunPathDiagram.add(line);
-            });
-            data.compass.all_boundary_circles.forEach((lbtArc2D) => {
-                const arc1 = convertLBTArc2DtoLine(lbtArc2D)
-                world.current.sunPathDiagram.add(arc1);
-            });
-            data.compass.major_azimuth_ticks.forEach((lbtLineSegment2D) => {
-                const line = convertLBTLineSegment2DtoLine(lbtLineSegment2D)
-                world.current.sunPathDiagram.add(line);
-            });
-            data.compass.minor_azimuth_ticks.forEach((lbtLineSegment2D) => {
-                const line = convertLBTLineSegment2DtoLine(lbtLineSegment2D)
-                world.current.sunPathDiagram.add(line);
-            });
-            world.current.sunPathDiagram.visible = false;
-        });
-
-        // Get the Hot-Water Piping from the Server and Add it to the THREE Scene
-        fetchModelHotWaterPiping(`${projectId}/hot_water_systems`).then(data => {
-            data.forEach((hw_system) => {
-                for (const key in hw_system.distribution_piping) {
-                    const trunk: hbPhHvacPipeTrunk = hw_system.distribution_piping[key];
-                    for (const key in trunk.branches) {
-                        const branch = trunk.branches[key]
-                        for (const key in branch.fixtures) {
-                            const fixture = branch.fixtures[key]
-                            for (const key in fixture.segments) {
-                                const segment = fixture.segments[key]
-                                const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                                const fl = new LineSegments2(seg, appMaterials.pipeLineMaterial);
-                                world.current.pipeGeometry.add(fl);
-                            }
-                        }
-                    }
-                }
-                for (const key in hw_system.recirc_piping) {
-                    const fixture = hw_system.recirc_piping[key]
-                    for (const key in fixture.segments) {
-                        const segment = fixture.segments[key]
-                        const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                        const fl = new LineSegments2(seg, appMaterials.pipeLineMaterial);
-                        world.current.pipeGeometry.add(fl);
-                    }
-                }
-            });
-            world.current.pipeGeometry.visible = false;
-        });
-
-        // Get the ERV Ducting from the Server and Add it to the THREE Scene
-        fetchModelERVDucting(`${projectId}/ventilation_systems`).then(data => {
-            data.forEach(hw_system => {
-                hw_system.supply_ducting.forEach((duct) => {
-                    for (const key in duct.segments) {
-                        const segment = duct.segments[key]
-                        const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                        const fl = new LineSegments2(seg, appMaterials.ductLineMaterial);
-                        world.current.ventilationGeometry.add(fl);
-                    }
-                })
-                hw_system.exhaust_ducting.forEach((duct) => {
-                    for (const key in duct.segments) {
-                        const segment = duct.segments[key]
-                        const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                        const fl = new LineSegments2(seg, appMaterials.ductLineMaterial);
-                        world.current.ventilationGeometry.add(fl);
-                    }
-                })
-            });
-            world.current.ventilationGeometry.visible = false;
-        }
-        );
-
-        // Get the Shading Elements from the Server and Add them to the THREE Scene
-        fetchModelShades(`${projectId}/shading_elements`).then(data => {
-            for (const key in data) {
-
-                const gr = data[key]
-                for (const key in gr) {
-                    const lbtFace3D = gr[key]
-                    const geom = convertLBTFace3DToMesh(lbtFace3D.geometry)
-                    geom.mesh.material = appMaterials.geometryShadingMaterial;
-                    world.current.shadingGeometry.add(geom.mesh);
-                    world.current.shadingGeometry.visible = false;
-                    world.current.shadingGeometry.castShadow = false;
-                }
-            }
-        });
 
         // THREE Animation Loop 
         const animate = function () {
@@ -370,7 +215,7 @@ function Viewer(props: ViewerProps) {
         animate();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [projectId]);
+    }, []);
 
     return <div ref={mountRef} />;
 

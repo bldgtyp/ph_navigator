@@ -1,4 +1,4 @@
-import { appColors } from "../styles/AppColors";
+import { appColors } from "../../styles/AppColors";
 
 export const HeatingDemandSeries = [
     {
