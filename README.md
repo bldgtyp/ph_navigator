@@ -5,9 +5,9 @@
 
 ## TODO:
 
-#### BUG:
-- [ ] Check Exterior Construction API Calls (circular)?
-- [ ] Check the Polyline3D Geometry errors
+#### Bugs:
+- [x] Check Exterior Construction API Calls (circular)?
+- [x] Check the Polyline3D Geometry errors
 
 #### Deployment:
 - [x] Create WebService 
@@ -21,7 +21,7 @@
 - [ ] Get Outdoor Shades
 - [ ] Get Doors
 - [x] Spaces
-  - [ ] Spaces need to be Rotated in hp-ph
+  - [x] Spaces need to be Rotated in hp-ph
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
@@ -56,15 +56,17 @@
   - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
 - [x] move the face data panel to the left
-- [ ] add 'results' buttons on the right
+- [x] add 'results' buttons on the right
 - [x] add a u-value list with sliders to the face data panel 
   - [x] Make exterior surfaces only
   - [ ] Add a Window U-Value section below
 - [x] Refactor App State to useReducer / useContext
+- [ ] Refactor to Custom-Context
+  - [ ] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
 - [ ] Refactor Selected-Object to useReducer / useContext
 - [ ] Refactor Dimension-Lines to useReducer / useContext
 - [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
-- [ ] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
+- [x] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
 - [ ] Select Rooms, display room-data in panel on left side
 
 #### Comments 
@@ -75,7 +77,10 @@
 
 #### Scene:
 - [x] Add Shadows on Ground Plane
-- [ ] AO shadows
+- [ ] AO Shadows Pass?
+- [ ] Add Outline Pass?
+  - [ ] Review: [https://youtu.be/1wiv3kF78Go?si=HpYGNYy6lxgoSj43](https://youtu.be/1wiv3kF78Go?si=HpYGNYy6lxgoSj43)
+  - [ ] Review: [https://youtu.be/AUJlkwLiciw?si=_bRL6HXfUnFkBG0s](https://youtu.be/AUJlkwLiciw?si=_bRL6HXfUnFkBG0s)
 - [ ] Auto-bounds based on loaded geometry:
   - [ ] grid
   - [ ] lights
