@@ -178,7 +178,7 @@ function Viewer(props: ViewerProps) {
     }, [appStateContext.appState]);
 
 
-    // Load the Model from the Server
+    // Load the Model-Elements from the Server
     // ------------------------------------------------------------------------
     useEffect(() => {
         // Get the Honeybee JSON Model Elements and add them to the THREE Scene
