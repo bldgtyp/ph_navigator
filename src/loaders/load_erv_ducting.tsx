@@ -26,4 +26,5 @@ export function loadModelERVDucting(
             }
         })
     });
+    world.current.ventilationGeometry.visible = false;
 }
