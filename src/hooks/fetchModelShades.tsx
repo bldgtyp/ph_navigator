@@ -1,6 +1,9 @@
 import constants from "../data/constants.json";
-import { HoneybeeShadeGroup } from "../types/HoneybeeShade";
+import { hbShade } from "../types/honeybee/shade";
 
+export default fetchModelShades; export type HoneybeeShadeGroup = {
+    [key: string]: hbShade;
+};
 
 export async function fetchModelShades(endpoint: string): Promise<HoneybeeShadeGroup[]> {
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
@@ -17,4 +20,3 @@ export async function fetchModelShades(endpoint: string): Promise<HoneybeeShadeG
     return typeSpaces;
 }
 
-export default fetchModelShades;

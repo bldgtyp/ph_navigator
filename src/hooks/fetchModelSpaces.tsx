@@ -1,8 +1,8 @@
 import constants from "../data/constants.json";
-import { HoneybeePHSpace } from "../types/HoneybeePHSpace";
+import { hbPHSpace } from "../types/honeybee_ph/space";
 
 
-export async function fetchModelSpaces(endpoint: string): Promise<HoneybeePHSpace[]> {
+export async function fetchModelSpaces(endpoint: string): Promise<hbPHSpace[]> {
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     const response = await fetch(API_ENDPOINT);

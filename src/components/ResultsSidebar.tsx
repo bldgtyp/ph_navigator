@@ -2,7 +2,7 @@ import "../styles/ResultsSidebar.css";
 import { useState } from 'react';
 import { Stack } from "@mui/material";
 import ResultsView from "./ResultsView";
-import { ResultType } from "../types/AirTableResultsRecord";
+import { ResultType } from "../types/airtable/record_results";
 import { HeatingDemandSeries } from "../graphs/HeatingDemand";
 import { CoolingDemandSeries } from "../graphs/CoolingDemand";
 

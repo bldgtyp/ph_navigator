@@ -1,4 +1,4 @@
-import { AirTableRecord } from "./AirTableRecord";
+import { AirTableRecord } from "./record";
 
 export type ResultType = "HEATING_DEMAND" | "COOLING_DEMAND" | "PEAK_HEATING_LOAD" | "PEAK_COOLING_LOAD" | "SOURCE_ENERGY" | "SITE_ENERGY" | "CO2E";
 

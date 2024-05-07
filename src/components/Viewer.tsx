@@ -21,7 +21,7 @@ import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
 import { appMaterials } from '../scene/Materials';
-import { PhHvacPipeTrunk } from '../types/PhHvacPipeTrunk';
+import { hbPhHvacPipeTrunk } from '../types/honeybee_phhvac/hot_water_piping';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 
@@ -291,7 +291,7 @@ function Viewer(props: ViewerProps) {
         fetchModelHotWaterPiping(`${projectId}/hot_water_systems`).then(data => {
             data.forEach((hw_system) => {
                 for (const key in hw_system.distribution_piping) {
-                    const trunk: PhHvacPipeTrunk = hw_system.distribution_piping[key];
+                    const trunk: hbPhHvacPipeTrunk = hw_system.distribution_piping[key];
                     for (const key in trunk.branches) {
                         const branch = trunk.branches[key]
                         for (const key in branch.fixtures) {

@@ -1,7 +1,7 @@
-import { lbtFace3D } from "./ladybug_geometry/geometry3d/face";
-import { lbtMesh3D } from "./ladybug_geometry/geometry3d/mesh";
+import { lbtFace3D } from "../ladybug_geometry/geometry3d/face";
+import { lbtMesh3D } from "../ladybug_geometry/geometry3d/mesh";
 
-type HoneybeePhSpaceVolume = {
+type hbPhSpaceVolume = {
     identifier: string;
     display_name: string;
     avg_ceiling_height: number;
@@ -10,12 +10,12 @@ type HoneybeePhSpaceVolume = {
     mesh?: lbtMesh3D[];
 };
 
-export type HoneybeePHSpace = {
+export type hbPHSpace = {
     identifier: string;
     name: string;
     number: number;
     quantity: number;
     wufi_type: number;
-    volumes: HoneybeePhSpaceVolume[];
+    volumes: hbPhSpaceVolume[];
     properties: any;
 };
