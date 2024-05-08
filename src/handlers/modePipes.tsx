@@ -45,7 +45,7 @@ export function pipingModeOnMouseClick(
         selectedObjectContext.selectedObjectRef.current = newLine
         selectedObjectContext.setSelectedObjectState(newLine)
     }
-};
+}
 
 
 /**
