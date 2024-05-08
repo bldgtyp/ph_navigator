@@ -17,18 +17,30 @@ function PanelItem(props: { label: React.ReactNode, value: string }) {
     );
 }
 
+
+function SpaceData({ selectedObject }: { selectedObject: THREE.Object3D | null }) {
+    console.log(selectedObject);
+
+    return (
+        <>
+            <PanelItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
+            <PanelItem label="Number" value={selectedObject ? selectedObject.userData.number : '-'} />
+            <PanelItem label="Name" value={selectedObject ? selectedObject.userData.display_name : '-'} />
+            <PanelItem label="Type" value={selectedObject ? selectedObject.userData.face_type : '-'} />
+        </>
+    )
+}
 function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null }) {
     return (
         <>
-            <p className='heading'>Face Data</p>
-            {/* <PanelItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
+            <PanelItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
             <PanelItem label="Display Name" value={selectedObject ? selectedObject.userData.display_name : '-'} />
             <PanelItem label="Type" value={selectedObject ? selectedObject.userData.face_type : '-'} />
             <PanelItem label="Exposure" value={selectedObject ? selectedObject.userData.boundary_condition.type : '-'} />
             <PanelItem label={<span>Area (m<sup>2</sup>)</span>} value={selectedObject ? selectedObject.userData.area.toFixed(1) : '-'} />
             <PanelItem label="Construction Name" value={selectedObject ? selectedObject.userData.properties.energy.construction.identifier : '-'} />
             <PanelItem label={<span>R-Value (m<sup>2</sup>k/W)</span>} value={selectedObject ? selectedObject.userData.properties.energy.construction.r_factor.toFixed(1) : '-'} />
-            <PanelItem label={<span>U-Value (W/m<sup>2</sup>k)</span>} value={selectedObject ? selectedObject.userData.properties.energy.construction.u_factor.toFixed(3) : '-'} /> */}
+            <PanelItem label={<span>U-Value (W/m<sup>2</sup>k)</span>} value={selectedObject ? selectedObject.userData.properties.energy.construction.u_factor.toFixed(3) : '-'} />
         </>
     )
 }
@@ -73,10 +85,23 @@ function UValueSliders() {
     );
 }
 
+function InfoDetails() {
+    const selectedObjectContext = useSelectedObjectContext();
+    if (selectedObjectContext.selectedObjectRef.current) {
+        if (selectedObjectContext.selectedObjectRef.current.userData['type'] == "spaceGroup") {
+            return <SpaceData selectedObject={selectedObjectContext.selectedObjectRef.current} />;
+        } else if (selectedObjectContext.selectedObjectRef.current.userData['type'] == "faceMesh") {
+            return <FaceData selectedObject={selectedObjectContext.selectedObjectRef.current} />;
+        } else { return <></> }
+    }
+    else {
+        return <></>
+    }
+}
+
+
 function InfoPanel() {
     const [selectedPanel, setSelectedPanel] = useState('face-data');
-    const selectedObjectContext = useSelectedObjectContext();
-
     return (
         <Paper className="face-data-panel">
             <Button
@@ -84,12 +109,12 @@ function InfoPanel() {
                 onClick={() => setSelectedPanel('face-data')}>
                 Item Data
             </Button>
-            <Button
+            {/* <Button
                 className={`panel-select-button ${selectedPanel === 'u-values' ? 'button-selected' : ''}`}
                 onClick={() => setSelectedPanel('u-values')}>
                 U-Values
-            </Button>
-            {selectedPanel === 'face-data' ? <FaceData selectedObject={selectedObjectContext.selectedObjectState} /> : <UValueSliders />}
+            </Button> */}
+            <InfoDetails />
         </Paper>
     );
 }

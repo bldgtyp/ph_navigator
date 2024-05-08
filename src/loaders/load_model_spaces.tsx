@@ -4,6 +4,15 @@ import { appMaterials } from '../scene/Materials';
 import { hbPHSpace } from "../types/honeybee_ph/space";
 import { SceneSetup } from '../scene/SceneSetup';
 
+function groupFromSpace(space: hbPHSpace) {
+    const newGroup = new THREE.Group
+    newGroup.name = space.name;
+    newGroup.userData["identifier"] = space.identifier;
+    newGroup.userData["display_name"] = space.name;
+    newGroup.userData["number"] = space.number;
+    newGroup.userData["type"] = "spaceGroup";
+    return newGroup
+}
 
 export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHSpaces: hbPHSpace[]) {
     world.current.spaceGeometryMeshes.visible = false;
@@ -14,19 +23,9 @@ export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHS
     world.current.spaceGeometryVertices.castShadow = false;
 
     hbPHSpaces.forEach(space => {
-        const spaceMeshesGroup = new THREE.Group
-        spaceMeshesGroup.name = space.name;
-        spaceMeshesGroup.userData["type"] = "spaceGroup";
-        const spaceOutlinesGroup = new THREE.Group
-        spaceOutlinesGroup.name = space.name;
-        spaceOutlinesGroup.userData["type"] = "spaceGroup";
-        const spaceVerticesGroup = new THREE.Group
-        spaceVerticesGroup.name = space.name;
-        spaceVerticesGroup.userData["type"] = "spaceGroup";
-
-        world.current.spaceGeometryMeshes.add(spaceMeshesGroup);
-        world.current.spaceGeometryOutlines.add(spaceOutlinesGroup);
-        world.current.spaceGeometryVertices.add(spaceVerticesGroup);
+        const spaceMeshesGroup = groupFromSpace(space)
+        const spaceOutlinesGroup = groupFromSpace(space)
+        const spaceVerticesGroup = groupFromSpace(space)
 
         space.volumes.forEach(volume => {
             volume.geometry.forEach(lbtFace3D => {
@@ -41,5 +40,9 @@ export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHS
                 spaceVerticesGroup.add(geom.vertices);
             });
         });
+
+        world.current.spaceGeometryMeshes.add(spaceMeshesGroup);
+        world.current.spaceGeometryOutlines.add(spaceOutlinesGroup);
+        world.current.spaceGeometryVertices.add(spaceVerticesGroup);
     });
 }
