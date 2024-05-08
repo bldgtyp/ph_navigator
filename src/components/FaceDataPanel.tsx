@@ -5,8 +5,8 @@ import * as THREE from 'three';
 import { Stack, Paper, Button, Slider, Typography } from "@mui/material";
 import { fetchModelUValues } from '../hooks/fetchModelUValues';
 import { hbEnergyOpaqueConstruction } from '../types/honeybee_energy/construction/opaque';
+import { useSelectedObjectContext } from '../contexts/selected_object_context';
 
-interface FaceDataPanelProps { selectedObject: THREE.Object3D | null }
 
 function PanelItem(props: { label: React.ReactNode, value: string }) {
     return (
@@ -73,9 +73,9 @@ function UValueSliders() {
     );
 }
 
-function FacesPanel(props: FaceDataPanelProps) {
-    const { selectedObject } = props;
+function FacesPanel() {
     const [selectedPanel, setSelectedPanel] = useState('face-data');
+    const selectedObjectContext = useSelectedObjectContext();
 
     return (
         <Paper className="face-data-panel">
@@ -89,7 +89,7 @@ function FacesPanel(props: FaceDataPanelProps) {
                 onClick={() => setSelectedPanel('u-values')}>
                 U-Values
             </Button>
-            {selectedPanel === 'face-data' ? <FaceData selectedObject={selectedObject} /> : <UValueSliders />}
+            {selectedPanel === 'face-data' ? <FaceData selectedObject={selectedObjectContext.selectedObjectState} /> : <UValueSliders />}
         </Paper>
     );
 }

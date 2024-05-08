@@ -3,7 +3,7 @@ import { SceneSetup } from '../scene/SceneSetup';
 import * as THREE from 'three';
 import { appMaterials } from '../scene/Materials';
 
-function getSelectedMeshFromMouseClick(
+export function getSelectedMeshFromMouseClick(
     event: any,
     world: SceneSetup,
 ): THREE.Mesh | null {

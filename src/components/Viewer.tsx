@@ -11,7 +11,7 @@ import { fetchModelERVDucting } from '../hooks/fetchModelERVDucting';
 import { fetchModelShades } from '../hooks/fetchModelShades';
 import { SceneSetup } from '../scene/SceneSetup';
 import { onResize } from '../handlers/onResize';
-import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
+// import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
@@ -22,11 +22,12 @@ import { loadModelHotWaterPiping } from '../loaders/load_hot_water_piping';
 import { loadModelERVDucting } from '../loaders/load_erv_ducting';
 import { loadModelShades } from '../loaders/load_model_shades';
 import { useAppStateContext } from '../contexts/app_state_context';
+import { useSelectedObjectContext } from '../contexts/selected_object_context';
+import { testSelectOnClick } from '../handlers/modeSurfaceQuery';
+
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
-    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>;
-    setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
     hoveringVertex: React.MutableRefObject<THREE.Vector3 | null>;
     dimensionLinesRef: React.MutableRefObject<THREE.Group>;
 }
@@ -34,8 +35,9 @@ interface ViewerProps {
 function Viewer(props: ViewerProps) {
     const { projectId } = useParams();
     const appStateContext = useAppStateContext();
+    const selectedObjectContext = useSelectedObjectContext();
 
-    const { world, selectedObjectRef, setSelectedObject, hoveringVertex, dimensionLinesRef } = props;
+    const { world, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
 
     // Setup all the Event Listener Callbacks for the different App-States
@@ -43,7 +45,7 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     addEventHandler(1, "click",
         useCallback(
-            (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectRef, setSelectedObject) }
+            (e: any) => { testSelectOnClick(e, world.current, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
@@ -105,7 +107,7 @@ function Viewer(props: ViewerProps) {
     // Dismount Handlers for AppStates
     // ------------------------------------------------------------------------
     addDismountHandler(0, "hideDefault", () => {
-        handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+        // handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
         hoveringVertex.current = null;
         dimensionLinesRef.current.clear()
         world.current.buildingGeometryMeshes.visible = false;
@@ -113,7 +115,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryVertices.visible = false;
     });
     addDismountHandler(1, "hideSurfaceQuery", () => {
-        handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+        // handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
@@ -202,7 +204,6 @@ function Viewer(props: ViewerProps) {
         if (mountRef.current) {
             mountRef.current.appendChild(world.current.renderer.domElement);
         }
-
 
         // Handle Window Resize
         window.addEventListener('resize', () => onResize(world.current));
