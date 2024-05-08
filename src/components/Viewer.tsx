@@ -24,6 +24,7 @@ import { useAppStateContext } from '../contexts/app_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
 import { spacesModeOnMouseClick } from '../handlers/modeSpacesQuery';
+import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -133,6 +134,7 @@ function Viewer(props: ViewerProps) {
     });
     addDismountHandler(3, "hideComments", () => { console.log("Hide Comments") });
     addDismountHandler(4, "hideSpaces", () => {
+        handleClearSelectedSpace(selectedObjectContext)
         world.current.spaceGeometryMeshes.visible = false;
         world.current.spaceGeometryOutlines.visible = false;
         world.current.spaceGeometryVertices.visible = false;

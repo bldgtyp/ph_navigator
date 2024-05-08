@@ -115,33 +115,43 @@ export class SceneSetup {
 
         // -- Groups for the Loaded Geometry
         this.buildingGeometryMeshes = new THREE.Group();
+        this.buildingGeometryMeshes.name = "Building Geometry | Meshes";
         this.scene.add(this.buildingGeometryMeshes);
 
         this.buildingGeometryOutlines = new THREE.Group();
+        this.buildingGeometryOutlines.name = "Building Geometry | Outlines";
         this.scene.add(this.buildingGeometryOutlines);
 
         this.buildingGeometryVertices = new THREE.Group();
+        this.buildingGeometryVertices.name = "Building Geometry | Vertices";
         this.scene.add(this.buildingGeometryVertices);
 
         this.sunPathDiagram = new THREE.Group();
+        this.sunPathDiagram.name = "Sun Path Diagram";
         this.scene.add(this.sunPathDiagram);
 
         this.spaceGeometryMeshes = new THREE.Group();
+        this.spaceGeometryMeshes.name = "Space Geometry | Meshes";
         this.scene.add(this.spaceGeometryMeshes);
 
         this.spaceGeometryOutlines = new THREE.Group();
+        this.spaceGeometryOutlines.name = "Space Geometry | Outlines";
         this.scene.add(this.spaceGeometryOutlines);
 
         this.spaceGeometryVertices = new THREE.Group();
+        this.spaceGeometryVertices.name = "Space Geometry | Vertices";
         this.scene.add(this.spaceGeometryVertices);
 
         this.pipeGeometry = new THREE.Group();
+        this.pipeGeometry.name = "Pipe Geometry";
         this.scene.add(this.pipeGeometry);
 
         this.ventilationGeometry = new THREE.Group();
+        this.ventilationGeometry.name = "Ventilation Geometry";
         this.scene.add(this.ventilationGeometry);
 
         this.shadingGeometry = new THREE.Group();
+        this.shadingGeometry.name = "Shading Geometry";
         this.scene.add(this.shadingGeometry);
 
         // -- Show Helpers

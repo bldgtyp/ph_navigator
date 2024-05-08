@@ -3,9 +3,9 @@ import React, { useRef, useState, createContext, useContext } from 'react';
 
 // --
 export type SelectedObjectContextType = {
-    selectedObjectState: THREE.Object3D | null,
-    setSelectedObjectState: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>,
-    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>,
+    selectedObjectState: THREE.Group | THREE.Object3D | null,
+    setSelectedObjectState: React.Dispatch<React.SetStateAction<THREE.Group | THREE.Object3D | null>>,
+    selectedObjectRef: React.MutableRefObject<THREE.Group | THREE.Object3D | null>,
 }
 export const SelectedObjectContext = createContext<SelectedObjectContextType | null>(null)
 
