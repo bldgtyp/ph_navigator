@@ -1,4 +1,4 @@
-import '../styles/FaceDataPanel.css';
+import '../styles/InfoPanel.css';
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import * as THREE from 'three';
@@ -17,23 +17,32 @@ function PanelItem(props: { label: React.ReactNode, value: string }) {
     );
 }
 
+function IdentifierItem(props: { label: React.ReactNode, value: string }) {
+    return (
+        <Stack direction="column">
+            <p className="identifier-item-heading">{props.label}:</p>
+            <p className="identifier-item-value">{props.value}</p>
+        </Stack>
+    );
+}
 
 function SpaceData({ selectedObject }: { selectedObject: THREE.Object3D | null }) {
-    console.log(selectedObject);
-
     return (
         <>
-            <PanelItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
             <PanelItem label="Number" value={selectedObject ? selectedObject.userData.number : '-'} />
             <PanelItem label="Name" value={selectedObject ? selectedObject.userData.display_name : '-'} />
-            <PanelItem label="Type" value={selectedObject ? selectedObject.userData.face_type : '-'} />
+            <PanelItem label="Net Volume (m3)" value={selectedObject ? selectedObject.userData.net_volume.toFixed(1) : '-'} />
+            <PanelItem label="Avg. Clear Ceiling Height (m)" value={selectedObject ? selectedObject.userData.avg_clear_height.toFixed(1) : '-'} />
+            <PanelItem label="Gross Floor Area (m2)" value={selectedObject ? selectedObject.userData.floor_area.toFixed(1) : '-'} />
+            <PanelItem label="Net Floor Area (m2)" value={selectedObject ? selectedObject.userData.weighted_floor_area.toFixed(1) : '-'} />
+            <PanelItem label="Avg. Weighting Factor" value={selectedObject ? selectedObject.userData.average_floor_weighting_factor.toFixed(1) : '-'} />
+            <IdentifierItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
         </>
     )
 }
 function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null }) {
     return (
         <>
-            <PanelItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
             <PanelItem label="Display Name" value={selectedObject ? selectedObject.userData.display_name : '-'} />
             <PanelItem label="Type" value={selectedObject ? selectedObject.userData.face_type : '-'} />
             <PanelItem label="Exposure" value={selectedObject ? selectedObject.userData.boundary_condition.type : '-'} />
@@ -41,6 +50,7 @@ function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null })
             <PanelItem label="Construction Name" value={selectedObject ? selectedObject.userData.properties.energy.construction.identifier : '-'} />
             <PanelItem label={<span>R-Value (m<sup>2</sup>k/W)</span>} value={selectedObject ? selectedObject.userData.properties.energy.construction.r_factor.toFixed(1) : '-'} />
             <PanelItem label={<span>U-Value (W/m<sup>2</sup>k)</span>} value={selectedObject ? selectedObject.userData.properties.energy.construction.u_factor.toFixed(3) : '-'} />
+            <IdentifierItem label="Identifier" value={selectedObject ? selectedObject.userData.identifier : '-'} />
         </>
     )
 }

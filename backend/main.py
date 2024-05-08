@@ -181,7 +181,13 @@ def model_spaces(project_id: str) -> dict[str, str]:
     for room in proj.hb_model.rooms:
         room_ph_prop: RoomPhProperties = getattr(room.properties, "ph")
         for space in room_ph_prop.spaces:
-            spaces.append(space.to_dict(include_mesh=True))
+            space_dict = space.to_dict(include_mesh=True)
+            space_dict["net_volume"] = space.net_volume
+            space_dict["floor_area"] = space.floor_area
+            space_dict["weighted_floor_area"] = space.weighted_floor_area
+            space_dict["avg_clear_height"] = space.avg_clear_height
+            space_dict["average_floor_weighting_factor"] = space.average_floor_weighting_factor
+            spaces.append(space_dict)
     return {"message": json.dumps(spaces)}
 
 

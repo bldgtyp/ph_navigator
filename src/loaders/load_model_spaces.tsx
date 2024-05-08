@@ -10,6 +10,11 @@ function groupFromSpace(space: hbPHSpace) {
     newGroup.userData["identifier"] = space.identifier;
     newGroup.userData["display_name"] = space.name;
     newGroup.userData["number"] = space.number;
+    newGroup.userData["net_volume"] = space.net_volume;
+    newGroup.userData["avg_clear_height"] = space.avg_clear_height;
+    newGroup.userData["floor_area"] = space.floor_area;
+    newGroup.userData["weighted_floor_area"] = space.weighted_floor_area;
+    newGroup.userData["average_floor_weighting_factor"] = space.average_floor_weighting_factor;
     newGroup.userData["type"] = "spaceGroup";
     return newGroup
 }

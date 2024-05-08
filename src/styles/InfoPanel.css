@@ -40,6 +40,23 @@
     font-size: 0.8em !important;
 }
 
+
+.identifier-item-heading {
+    border-top: #858585 0.15em dotted !important;
+    font-size: 0.6em !important;
+    font-weight: bold !important;
+    color: #858585 !important;
+    padding-top: 0.5em !important;
+    margin-bottom: 0.2em !important;
+}
+
+.identifier-item-value {
+    color: #858585 !important;
+    margin-top: 0.2em !important;
+    font-size: 0.6em !important;
+}
+
+
 .slider-item-heading {
     font-size: 0.7em !important;
     font-weight: bold !important;

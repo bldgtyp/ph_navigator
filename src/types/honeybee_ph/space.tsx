@@ -18,4 +18,9 @@ export type hbPHSpace = {
     wufi_type: number;
     volumes: hbPhSpaceVolume[];
     properties: any;
+    net_volume: number;
+    avg_clear_height: number;
+    floor_area: number;
+    weighted_floor_area: number;
+    average_floor_weighting_factor: number;
 };
