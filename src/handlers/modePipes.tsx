@@ -37,6 +37,7 @@ export function pipingModeOnMouseClick(
     const newLine = getSelectedLineFromMouseClick(event, world.camera, world.pipeGeometry.children)
     if (newLine) {
         if (newLine instanceof LineSegments2) {
+            resetLineMaterial(selectedObjectContext.selectedObjectRef.current)
             newLine.userData["standardMaterial"] = newLine.material; // Store for changing back later
             newLine.material = appMaterials.pipeLineHighlight;
         }
