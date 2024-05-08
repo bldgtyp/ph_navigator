@@ -16,10 +16,13 @@ export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHS
     hbPHSpaces.forEach(space => {
         const spaceMeshesGroup = new THREE.Group
         spaceMeshesGroup.name = space.name;
+        spaceMeshesGroup.userData["type"] = "spaceGroup";
         const spaceOutlinesGroup = new THREE.Group
         spaceOutlinesGroup.name = space.name;
+        spaceOutlinesGroup.userData["type"] = "spaceGroup";
         const spaceVerticesGroup = new THREE.Group
         spaceVerticesGroup.name = space.name;
+        spaceVerticesGroup.userData["type"] = "spaceGroup";
 
         world.current.spaceGeometryMeshes.add(spaceMeshesGroup);
         world.current.spaceGeometryOutlines.add(spaceOutlinesGroup);
@@ -29,7 +32,9 @@ export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHS
             volume.geometry.forEach(lbtFace3D => {
                 const geom = convertLBTFace3DToMesh(lbtFace3D)
                 geom.mesh.material = appMaterials.geometryStandardMaterial;
+                geom.mesh.userData["type"] = "spaceMeshFace";
                 geom.wireframe.material = appMaterials.wireframeMaterial;
+                geom.wireframe.userData["type"] = "spaceMeshFaceWireframe";
 
                 spaceMeshesGroup.add(geom.mesh);
                 spaceOutlinesGroup.add(geom.wireframe);

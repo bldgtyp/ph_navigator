@@ -7,13 +7,19 @@ import { SceneSetup } from '../scene/SceneSetup';
 export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFaces: hbFace[]) {
     hbFaces.forEach(face => {
         const geom = convertHBFaceToMesh(face)
+        geom.mesh.name = face.display_name
+        geom.mesh.userData["type"] = "faceMesh"
         geom.mesh.material = appMaterials.geometryStandardMaterial
         geom.mesh.visible = true
         world.current.buildingGeometryMeshes.add(geom.mesh)
 
+        geom.vertexHelper.name = face.display_name
+        geom.vertexHelper.userData["type"] = "faceMeshVertexHelper"
         geom.vertexHelper.visible = true
         world.current.buildingGeometryMeshes.add(geom.vertexHelper)
 
+        geom.wireframe.name = face.display_name
+        geom.wireframe.userData["type"] = "faceMeshWireframe"
         geom.wireframe.material = appMaterials.wireframeMaterial
         geom.wireframe.visible = true
         world.current.buildingGeometryOutlines.add(geom.wireframe)
@@ -23,13 +29,19 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
 
         face.apertures.forEach(aperture => {
             const apertureGeom = convertHBFaceToMesh(aperture)
+            apertureGeom.mesh.name = face.display_name
+            apertureGeom.mesh.userData["type"] = "apertureMeshFace"
             apertureGeom.mesh.material = appMaterials.geometryWindowMaterial
             apertureGeom.mesh.visible = true
             world.current.buildingGeometryMeshes.add(apertureGeom.mesh)
 
+            apertureGeom.vertexHelper.name = face.display_name
+            apertureGeom.vertexHelper.userData["type"] = "apertureMeshFaceVertexHelper"
             apertureGeom.vertexHelper.visible = true
             world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper)
 
+            apertureGeom.wireframe.name = face.display_name
+            apertureGeom.wireframe.userData["type"] = "apertureMeshFaceWireframe"
             apertureGeom.wireframe.material = appMaterials.wireframeMaterial
             apertureGeom.wireframe.visible = true
             world.current.buildingGeometryOutlines.add(apertureGeom.wireframe)

@@ -42,6 +42,7 @@ export function spacesModeOnMouseClick(
                 spaceMesh.material = appMaterials.geometryHighlightMaterial;
             });
         }
+        console.log(spaceGroup)
 
         selectedObjectContext.selectedObjectRef.current = spaceGroup
         selectedObjectContext.setSelectedObjectState(spaceGroup)
