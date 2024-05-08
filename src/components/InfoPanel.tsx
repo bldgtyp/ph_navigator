@@ -40,6 +40,7 @@ function SpaceData({ selectedObject }: { selectedObject: THREE.Object3D | null }
         </>
     )
 }
+
 function FaceData({ selectedObject }: { selectedObject: THREE.Object3D | null }) {
     return (
         <>
@@ -100,7 +101,9 @@ function InfoDetails() {
     if (selectedObjectContext.selectedObjectRef.current) {
         if (selectedObjectContext.selectedObjectRef.current.userData['type'] == "spaceGroup") {
             return <SpaceData selectedObject={selectedObjectContext.selectedObjectRef.current} />;
-        } else if (selectedObjectContext.selectedObjectRef.current.userData['type'] == "faceMesh") {
+        } else if (selectedObjectContext.selectedObjectRef.current.userData['type'] === "faceMesh") {
+            return <FaceData selectedObject={selectedObjectContext.selectedObjectRef.current} />;
+        } else if (selectedObjectContext.selectedObjectRef.current.userData['type'] === "apertureMeshFace") {
             return <FaceData selectedObject={selectedObjectContext.selectedObjectRef.current} />;
         } else { return <></> }
     }
@@ -108,7 +111,6 @@ function InfoDetails() {
         return <></>
     }
 }
-
 
 function InfoPanel() {
     const [selectedPanel, setSelectedPanel] = useState('face-data');
@@ -119,12 +121,12 @@ function InfoPanel() {
                 onClick={() => setSelectedPanel('face-data')}>
                 Item Data
             </Button>
-            {/* <Button
+            <Button
                 className={`panel-select-button ${selectedPanel === 'u-values' ? 'button-selected' : ''}`}
                 onClick={() => setSelectedPanel('u-values')}>
                 U-Values
-            </Button> */}
-            <InfoDetails />
+            </Button>
+            {selectedPanel === 'face-data' ? <InfoDetails /> : <UValueSliders />}
         </Paper>
     );
 }
