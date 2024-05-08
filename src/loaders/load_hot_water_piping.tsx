@@ -31,7 +31,7 @@ export function loadModelHotWaterPiping(world: React.MutableRefObject<SceneSetup
                     for (const key in fixture.segments) {
                         const segment = fixture.segments[key]
                         const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                        const fl = new LineSegments2(seg, appMaterials.pipeLineMaterial);
+                        const fl = new LineSegments2(seg, appMaterials.pipeLine);
                         fl.name = fixture.display_name
                         fl.userData['identifier'] = fixture.identifier
                         fl.userData['type'] = "pipeSegmentLine"
@@ -47,7 +47,7 @@ export function loadModelHotWaterPiping(world: React.MutableRefObject<SceneSetup
             for (const key in fixture.segments) {
                 const segment = fixture.segments[key]
                 const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                const fl = new LineSegments2(seg, appMaterials.pipeLineMaterial);
+                const fl = new LineSegments2(seg, appMaterials.pipeLine);
                 fl.userData['identifier'] = fixture.identifier
                 fl.userData['type'] = "pipeSegmentLine"
                 world.current.pipeGeometry.add(fl);

@@ -38,7 +38,7 @@ export function spacesModeOnMouseClick(
             resetSpaceGroupMaterial(selectedObjectContext.selectedObjectRef.current)
             spaceGroup.children.forEach((spaceMesh: any) => {
                 spaceMesh.userData["standardMaterial"] = spaceMesh.material; // Store for changing back later
-                spaceMesh.material = appMaterials.geometryHighlightMaterial;
+                spaceMesh.material = appMaterials.geometryHighlight;
             });
         }
         selectedObjectContext.selectedObjectRef.current = spaceGroup

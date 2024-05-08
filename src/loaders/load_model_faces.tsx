@@ -9,7 +9,7 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
         const geom = convertHBFaceToMesh(face)
         geom.mesh.name = face.display_name
         geom.mesh.userData["type"] = "faceMesh"
-        geom.mesh.material = appMaterials.geometryStandardMaterial
+        geom.mesh.material = appMaterials.geometryStandard
         geom.mesh.visible = true
         world.current.buildingGeometryMeshes.add(geom.mesh)
 
@@ -20,7 +20,7 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
 
         geom.wireframe.name = face.display_name
         geom.wireframe.userData["type"] = "faceMeshWireframe"
-        geom.wireframe.material = appMaterials.wireframeMaterial
+        geom.wireframe.material = appMaterials.wireframe
         geom.wireframe.visible = true
         world.current.buildingGeometryOutlines.add(geom.wireframe)
 
@@ -31,7 +31,7 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
             const apertureGeom = convertHBFaceToMesh(aperture)
             apertureGeom.mesh.name = face.display_name
             apertureGeom.mesh.userData["type"] = "apertureMeshFace"
-            apertureGeom.mesh.material = appMaterials.geometryWindowMaterial
+            apertureGeom.mesh.material = appMaterials.geometryWindow
             apertureGeom.mesh.visible = true
             world.current.buildingGeometryMeshes.add(apertureGeom.mesh)
 
@@ -42,7 +42,7 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
 
             apertureGeom.wireframe.name = face.display_name
             apertureGeom.wireframe.userData["type"] = "apertureMeshFaceWireframe"
-            apertureGeom.wireframe.material = appMaterials.wireframeMaterial
+            apertureGeom.wireframe.material = appMaterials.wireframe
             apertureGeom.wireframe.visible = true
             world.current.buildingGeometryOutlines.add(apertureGeom.wireframe)
 

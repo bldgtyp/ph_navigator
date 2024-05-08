@@ -35,9 +35,9 @@ export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHS
         space.volumes.forEach(volume => {
             volume.geometry.forEach(lbtFace3D => {
                 const geom = convertLBTFace3DToMesh(lbtFace3D)
-                geom.mesh.material = appMaterials.geometryStandardMaterial;
+                geom.mesh.material = appMaterials.geometryStandard;
                 geom.mesh.userData["type"] = "spaceMeshFace";
-                geom.wireframe.material = appMaterials.wireframeMaterial;
+                geom.wireframe.material = appMaterials.wireframe;
                 geom.wireframe.userData["type"] = "spaceMeshFaceWireframe";
 
                 spaceMeshesGroup.add(geom.mesh);

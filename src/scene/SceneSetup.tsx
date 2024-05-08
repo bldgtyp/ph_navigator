@@ -107,7 +107,7 @@ export class SceneSetup {
         this.groundGeometry = new THREE.Group();
         const ground = new THREE.Mesh(
             new THREE.PlaneGeometry(50, 50),
-            appMaterials.groundShadowMaterial
+            appMaterials.groundShadow
         );
         ground.receiveShadow = true;
         this.groundGeometry.add(ground);

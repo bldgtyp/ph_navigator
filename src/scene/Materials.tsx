@@ -4,70 +4,70 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 
 export const appMaterials = {
     // Surfaces ---------------------------------------------------------------
-    groundShadowMaterial: new THREE.ShadowMaterial(
+    groundShadow: new THREE.ShadowMaterial(
         {
             opacity: 0.3,
             transparent: true,
         }),
-    geometryStandardMaterial: new THREE.MeshStandardMaterial(
+    geometryStandard: new THREE.MeshStandardMaterial(
         {
             color: appColors.SURFACE_WHITE,
             side: THREE.DoubleSide,
             flatShading: true,
         }),
-    geometryWindowMaterial: new THREE.MeshStandardMaterial(
+    geometryWindow: new THREE.MeshStandardMaterial(
         {
             color: appColors.SURFACE_WHITE,
             opacity: 0.85,
             transparent: true,
             side: THREE.DoubleSide,
         }),
-    geometryShadingMaterial: new THREE.MeshStandardMaterial(
+    geometryShading: new THREE.MeshStandardMaterial(
         {
             color: appColors.SURFACE_WHITE,
             side: THREE.DoubleSide,
             flatShading: true,
         }),
-    geometryHighlightMaterial: new THREE.MeshBasicMaterial(
+    geometryHighlight: new THREE.MeshBasicMaterial(
         {
             color: appColors.SURFACE_HIGHLIGHT,
             side: THREE.DoubleSide,
         }),
 
     // Lines ------------------------------------------------------------------
-    wireframeMaterial: new THREE.LineBasicMaterial(
+    wireframe: new THREE.LineBasicMaterial(
         {
             color: appColors.OUTLINE,
             linewidth: 2,
         }),
-    dimensionLineMaterial: new THREE.LineBasicMaterial(
+    dimensionLine: new THREE.LineBasicMaterial(
         {
             color: appColors.DIMENSION_LINE,
             linewidth: 2,
         }),
-    sunpathLineMaterial: new THREE.LineDashedMaterial(
+    sunpathLine: new THREE.LineDashedMaterial(
         {
-            color: appColors.SUNPATH_LINE_COLOR,
+            color: appColors.SUNPATH_LINE,
             linewidth: 2,
             scale: 1,
             dashSize: 1,
             gapSize: 0.5,
         }),
-    pipeLineMaterial: new LineMaterial(
+    pipeLine: new LineMaterial(
         {
-            color: appColors.PIPE_LINE_COLOR,
+            color: appColors.PIPE_LINE,
             linewidth: 0.04,
             worldUnits: true
         }),
-    pipeLineHighlightMaterial: new LineMaterial(
+    pipeLineHighlight: new LineMaterial(
         {
             color: appColors.PIPE_LINE_HIGHLIGHT,
             linewidth: 0.1,
             worldUnits: true
         }),
-    ductLineMaterial: new LineMaterial(
+    ductLine: new LineMaterial(
         {
-            color: appColors.DUCT_LINE_COLOR,
+            color: appColors.DUCT_LINE,
             linewidth: 0.06,
             worldUnits: true
         }),

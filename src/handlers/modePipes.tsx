@@ -38,7 +38,7 @@ export function pipingModeOnMouseClick(
     if (newLine) {
         if (newLine instanceof LineSegments2) {
             newLine.userData["standardMaterial"] = newLine.material; // Store for changing back later
-            newLine.material = appMaterials.pipeLineHighlightMaterial;
+            newLine.material = appMaterials.pipeLineHighlight;
         }
 
         selectedObjectContext.selectedObjectRef.current = newLine

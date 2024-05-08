@@ -13,7 +13,7 @@ export function loadModelERVDucting(
             for (const key in duct.segments) {
                 const segment = duct.segments[key]
                 const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                const fl = new LineSegments2(seg, appMaterials.ductLineMaterial);
+                const fl = new LineSegments2(seg, appMaterials.ductLine);
                 world.current.ventilationGeometry.add(fl);
             }
         })
@@ -21,7 +21,7 @@ export function loadModelERVDucting(
             for (const key in duct.segments) {
                 const segment = duct.segments[key]
                 const seg = convertLBTLineSegment3DtoLine(segment.geometry, false)
-                const fl = new LineSegments2(seg, appMaterials.ductLineMaterial);
+                const fl = new LineSegments2(seg, appMaterials.ductLine);
                 world.current.ventilationGeometry.add(fl);
             }
         })

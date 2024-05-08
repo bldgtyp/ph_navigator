@@ -12,7 +12,7 @@ export function loadModelShades(
         for (const key in gr) {
             const lbtFace3D = gr[key]
             const geom = convertLBTFace3DToMesh(lbtFace3D.geometry)
-            geom.mesh.material = appMaterials.geometryShadingMaterial;
+            geom.mesh.material = appMaterials.geometryShading;
             world.current.shadingGeometry.add(geom.mesh);
             world.current.shadingGeometry.visible = false;
             world.current.shadingGeometry.castShadow = false;

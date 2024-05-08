@@ -34,7 +34,7 @@ export function surfaceSelectModeOnMouseClick(
     if (newMesh) {
         resetMeshMaterial(selectedObjectContext.selectedObjectRef.current)
         newMesh.userData["standardMaterial"] = newMesh.material; // Store for changing back later
-        newMesh.material = appMaterials.geometryHighlightMaterial;
+        newMesh.material = appMaterials.geometryHighlight;
         selectedObjectContext.selectedObjectRef.current = newMesh
         selectedObjectContext.setSelectedObjectState(newMesh)
     }

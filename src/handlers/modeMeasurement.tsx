@@ -29,7 +29,7 @@ function handleMeasureDistance(
         selectedVertices[1] = hoveringVertex.current
         const line = new THREE.Line(
             new THREE.BufferGeometry().setFromPoints(selectedVertices),
-            appMaterials.dimensionLineMaterial
+            appMaterials.dimensionLine
         );
         line.frustumCulled = false;
         line.renderOrder = 1;
