@@ -6,19 +6,38 @@ import { appMaterials } from '../scene/Materials';
 import { SelectedObjectContextType } from '../contexts/selected_object_context';
 
 
+function resetMeshMaterial(object: THREE.Object3D | null) {
+    if (object instanceof THREE.Mesh) {
+        object.material = object.userData["standardMaterial"];
+    }
+}
+
+/**
+ * Handles the surface select mode on mouse click event.
+ *
+ * @param event - The mouse click event.
+ * @param world - The scene setup.
+ * @param selectedObjectContext - The selected object context.
+ */
 export function surfaceSelectModeOnMouseClick(
     event: any,
     world: SceneSetup,
-    __sel_objContext: SelectedObjectContextType
+    selectedObjectContext: SelectedObjectContextType
 ) {
     const newMesh = getSelectedMeshFromMouseClick(event, world)
     if (newMesh) {
-        if (__sel_objContext.selectedObjectRef.current instanceof THREE.Mesh) {
-            __sel_objContext.selectedObjectRef.current.material = appMaterials.geometryStandardMaterial;
-        }
-
+        resetMeshMaterial(selectedObjectContext.selectedObjectRef.current)
+        newMesh.userData["standardMaterial"] = newMesh.material; // Store for changing back later
         newMesh.material = appMaterials.geometryHighlightMaterial;
-        __sel_objContext.selectedObjectRef.current = newMesh
-        __sel_objContext.setSelectedObjectState(newMesh)
+        selectedObjectContext.selectedObjectRef.current = newMesh
+        selectedObjectContext.setSelectedObjectState(newMesh)
     }
+}
+
+export function handleClearSelectedMesh(
+    selectedObjectContext: SelectedObjectContextType
+) {
+    resetMeshMaterial(selectedObjectContext.selectedObjectRef.current)
+    selectedObjectContext.selectedObjectRef.current = null
+    selectedObjectContext.setSelectedObjectState(null)
 }

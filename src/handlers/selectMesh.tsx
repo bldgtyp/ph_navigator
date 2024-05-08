@@ -1,8 +1,14 @@
 import '../styles/DimensionLines.css';
 import { SceneSetup } from '../scene/SceneSetup';
 import * as THREE from 'three';
-import { appMaterials } from '../scene/Materials';
 
+/**
+ * Retrieves the selected mesh from a mouse click event.
+ * 
+ * @param event - The mouse click event.
+ * @param world - The scene setup object.
+ * @returns The selected THREE.Mesh object, or null if no mesh is selected.
+ */
 export function getSelectedMeshFromMouseClick(
     event: any,
     world: SceneSetup,
@@ -23,17 +29,3 @@ export function getSelectedMeshFromMouseClick(
     return mesh ? mesh.object as THREE.Mesh : null;
 }
 
-export function handleClearSelectedMesh(
-    selectedObjectRef: React.MutableRefObject<THREE.Object3D | null>,
-    setSelectedObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>,
-) {
-    if (selectedObjectRef && selectedObjectRef.current instanceof THREE.Mesh) {
-        if ((selectedObjectRef.current as THREE.Mesh).userData["face_type"] == "Aperture") {
-            selectedObjectRef.current.material = appMaterials.geometryWindowMaterial;
-        } else {
-            selectedObjectRef.current.material = appMaterials.geometryStandardMaterial;
-        }
-    }
-    selectedObjectRef.current = null;
-    setSelectedObject(null);
-}

@@ -13,7 +13,6 @@ import { SceneSetup } from '../scene/SceneSetup';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
-import { handleClearSelectedMesh } from '../handlers/selectMesh';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 import { loadModelFaces } from '../loaders/load_model_faces';
 import { loadModelSpaces } from '../loaders/load_model_spaces';
@@ -23,7 +22,7 @@ import { loadModelERVDucting } from '../loaders/load_erv_ducting';
 import { loadModelShades } from '../loaders/load_model_shades';
 import { useAppStateContext } from '../contexts/app_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
-
+import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -106,7 +105,6 @@ function Viewer(props: ViewerProps) {
     // Dismount Handlers for AppStates
     // ------------------------------------------------------------------------
     addDismountHandler(0, "hideDefault", () => {
-        // handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
         hoveringVertex.current = null;
         dimensionLinesRef.current.clear()
         world.current.buildingGeometryMeshes.visible = false;
@@ -114,7 +112,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryVertices.visible = false;
     });
     addDismountHandler(1, "hideSurfaceQuery", () => {
-        // handleClearSelectedMesh(selectedObjectRef, setSelectedObject)
+        handleClearSelectedMesh(selectedObjectContext)
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
