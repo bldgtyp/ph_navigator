@@ -25,6 +25,8 @@ import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
 import { spacesModeOnMouseClick } from '../handlers/modeSpacesQuery';
 import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
+import { pipingModeOnMouseClick } from '../handlers/modePipes';
+import { handleClearSelectedLine } from '../handlers/modePipes';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -64,6 +66,12 @@ function Viewer(props: ViewerProps) {
     addEventHandler(4, "click",
         useCallback(
             (e: any) => { spacesModeOnMouseClick(e, world.current, selectedObjectContext) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
+    );
+    addEventHandler(7, "click",
+        useCallback(
+            (e: any) => { pipingModeOnMouseClick(e, world.current, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
@@ -152,6 +160,7 @@ function Viewer(props: ViewerProps) {
         world.current.ventilationGeometry.visible = false
     });
     addDismountHandler(7, "hideHotWaterPiping", () => {
+        handleClearSelectedLine(selectedObjectContext)
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
     });

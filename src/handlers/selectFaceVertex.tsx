@@ -1,4 +1,3 @@
-import '../styles/DimensionLines.css';
 import { SceneSetup } from '../scene/SceneSetup';
 import * as THREE from 'three';
 

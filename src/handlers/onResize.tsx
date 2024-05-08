@@ -1,4 +1,3 @@
-
 import { SceneSetup } from '../scene/SceneSetup';
 
 /**

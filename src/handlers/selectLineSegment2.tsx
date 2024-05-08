@@ -1,18 +1,19 @@
 import * as THREE from 'three';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 
 /**
- * Retrieves the selected mesh from a mouse click event.
+ * Retrieves the selected LineSegments2 object from a mouse click event.
  * 
  * @param event - The mouse click event.
  * @param camera - The THREE.Camera object.
- * @param objects - The list of THREE.Object3D objects to check for selection with.
- * @returns The selected THREE.Mesh object, or null if no mesh is selected.
+ * @param objects - An array of THREE.Object3D objects to check for intersection.
+ * @returns The selected LineSegments2 object, or null if no object is selected.
  */
-export function getSelectedMeshFromMouseClick(
+export function getSelectedLineFromMouseClick(
     event: any,
     camera: THREE.Camera,
     objects: THREE.Object3D[]
-): THREE.Mesh | null {
+): LineSegments2 | null {
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
     const pointer = new THREE.Vector2();
@@ -25,7 +26,6 @@ export function getSelectedMeshFromMouseClick(
 
     // Find the First (closets to camera) object intersecting the picking ray
     const intersects = ray_caster.intersectObjects(objects);
-    const mesh = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
-    return mesh ? mesh.object as THREE.Mesh : null;
+    const mesh = intersects.find(intersect => intersect.object instanceof LineSegments2) || null;
+    return mesh ? mesh.object as LineSegments2 : null;
 }
-

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import '../styles/DimensionLines.css';
 import { SceneSetup } from '../scene/SceneSetup';
 import { getSelectedMeshFromMouseClick } from './selectMesh';
 import { appMaterials } from '../scene/Materials';

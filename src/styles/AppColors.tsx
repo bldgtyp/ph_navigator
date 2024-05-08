@@ -18,6 +18,7 @@ export const appColors = {
     DIMENSION_LINE: new THREE.Color(0xe600e6),
     SUNPATH_LINE_COLOR: new THREE.Color(0xe600e6),
     PIPE_LINE_COLOR: new THREE.Color(0xf07d60),
+    PIPE_LINE_HIGHLIGHT: new THREE.Color(0xe600e6),
     DUCT_LINE_COLOR: new THREE.Color(0x3f13ed),
 
     // Graphs

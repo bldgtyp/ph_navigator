@@ -3,7 +3,7 @@ import { appColors } from '../styles/AppColors';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 
 export const appMaterials = {
-    // Surfaces
+    // Surfaces ---------------------------------------------------------------
     groundShadowMaterial: new THREE.ShadowMaterial(
         {
             opacity: 0.3,
@@ -34,7 +34,7 @@ export const appMaterials = {
             side: THREE.DoubleSide,
         }),
 
-    // Lines
+    // Lines ------------------------------------------------------------------
     wireframeMaterial: new THREE.LineBasicMaterial(
         {
             color: appColors.OUTLINE,
@@ -57,6 +57,12 @@ export const appMaterials = {
         {
             color: appColors.PIPE_LINE_COLOR,
             linewidth: 0.04,
+            worldUnits: true
+        }),
+    pipeLineHighlightMaterial: new LineMaterial(
+        {
+            color: appColors.PIPE_LINE_HIGHLIGHT,
+            linewidth: 0.1,
             worldUnits: true
         }),
     ductLineMaterial: new LineMaterial(
