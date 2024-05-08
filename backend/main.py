@@ -270,7 +270,7 @@ def hot_water_systems(project_id: str):
 
     hw_system_dicts = []
     for hw_system in hw_systems.values():
-        hw_system_dicts.append(hw_system.to_dict())
+        hw_system_dicts.append(hw_system.to_dict(_include_properties=True))
     return {"message": json.dumps(hw_system_dicts)}
 
 

@@ -10,6 +10,7 @@ type hbPhHvacPipeSegment = {
     daily_period: number;
     water_temp: number;
     material_value: string;
+    length: number;
 };
 
 
