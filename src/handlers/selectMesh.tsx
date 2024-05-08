@@ -6,12 +6,14 @@ import * as THREE from 'three';
  * Retrieves the selected mesh from a mouse click event.
  * 
  * @param event - The mouse click event.
- * @param world - The scene setup object.
+ * @param camera - The THREE.Camera object.
+ * @param objects - The list of THREE.Object3D objects to check for selection with.
  * @returns The selected THREE.Mesh object, or null if no mesh is selected.
  */
 export function getSelectedMeshFromMouseClick(
     event: any,
-    world: SceneSetup,
+    camera: THREE.Camera,
+    objects: THREE.Object3D[]
 ): THREE.Mesh | null {
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
@@ -21,10 +23,10 @@ export function getSelectedMeshFromMouseClick(
 
     // update the picking ray with the camera and pointer position
     const ray_caster = new THREE.Raycaster();
-    ray_caster.setFromCamera(pointer, world.camera);
+    ray_caster.setFromCamera(pointer, camera);
 
     // Find the First (closets to camera) object intersecting the picking ray
-    const intersects = ray_caster.intersectObjects(world.buildingGeometryMeshes.children);
+    const intersects = ray_caster.intersectObjects(objects);
     const mesh = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
     return mesh ? mesh.object as THREE.Mesh : null;
 }

@@ -23,6 +23,7 @@ import { loadModelShades } from '../loaders/load_model_shades';
 import { useAppStateContext } from '../contexts/app_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
+import { spacesModeOnMouseClick } from '../handlers/modeSpacesQuery';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
@@ -56,6 +57,12 @@ function Viewer(props: ViewerProps) {
     addEventHandler(2, "pointermove",
         useCallback(
             (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
+    );
+    addEventHandler(4, "click",
+        useCallback(
+            (e: any) => { spacesModeOnMouseClick(e, world.current, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );

@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { useRef } from 'react';
 import Viewer from './Viewer';
-import FacesPanel from './FaceDataPanel';
+import InfoPanel from './InfoPanel';
 import AppStateMenubar from './AppStateMenubar';
 import ResultsSidebar from './ResultsSidebar';
 import { SceneSetup } from '../scene/SceneSetup';
@@ -25,7 +25,7 @@ function Project() {
                     hoveringVertex={hoveringVertex}
                     dimensionLinesRef={dimensionLinesRef}
                 />
-                <FacesPanel />
+                <InfoPanel />
             </SelectedObjectContextProvider>
             <AppStateMenubar />
             <ResultsSidebar />

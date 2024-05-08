@@ -5,7 +5,7 @@ import { Paper, IconButton, Stack } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import fetchData from "../hooks/fetchAirTable";
 import { AirTableResultsRecord, ResultType } from "../types/airtable/record_results";
-import { generateDefaultRow } from "./DataGridFunctions";
+import { generateDefaultRow } from "./graphs/DataGridFunctions";
 import { BarGraph } from "./graphs/BarGraph";
 import { barChartSettings } from "../styles/BarCharts";
 

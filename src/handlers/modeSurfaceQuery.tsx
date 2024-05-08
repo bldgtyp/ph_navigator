@@ -5,10 +5,16 @@ import { getSelectedMeshFromMouseClick } from './selectMesh';
 import { appMaterials } from '../scene/Materials';
 import { SelectedObjectContextType } from '../contexts/selected_object_context';
 
-
+/**
+ * Resets the material of a THREE.Mesh object to its original standard material.
+ * @param object - The THREE.Object3D or null object whose material needs to be reset.
+ */
 function resetMeshMaterial(object: THREE.Object3D | null) {
     if (object instanceof THREE.Mesh) {
-        object.material = object.userData["standardMaterial"];
+        const mat = object.userData["standardMaterial"];
+        if (mat !== undefined) {
+            object.material = mat;
+        }
     }
 }
 
@@ -24,7 +30,8 @@ export function surfaceSelectModeOnMouseClick(
     world: SceneSetup,
     selectedObjectContext: SelectedObjectContextType
 ) {
-    const newMesh = getSelectedMeshFromMouseClick(event, world)
+    event.preventDefault();
+    const newMesh = getSelectedMeshFromMouseClick(event, world.camera, world.buildingGeometryMeshes.children)
     if (newMesh) {
         resetMeshMaterial(selectedObjectContext.selectedObjectRef.current)
         newMesh.userData["standardMaterial"] = newMesh.material; // Store for changing back later
@@ -34,6 +41,12 @@ export function surfaceSelectModeOnMouseClick(
     }
 }
 
+
+/**
+ * Clears the selected mesh and resets its material.
+ *
+ * @param selectedObjectContext - The context object containing the selected mesh and its state.
+ */
 export function handleClearSelectedMesh(
     selectedObjectContext: SelectedObjectContextType
 ) {
