@@ -11,7 +11,7 @@ import { fetchModelERVDucting } from '../hooks/fetchModelERVDucting';
 import { fetchModelShades } from '../hooks/fetchModelShades';
 import { SceneSetup } from '../scene/SceneSetup';
 import { onResize } from '../handlers/onResize';
-// import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
+import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { handleClearSelectedMesh } from '../handlers/selectMesh';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
@@ -23,7 +23,6 @@ import { loadModelERVDucting } from '../loaders/load_erv_ducting';
 import { loadModelShades } from '../loaders/load_model_shades';
 import { useAppStateContext } from '../contexts/app_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
-import { testSelectOnClick } from '../handlers/modeSurfaceQuery';
 
 
 interface ViewerProps {
@@ -45,7 +44,7 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     addEventHandler(1, "click",
         useCallback(
-            (e: any) => { testSelectOnClick(e, world.current, selectedObjectContext) }
+            (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
