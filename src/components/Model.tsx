@@ -30,11 +30,11 @@ export function Model(props: ModelProps) {
         world.current.reset();
         if (modelId !== undefined && projectId !== undefined) {
             fetchModelFaces(`${projectId}/${modelId}/model_faces`).then(data => loadModelFaces(world, data))
-            // fetchModelSpaces(`${projectId}/${modelId}/model_spaces`).then(data => loadModelSpaces(world, data));
+            fetchModelSpaces(`${projectId}/${modelId}/model_spaces`).then(data => loadModelSpaces(world, data));
             // fetchSunPath(`${projectId}/${modelId}/sun_path`).then(data => loadModelSunPath(world, data));
-            // fetchModelHotWaterPiping(`${projectId}/${modelId}/hot_water_systems`).then(data => loadModelHotWaterPiping(world, data));
-            // fetchModelERVDucting(`${projectId}/${modelId}/ventilation_systems`).then(data => loadModelERVDucting(world, data));
-            // fetchModelShades(`${projectId}/${modelId}/shading_elements`).then(data => loadModelShades(world, data));
+            fetchModelHotWaterPiping(`${projectId}/${modelId}/hot_water_systems`).then(data => loadModelHotWaterPiping(world, data));
+            fetchModelERVDucting(`${projectId}/${modelId}/ventilation_systems`).then(data => loadModelERVDucting(world, data));
+            fetchModelShades(`${projectId}/${modelId}/shading_elements`).then(data => loadModelShades(world, data));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId, modelId]);

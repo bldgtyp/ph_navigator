@@ -63,14 +63,20 @@
 - [X] Refactor App State to useReducer / useContext
 - [X] Refactor AppState to Custom-Context
   - [X] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
-- [ ] Refactor Selected-Object to useReducer / useContext / Custom-Context
-- [ ] Refactor Dimension-Lines to useReducer / useContext / Custom-Context
+- [X] Refactor Selected-Object to useReducer / useContext / Custom-Context
+- [X] Refactor Dimension-Lines to useReducer / useContext / Custom-Context
 - [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
 - [X] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
-- [ ] Select Rooms, display room-data in panel on left side
+- [X] Select Rooms, display room-data in panel on left side
 - [ ] When selecting a surface for query - show all the edge dims in very light text
 - [ ] Move results to top to allow for app-state bar to the right
 - [ ] When selecting a pipe, show the dims alongside
+
+#### NavBar:
+- [ ] Add model source url
+- [ ] Add 'home' icon on left side (Navigator)
+- [ ] Make so project cannot be selected from the dropdown, only the home page
+- [ ] Fix EPW file data source. Location in upper right (map link)
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin
