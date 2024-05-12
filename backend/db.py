@@ -50,8 +50,7 @@ class PhNavigatorModelInstance:
     def download_hb_json(self) -> dict:
         """Download the HBJSON data from the URL and return the JSON content."""
         msg = f"Downloading RAW JSON file from: {self.raw_url}"
-        print(msg)
-        logging.info(msg)
+        logger.info(msg)
 
         response = requests.get(self.raw_url)
         response.raise_for_status()  # Raise an exception for HTTP errors
@@ -59,7 +58,6 @@ class PhNavigatorModelInstance:
 
     def get_hb_model_from_source(self) -> Model:
         msg = f"Getting HB-Model from: {self.url}"
-        print(msg)
         logger.info(msg)
         model_dict = self.download_hb_json()
         return read_HBJSON_file.convert_hbjson_dict_to_hb_model(model_dict)
@@ -94,3 +92,6 @@ class FakeDB:
         if project_id not in self._data:
             self._data[project_id] = PhNavigatorProject()
         self._data[project_id].add_ph_navigator_model(model_id, model_instance)
+
+    def get_ph_navigator_model(self, project_id: str, model_id: str) -> PhNavigatorModelInstance:
+        return self._data[project_id].get_ph_navigator_model(model_id)

@@ -74,12 +74,11 @@ db.add_ph_navigator_model(
 @app.get("/{project_id}/{model_id}/model_faces")
 def model_faces(project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
-    project = db.get_ph_navigator_project(project_id)
-    model_instance = project.get_ph_navigator_model(model_id)
+    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
 
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
-    for face in model_instance.hb_model.faces:
+    for face in ph_nav_model.hb_model.faces:
         face_dict = face.to_dict()
         face_dict["geometry"]["mesh"] = face.punched_geometry.triangulated_mesh3d.to_dict()
         face_dict["geometry"]["area"] = face.punched_geometry.area
