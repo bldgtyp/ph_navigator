@@ -9,6 +9,8 @@ import ResultsSidebar from './ResultsSidebar';
 import { SceneSetup } from '../scene/SceneSetup';
 import { AppStateContextProvider } from '../contexts/app_state_context';
 import { SelectedObjectContextProvider } from '../contexts/selected_object_context';
+import { Model } from './Model';
+import { Route, Routes } from "react-router-dom";
 
 function Project() {
     const world = useRef(new SceneSetup());
@@ -26,6 +28,9 @@ function Project() {
                     dimensionLinesRef={dimensionLinesRef}
                 />
                 <InfoPanel />
+                <Routes>
+                    <Route path=":modelId/" element={<Model world={world} />} />
+                </Routes>
             </SelectedObjectContextProvider>
             <AppStateMenubar />
             <ResultsSidebar />
