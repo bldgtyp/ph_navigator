@@ -29,26 +29,7 @@ from honeybee_ph.properties.room import RoomPhProperties
 from honeybee_phhvac.properties.room import RoomPhHvacProperties
 
 from PHX.from_HBJSON import read_HBJSON_file
-
-
 from backend.db import FakeDB, ModelInstance
-
-db = FakeDB()
-# db.add_model(
-#     "2305",
-#     "409_SACKETT_240508",
-#     ModelInstance(
-#         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson", None
-#     ),
-# )
-print("adding model")
-db.add_model(
-    "2306",
-    "test_model",
-    ModelInstance(
-        "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
-    ),
-)
 
 app = FastAPI()
 
@@ -68,6 +49,35 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+db = FakeDB()
+# db.add_model(
+#     "2305",
+#     "409_SACKETT_240508",
+#     ModelInstance(
+#         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson", None
+#     ),
+# )
+print("adding model")
+db.add_model(
+    "2306",
+    "test_model",
+    ModelInstance(
+        "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
+    ),
+)
+
+# -=-
+print("testing....")
+import requests
+
+_url_ = "https://raw.githubusercontent.com/bldgtyp/ph_navigator_data/main/projects/2306/test_model.hbjson"
+print("downloading:", _url_)
+response = requests.get(_url_)
+print("got response:", response)
+response.raise_for_status()
+# print("response.json():", response.json())
 
 
 # ----------------------------------------------------------------------------------------------------------------------
