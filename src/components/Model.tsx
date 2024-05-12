@@ -24,7 +24,6 @@ export function Model(props: ModelProps) {
     const { projectId, modelId } = useParams();
     const { world } = props;
 
-
     // Load the Model-Elements from the API based on the project / model ids
     // ------------------------------------------------------------------------
     useEffect(() => {

@@ -1,0 +1,20 @@
+.nav-bar {
+    position: absolute;
+    left: 20px;
+    top: 7px;
+    margin: 0px;
+}
+
+.project-selector {
+    font-size: 0.7em;
+    font-weight: 800;
+    border: none;
+    text-decoration: none;
+}
+
+.model-selector {
+    font-size: 0.7em;
+    font-weight: 300;
+    border: none;
+    text-decoration: none;
+}
