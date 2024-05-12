@@ -41,12 +41,12 @@ db = FakeDB()
 #         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson", None
 #     ),
 # )
+print("adding model")
 db.add_model(
     "2306",
     "test_model",
     ModelInstance(
         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
-        None,
     ),
 )
 

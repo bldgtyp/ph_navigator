@@ -15,7 +15,7 @@ class ModelInstance:
     """A single Model instance (variant) with a URI."""
 
     url: str
-    _hb_model: Model | None
+    _hb_model: Model | None = None
 
     @property
     def hb_model(self) -> Model:
@@ -49,14 +49,18 @@ class ModelInstance:
 
     def download_hb_json(self) -> dict:
         """Download the HBJSON data from the URL and return the JSON content."""
-        logger.info(f"Downloading RAW JSON file from: {self.raw_url}")
+        msg = f"Downloading RAW JSON file from: {self.raw_url}"
+        print(msg)
+        logging.info(msg)
 
         response = requests.get(self.raw_url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         return response.json()
 
     def get_hb_model_from_source(self) -> Model:
-        logger.info(f"Getting HB-Model from: {self.url}")
+        msg = f"Getting HB-Model from: {self.url}"
+        print(msg)
+        logger.info(msg)
         model_dict = self.download_hb_json()
         return read_HBJSON_file.convert_hbjson_dict_to_hb_model(model_dict)
 
