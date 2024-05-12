@@ -11,8 +11,8 @@ logger = logging.getLogger("uvicorn")
 
 
 @dataclass
-class ModelInstance:
-    """A single Model instance (variant) with a URI."""
+class PhNavigatorModelInstance:
+    """A single PH-Navigator Model instance (variant) with a URI."""
 
     url: str
     _hb_model: Model | None = None
@@ -66,26 +66,31 @@ class ModelInstance:
 
 
 @dataclass
-class Project:
-    """A single Project with one or more Model instances."""
+class PhNavigatorProject:
+    """A single PJ-Navigator Project with one or more PH-Navigator Model instances."""
 
-    models: dict[str, ModelInstance] = field(default_factory=dict)
+    _models: dict[str, PhNavigatorModelInstance] = field(default_factory=dict)
 
-    def add_model(self, model_id: str, model_instance: ModelInstance):
-        self.models[model_id] = model_instance
+    def add_ph_navigator_model(self, model_id: str, model_instance: PhNavigatorModelInstance):
+        self._models[model_id] = model_instance
 
-    def get_model(self, model_id: str) -> ModelInstance:
-        return self.models[model_id]
+    def get_ph_navigator_model(self, model_id: str) -> PhNavigatorModelInstance:
+        return self._models[model_id]
 
 
 class FakeDB:
+    """Fake DB to store PH-Navigator Projects and Models."""
+
     def __init__(self):
-        self._data: dict[str, Project] = {}
+        self._data: dict[str, PhNavigatorProject] = {}
 
-    def add_model(self, project_id: str, model_id: str, model_instance: ModelInstance):
-        if project_id not in self._data:
-            self._data[project_id] = Project()
-        self._data[project_id].models[model_id] = model_instance
+    def add_ph_navigator_project(self, project_id: str, project: PhNavigatorProject):
+        self._data[project_id] = project
 
-    def get_project(self, project_id: str) -> Project:
+    def get_ph_navigator_project(self, project_id: str) -> PhNavigatorProject:
         return self._data[project_id]
+
+    def add_ph_navigator_model(self, project_id: str, model_id: str, model_instance: PhNavigatorModelInstance):
+        if project_id not in self._data:
+            self._data[project_id] = PhNavigatorProject()
+        self._data[project_id].add_ph_navigator_model(model_id, model_instance)

@@ -28,8 +28,7 @@ from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_ph.properties.room import RoomPhProperties
 from honeybee_phhvac.properties.room import RoomPhHvacProperties
 
-from PHX.from_HBJSON import read_HBJSON_file
-from backend.db import FakeDB, ModelInstance, Project
+from backend.db import FakeDB, PhNavigatorModelInstance
 
 app = FastAPI()
 
@@ -59,34 +58,13 @@ db = FakeDB()
 #         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson", None
 #     ),
 # )
-# print("adding model")
-# db.add_model(
-#     "2306",
-#     "test_model",
-#     ModelInstance(
-#         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
-#     ),
-# )
-
-# ---
-print("testing....")
-import requests
-
-_url_ = "https://raw.githubusercontent.com/bldgtyp/ph_navigator_data/main/projects/2306/test_model.hbjson"
-print("downloading:", _url_)
-response = requests.get(_url_)
-print("got response:", response)
-response.raise_for_status()
-print("response status:", response.status_code)
-model_dict = response.json()
-print(
-    "got model dict",
+db.add_ph_navigator_model(
+    "2306",
+    "test_model",
+    PhNavigatorModelInstance(
+        "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
+    ),
 )
-hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(model_dict)
-print("got hb-model:", hb_model.display_name)
-
-db._data["2306"] = Project()
-db._data["2306"].models["test_model"] = ModelInstance(_url_, hb_model)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -96,8 +74,8 @@ db._data["2306"].models["test_model"] = ModelInstance(_url_, hb_model)
 @app.get("/{project_id}/{model_id}/model_faces")
 def model_faces(project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
-    project = db.get_project(project_id)
-    model_instance = project.get_model(model_id)
+    project = db.get_ph_navigator_project(project_id)
+    model_instance = project.get_ph_navigator_model(model_id)
 
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
