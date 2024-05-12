@@ -16,7 +16,7 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <Routes>
-          <Route path=":projectId/" element={<Project />} />
+          <Route path=":projectId/:modelId/" element={<Project />} />
         </Routes>
       </ThemeProvider>
     </Router >
