@@ -1,4 +1,5 @@
 # Fake DB for now...
+from collections import defaultdict
 from dataclasses import dataclass, field
 import logging
 import requests
@@ -75,6 +76,9 @@ class PhNavigatorProject:
     def get_ph_navigator_model(self, model_id: str) -> PhNavigatorModelInstance:
         return self._models[model_id]
 
+    def model_ids(self) -> list[str]:
+        return list(self._models.keys())
+
 
 class FakeDB:
     """Fake DB to store PH-Navigator Projects and Models."""
@@ -95,3 +99,18 @@ class FakeDB:
 
     def get_ph_navigator_model(self, project_id: str, model_id: str) -> PhNavigatorModelInstance:
         return self._data[project_id].get_ph_navigator_model(model_id)
+
+    def get_project_and_model_ids(self) -> dict[str, list[str]]:
+        """Return a dictionary of project IDs and their corresponding model IDs.
+
+        Example:
+        {
+            "project_1": ["model_1", "model_2", ...],
+            "project_2": ["model_3", "model_4", ...],
+            ...
+        }
+        """
+        model_ids: dict[str, list[str]] = defaultdict(list)
+        for project_id, project in self._data.items():
+            model_ids[project_id].extend(project.model_ids())
+        return model_ids

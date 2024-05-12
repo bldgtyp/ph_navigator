@@ -27,6 +27,7 @@ export function Model(props: ModelProps) {
     // Load the Model-Elements from the API based on the project / model ids
     // ------------------------------------------------------------------------
     useEffect(() => {
+        world.current.reset();
         if (modelId !== undefined && projectId !== undefined) {
             fetchModelFaces(`${projectId}/${modelId}/model_faces`).then(data => loadModelFaces(world, data))
             // fetchModelSpaces(`${projectId}/${modelId}/model_spaces`).then(data => loadModelSpaces(world, data));

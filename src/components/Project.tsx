@@ -29,6 +29,7 @@ function Project() {
                 />
                 <InfoPanel />
                 <Routes>
+                    <Route path="/" element={<Model world={world} />} />
                     <Route path=":modelId/" element={<Model world={world} />} />
                 </Routes>
             </SelectedObjectContextProvider>

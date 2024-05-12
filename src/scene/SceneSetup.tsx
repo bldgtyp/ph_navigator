@@ -161,4 +161,17 @@ export class SceneSetup {
         // const shadowHelper = new THREE.CameraHelper(light_2.shadow.camera);
         // this.scene.add(shadowHelper);
     }
+
+    reset() {
+        this.buildingGeometryMeshes.clear();
+        this.buildingGeometryOutlines.clear();
+        this.buildingGeometryVertices.clear();
+        this.spaceGeometryMeshes.clear();
+        this.spaceGeometryOutlines.clear();
+        this.spaceGeometryVertices.clear();
+        this.sunPathDiagram.clear();
+        this.pipeGeometry.clear();
+        this.ventilationGeometry.clear();
+        this.shadingGeometry.clear();
+    }
 }

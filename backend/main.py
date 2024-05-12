@@ -51,13 +51,13 @@ app.add_middleware(
 
 
 db = FakeDB()
-# db.add_model(
-#     "2305",
-#     "409_SACKETT_240508",
-#     ModelInstance(
-#         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson", None
-#     ),
-# )
+db.add_ph_navigator_model(
+    "2305",
+    "409_SACKETT_240508",
+    PhNavigatorModelInstance(
+        "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson", None
+    ),
+)
 db.add_ph_navigator_model(
     "2306",
     "test_model",
@@ -65,6 +65,21 @@ db.add_ph_navigator_model(
         "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
     ),
 )
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+@app.get("/get_model_listing")
+def get_model_listing():
+    """Return a dictionary of project IDs and their corresponding model IDs.
+
+    message : {
+        "project_1": ["model_1", "model_2", ...],
+        "project_2": ["model_3", "model_4", ...], ...
+    }
+    """
+
+    return {"message": json.dumps(db.get_project_and_model_ids())}
 
 
 # ----------------------------------------------------------------------------------------------------------------------
