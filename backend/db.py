@@ -1,9 +1,10 @@
 # Fake DB for now...
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 import logging
 import requests
 from urllib.parse import urlparse
+from uuid import uuid4, UUID
 
 from honeybee.model import Model
 from PHX.from_HBJSON import read_HBJSON_file
@@ -62,66 +63,176 @@ def get_hb_model_from_url(url: str) -> Model | None:
 
 @dataclass
 class PhNavigatorModelInstance:
-    """A single PH-Navigator Model instance (variant) with a URI."""
+    """A single PH-Navigator Model instance (variant)."""
 
+    identifier: UUID = field(default_factory=uuid4)
+    display_name: str = ""
     url: str | None = None
     hb_model: Model | None = None
 
 
 @dataclass
 class PhNavigatorProject:
-    """A single PJ-Navigator Project with one or more PH-Navigator Model instances."""
+    """A single PH-Navigator Project with one or more PH-Navigator Model instances."""
 
-    _models: dict[str, PhNavigatorModelInstance] = field(default_factory=dict)
+    identifier: UUID = field(default_factory=uuid4)
+    display_name: str = ""
+    models: dict[UUID, PhNavigatorModelInstance] = field(default_factory=dict)
 
-    def add_ph_navigator_model(self, model_id: str, model_instance: PhNavigatorModelInstance):
-        self._models[model_id] = model_instance
+    def __getitem__(self, key: UUID) -> PhNavigatorModelInstance:
+        return self.models[key]
 
-    def get_ph_navigator_model(self, model_id: str) -> PhNavigatorModelInstance:
-        return self._models[model_id]
+    def __setitem__(self, key: UUID, value: PhNavigatorModelInstance):
+        self.models[key] = value
 
-    def model_ids(self) -> list[str]:
-        return list(self._models.keys())
+    def __contains__(self, key: UUID) -> bool:
+        return key in self.models
+
+    def add_ph_navigator_model(self, model_instance: PhNavigatorModelInstance):
+        self.models[model_instance.identifier] = model_instance
+
+    def get_ph_navigator_model_by_id(self, model_id: UUID) -> PhNavigatorModelInstance | None:
+        return self.models.get(model_id, None)
+
+    def get_ph_navigator_model_by_name(self, model_name: str) -> PhNavigatorModelInstance | None:
+        for model in self.models.values():
+            if model.display_name == model_name:
+                return model
+        return None
+
+    def model_ids(self) -> list[UUID]:
+        return list(self.models.keys())
+
+    def model_names(self) -> list[str]:
+        return [model.display_name for model in self.models.values()]
+
+    def add_model_from_hbjson_dict(self, _model_name: str, hb_json: dict):
+        """Add a new HBJSON model object to the Project."""
+        hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json)
+        model_instance = PhNavigatorModelInstance(display_name=_model_name, url="", hb_model=hb_model)
+        self.add_ph_navigator_model(model_instance)
+
+    def add_model_from_github_url(self, _model_name: str, url: str):
+        """Add a new HBJSON model to the Project from a URL address."""
+        url = get_github_raw_url(url)
+        hb_model = get_hb_model_from_url(url)
+        model_instance = PhNavigatorModelInstance(display_name=_model_name, url=url, hb_model=hb_model)
+        self.add_ph_navigator_model(model_instance)
+
+
+@dataclass
+class PhNavigatorTeam:
+    """A single PH-Navigator Team with one or more PH-Navigator Projects."""
+
+    identifier: UUID = field(default_factory=uuid4)
+    display_name: str = ""
+    projects: dict[UUID, PhNavigatorProject] = field(default_factory=dict)
+
+    def __getitem__(self, key: UUID) -> PhNavigatorProject:
+        return self.projects[key]
+
+    def __setitem__(self, key: UUID, value: PhNavigatorProject):
+        self.projects[key] = value
+
+    def __contains__(self, key: UUID) -> bool:
+        return key in self.projects
+
+    def add_new_project(self, project_name: str) -> PhNavigatorProject:
+        project = self.get_ph_navigator_project_by_name(project_name)
+        if project:
+            return project
+
+        project_id = uuid4()
+        self.projects[project_id] = PhNavigatorProject(display_name=project_name)
+        return self.projects[project_id]
+
+    def add_ph_navigator_project(self, project_instance: PhNavigatorProject):
+        self.projects[project_instance.identifier] = project_instance
+
+    def get_ph_navigator_project_by_id(self, project_id: UUID) -> PhNavigatorProject | None:
+        return self.projects.get(project_id, None)
+
+    def get_ph_navigator_project_by_name(self, project_name: str) -> PhNavigatorProject | None:
+        for project in self.projects.values():
+            if project.display_name == project_name:
+                return project
+        return None
+
+    def project_ids(self) -> list[UUID]:
+        return list(self.projects.keys())
+
+    def project_names(self) -> list[str]:
+        return [project.display_name for project in self.projects.values()]
 
 
 class FakeDB:
     """Fake DB to store PH-Navigator Projects and Models."""
 
     def __init__(self):
-        self._data: dict[str, PhNavigatorProject] = {}
+        self._data: dict[UUID, PhNavigatorTeam] = {}
 
-    def add_ph_navigator_model(self, project_id: str, model_id: str, model_instance: PhNavigatorModelInstance):
-        if project_id not in self._data:
-            self._data[project_id] = PhNavigatorProject()
-        self._data[project_id].add_ph_navigator_model(model_id, model_instance)
+    def add_new_team(self, team_name: str) -> PhNavigatorTeam:
+        team = self.get_team_by_name(team_name)
+        if team:
+            return team
 
-    def get_ph_navigator_model(self, project_id: str, model_id: str) -> PhNavigatorModelInstance:
-        return self._data[project_id].get_ph_navigator_model(model_id)
+        team_id = uuid4()
+        self._data[team_id] = PhNavigatorTeam(display_name=team_name)
+        return self._data[team_id]
 
-    def get_project_and_model_ids(self) -> dict[str, list[str]]:
-        """Return a dictionary of project IDs and their corresponding model IDs.
+    def get_team_by_id(self, team_id: UUID) -> PhNavigatorTeam | None:
+        return self._data.get(team_id, None)
+
+    def get_team_by_name(self, team_name: str) -> PhNavigatorTeam | None:
+        for team in self._data.values():
+            if team.display_name == team_name:
+                return team
+        return None
+
+    def get_ph_navigator_model_by_id(
+        self, team_id: UUID, project_id: UUID, model_id: UUID
+    ) -> PhNavigatorModelInstance | None:
+        team = self._data.get(team_id, None)
+        if not team:
+            return None
+
+        project = team.get_ph_navigator_project_by_id(project_id)
+        if not project:
+            return None
+
+        return project.get_ph_navigator_model_by_id(model_id)
+
+    def get_ph_navigator_model_by_name(
+        self, team_name: str, project_name: str, model_name: str
+    ) -> PhNavigatorModelInstance | None:
+        team = self.get_team_by_name(team_name)
+        if not team:
+            return None
+
+        project = team.get_ph_navigator_project_by_name(project_name)
+        if not project:
+            return None
+
+        return project.get_ph_navigator_model_by_name(model_name)
+
+    def get_id_tree(self) -> dict:
+        """Return a dictionary of Team, Project, and Model Ids in a dict.
 
         Example:
         {
-            "project_1": ["model_1", "model_2", ...],
-            "project_2": ["model_3", "model_4", ...],
+            "team_1": {
+                "project_1": {
+                    "project_1": ["model_1", "model_2", ...],
+                    "project_2": ["model_3", "model_4", ...],
+                    ...
+                },
+                project_2: {...},
+            },
+            "team_2": {...},
             ...
         }
         """
-        model_ids: dict[str, list[str]] = defaultdict(list)
-        for project_id, project in self._data.items():
-            model_ids[project_id].extend(project.model_ids())
-        return model_ids
-
-    def add_from_hbjson_dict(self, project_id: str, model_id: str, hb_json: dict):
-        """Add a new HBJSON model object to the FakeDB."""
-        hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json)
-        model_instance = PhNavigatorModelInstance(url="", hb_model=hb_model)
-        self.add_ph_navigator_model(project_id, model_id, model_instance)
-
-    def add_from_github_url(self, project_id: str, model_id: str, url: str):
-        """Add a new HBJSON model object to the FakeDB."""
-        url = get_github_raw_url(url)
-        hb_model = get_hb_model_from_url(url)
-        model_instance = PhNavigatorModelInstance(url=url, hb_model=hb_model)
-        self.add_ph_navigator_model(project_id, model_id, model_instance)
+        d = {}
+        # for team_id, team in self._data.items():
+        #     d[team_id] = asdict(team)
+        return d

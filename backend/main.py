@@ -50,15 +50,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# -- Create the fake DB and add some sample project data
 db = FakeDB()
-db.add_from_github_url(
-    "2305",
+team = db.add_new_team("bldgtyp")
+project_2305 = team.add_new_project("2305")
+project_2305.add_model_from_github_url(
     "409_SACKETT_240508",
     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson",
 )
-db.add_from_github_url(
-    "2306",
+project_2306 = team.add_new_project("2306")
+project_2306.add_model_from_github_url(
     "test_model",
     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
 )
@@ -77,11 +78,13 @@ def get_model_listing():
     }
     """
 
-    return {"message": json.dumps(db.get_project_and_model_ids())}
+    return {"message": json.dumps(db.get_id_tree())}
 
 
 @app.post("/upload_hbjson_file")
-async def upload_hbjson_file(_project_id: str, _model_id: str, _file: UploadFile | None = File(...)):
+async def upload_hbjson_file(
+    _team_name: str, _project_name: str, _model_name: str, _file: UploadFile | None = File(...)
+):
     # -------------------------------------------------------------------------
     if not _file:
         return {"error": "No file provided?"}
@@ -97,11 +100,9 @@ async def upload_hbjson_file(_project_id: str, _model_id: str, _file: UploadFile
 
     # -------------------------------------------------------------------------
     try:
-        db.add_from_hbjson_dict(
-            project_id=_project_id,
-            model_id=_model_id,
-            hb_json=json_data,
-        )
+        team = db.add_new_team(_team_name)
+        project = team.add_new_project(_project_name)
+        project.add_model_from_hbjson_dict(_model_name, json_data)
     except Exception as e:
         return {"error": str(e)}
 
@@ -112,12 +113,12 @@ async def upload_hbjson_file(_project_id: str, _model_id: str, _file: UploadFile
 # -- THREE.js API ENDPOINTS
 
 
-@app.get("/{project_id}/{model_id}/model_faces")
-def model_faces(project_id: str, model_id: str) -> dict[str, str]:
+@app.get("/{team_id}/{project_id}/{model_id}/model_faces")
+def model_faces(team_id: str, project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
@@ -149,12 +150,12 @@ def model_faces(project_id: str, model_id: str) -> dict[str, str]:
     return {"message": json.dumps(face_dicts)}
 
 
-@app.get("/{project_id}/{model_id}/model_spaces")
-def model_spaces(project_id: str, model_id: str) -> dict[str, str]:
+@app.get("/{team_id}/{project_id}/{model_id}/model_spaces")
+def model_spaces(team_id: str, project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     # -- Get all the interior spaces in the model
     spaces = []
@@ -181,12 +182,12 @@ def _inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
     return False
 
 
-@app.get("/{project_id}/{model_id}/model_exterior_constructions")
-def model_exterior_constructions(project_id: str, model_id: str) -> dict[str, str]:
+@app.get("/{team_id}/{project_id}/{model_id}/model_exterior_constructions")
+def model_exterior_constructions(team_id: str, project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     # -- Get all the Face-IDS in the model
     model_face_ids = set()
@@ -212,8 +213,8 @@ def model_exterior_constructions(project_id: str, model_id: str) -> dict[str, st
     return {"message": json.dumps(constructions)}
 
 
-@app.get("/{project_id}/{model_id}/sun_path")
-def sun_path(project_id: str, model_id: str):
+@app.get("/{team_id}/{project_id}/{model_id}/sun_path")
+def sun_path(team_id: str, project_id: str, model_id: str):
     SCALE = 0.4
     NORTH = 0
     DAYLIGHT_SAVINGS_PERIOD = None
@@ -221,9 +222,9 @@ def sun_path(project_id: str, model_id: str):
     RADIUS: int = 100 * SCALE  # type: ignore # 'int' is a lie to placate the un-typed Ladybug functions
     SOURCE_FILE = pathlib.Path("backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw").resolve()
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     epw_object = epw.EPW(SOURCE_FILE)
     sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
@@ -239,12 +240,12 @@ def sun_path(project_id: str, model_id: str):
     return {"message": json.dumps(geometry)}
 
 
-@app.get("/{project_id}/{model_id}/hot_water_systems")
-def hot_water_systems(project_id: str, model_id: str):
+@app.get("/{team_id}/{project_id}/{model_id}/hot_water_systems")
+def hot_water_systems(team_id: str, project_id: str, model_id: str):
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     # -- Get each unique HW system in the model
     hw_systems = {}
@@ -260,12 +261,12 @@ def hot_water_systems(project_id: str, model_id: str):
     return {"message": json.dumps(hw_system_dicts)}
 
 
-@app.get("/{project_id}/{model_id}/ventilation_systems")
-def ventilation_systems(project_id: str, model_id: str):
+@app.get("/{team_id}/{project_id}/{model_id}/ventilation_systems")
+def ventilation_systems(team_id: str, project_id: str, model_id: str):
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     # -- Get each unique HW system in the model
     ventilation_systems = {}
@@ -281,12 +282,12 @@ def ventilation_systems(project_id: str, model_id: str):
     return {"message": json.dumps(ventilation_system_dicts)}
 
 
-@app.get("/{project_id}/{model_id}/shading_elements")
-def shading_elements(project_id: str, model_id: str):
+@app.get("/{team_id}/{project_id}/{model_id}/shading_elements")
+def shading_elements(team_id: str, project_id: str, model_id: str):
     # -- Get the right project model
-    ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
-    if not ph_nav_model.hb_model:
-        return {"message": f"No HB-Model {project_id} | {model_id}."}
+    ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
+    if not ph_nav_model or not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."}
 
     # -- Pull out all the model-level shades
     # -- Group them by display-name
