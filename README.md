@@ -74,9 +74,10 @@
 
 #### NavBar:
 - [ ] Add model source url
-- [ ] Add 'home' icon on left side (Navigator)
-- [ ] Make so project cannot be selected from the dropdown, only the home page
+- [X] Add 'home' icon on left side (Navigator)
+- [X] Make so project cannot be selected from the dropdown, only the home page
 - [ ] Fix EPW file data source. Location in upper right (map link)
+- [ ] Create new Model Upload dialogue and endpoint
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin
