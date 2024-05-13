@@ -12,6 +12,12 @@ from PHX.from_HBJSON import read_HBJSON_file
 logger = logging.getLogger("uvicorn")
 
 
+def generate_random_name(prefix: str | None = None) -> str:
+    """Generate a random name for a new Team, Project, or Model."""
+    base_name = str(uuid4()).split("-")[0]
+    return f"{prefix}{base_name}"
+
+
 def get_github_raw_url(url: str):
     """Takes in a normal GitHub URL and converts it to a 'raw' URL. This is required
     to download the JSON file from GitHub. Note that any Private Repo would need to
@@ -139,7 +145,7 @@ class PhNavigatorTeam:
     def __contains__(self, key: UUID) -> bool:
         return key in self.projects
 
-    def add_new_project(self, project_name: str) -> PhNavigatorProject:
+    def create_new_project(self, project_name: str) -> PhNavigatorProject:
         project = self.get_ph_navigator_project_by_name(project_name)
         if project:
             return project
@@ -174,6 +180,7 @@ class FakeDB:
 
     def __init__(self):
         self._data: dict[UUID, PhNavigatorTeam] = {}
+        self.add_new_team("public")  # Add a default "public" team
 
     def add_new_team(self, team_name: str) -> PhNavigatorTeam:
         team = self.get_team_by_name(team_name)
