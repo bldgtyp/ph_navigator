@@ -3,9 +3,11 @@
     left: 20px;
     top: 7px;
     margin: 0px;
+    background: none;
 }
 
 .project-selector {
+    background: none;
     font-size: 0.7em;
     font-weight: 800;
     border: none;
@@ -13,6 +15,7 @@
 }
 
 .model-selector {
+    background: none;
     font-size: 0.7em;
     font-weight: 300;
     border: none;

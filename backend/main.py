@@ -2,11 +2,12 @@
 # -*- Python Version: 3.10 -*-
 
 from collections import defaultdict
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
 import pathlib
+
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pyairtable import Api
 from pyairtable.api.types import RecordDict
 
@@ -51,20 +52,17 @@ app.add_middleware(
 
 
 db = FakeDB()
-db.add_ph_navigator_model(
+db.add_from_github_url(
     "2305",
     "409_SACKETT_240508",
-    PhNavigatorModelInstance(
-        "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson"
-    ),
+    "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson",
 )
-db.add_ph_navigator_model(
+db.add_from_github_url(
     "2306",
     "test_model",
-    PhNavigatorModelInstance(
-        "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
-    ),
+    "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
 )
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -82,6 +80,34 @@ def get_model_listing():
     return {"message": json.dumps(db.get_project_and_model_ids())}
 
 
+@app.post("/upload_hbjson_file")
+async def upload_hbjson_file(_project_id: str, _model_id: str, _file: UploadFile | None = File(...)):
+    # -------------------------------------------------------------------------
+    if not _file:
+        return {"error": "No file provided?"}
+
+    # -------------------------------------------------------------------------
+    filename = _file.filename or ""
+    if not filename.endswith(".hbjson"):
+        return {"error": "Sorry, only HBJSON files are allowed."}
+
+    # -------------------------------------------------------------------------
+    contents = await _file.read()  # Read the contents of the uploaded file as bytes
+    json_data: dict = json.loads(contents)  # Decode the bytes to string and parse it as JSON
+
+    # -------------------------------------------------------------------------
+    try:
+        db.add_from_hbjson_dict(
+            project_id=_project_id,
+            model_id=_model_id,
+            hb_json=json_data,
+        )
+    except Exception as e:
+        return {"error": str(e)}
+
+    return {"message": f"File: '{_file.filename}' uploaded successfully."}
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 # -- THREE.js API ENDPOINTS
 
@@ -90,6 +116,8 @@ def get_model_listing():
 def model_faces(project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     # -- Add the Mesh3D to each to the Faces before sending them to the frontend
     face_dicts = []
@@ -125,6 +153,8 @@ def model_faces(project_id: str, model_id: str) -> dict[str, str]:
 def model_spaces(project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     # -- Get all the interior spaces in the model
     spaces = []
@@ -155,6 +185,8 @@ def _inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
 def model_exterior_constructions(project_id: str, model_id: str) -> dict[str, str]:
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     # -- Get all the Face-IDS in the model
     model_face_ids = set()
@@ -186,10 +218,12 @@ def sun_path(project_id: str, model_id: str):
     NORTH = 0
     DAYLIGHT_SAVINGS_PERIOD = None
     CENTER_POINT = Point2D(0, 0)
-    RADIUS = 100 * SCALE
+    RADIUS: int = 100 * SCALE  # type: ignore # 'int' is a lie to placate the un-typed Ladybug functions
     SOURCE_FILE = pathlib.Path("backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw").resolve()
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     epw_object = epw.EPW(SOURCE_FILE)
     sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
@@ -209,6 +243,8 @@ def sun_path(project_id: str, model_id: str):
 def hot_water_systems(project_id: str, model_id: str):
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     # -- Get each unique HW system in the model
     hw_systems = {}
@@ -228,6 +264,8 @@ def hot_water_systems(project_id: str, model_id: str):
 def ventilation_systems(project_id: str, model_id: str):
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     # -- Get each unique HW system in the model
     ventilation_systems = {}
@@ -247,6 +285,8 @@ def ventilation_systems(project_id: str, model_id: str):
 def shading_elements(project_id: str, model_id: str):
     # -- Get the right project model
     ph_nav_model = db.get_ph_navigator_model(project_id, model_id)
+    if not ph_nav_model.hb_model:
+        return {"message": f"No HB-Model {project_id} | {model_id}."}
 
     # -- Pull out all the model-level shades
     # -- Group them by display-name
