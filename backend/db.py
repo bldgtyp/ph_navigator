@@ -215,6 +215,22 @@ class FakeDB:
 
         return project.get_ph_navigator_model_by_name(model_name)
 
+    def get_projects_by_team_name(self, team_name: str) -> list[dict]:
+        team = self.get_team_by_name(team_name)
+        if not team:
+            return []
+
+        project_data: list[dict] = []
+        for project in team.projects.values():
+            project_data.append(
+                {
+                    "display_name": project.display_name,
+                    "identifier": str(project.identifier),
+                }
+            )
+
+        return project_data
+
     def get_id_tree(self) -> dict:
         """Return a dictionary of Team, Project, and Model Ids in a dict.
 

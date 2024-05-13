@@ -68,17 +68,17 @@ project_2306.add_model_from_github_url(
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-@app.get("/get_model_listing")
-def get_model_listing():
-    """Return a dictionary of project IDs and their corresponding model IDs.
+@app.get("/{team_id}/get_project_listing")
+def get_project_listing(team_id: str):
+    """Return a list of all the Projects with their IDs
 
-    message : {
-        "project_1": ["model_1", "model_2", ...],
-        "project_2": ["model_3", "model_4", ...], ...
-    }
+    message : [
+        {"name":"project_1", "identifier":UUID},
+        {"name":"project_2", "identifier":UUID},
+        ...
+    ]
     """
-
-    return {"message": json.dumps(db.get_id_tree())}
+    return {"message": json.dumps(db.get_projects_by_team_name(team_id))}
 
 
 @app.post("/upload_hbjson_file")

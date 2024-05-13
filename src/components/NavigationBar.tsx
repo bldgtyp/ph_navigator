@@ -62,18 +62,18 @@ function NavigationBar() {
     //     "proj-2305": ["test_model1", "test_model2"],
     //     "proj-2306": ["test_model3", "test_model4"],
     // }
-    useEffect(() => {
-        fetchModelServer<ProjectListingType>(`get_model_listing`).then(data => {
-            setProjects(data);
-        });
-    }, []);
+    // useEffect(() => {
+    //     fetchModelServer<ProjectListingType>(`get_model_listing`).then(data => {
+    //         setProjects(data);
+    //     });
+    // }, []);
 
-    // Set the Model when the project changes
-    useEffect(() => {
-        if (project !== undefined && projects[project] !== undefined) {
-            setModels(projects[project]);
-        }
-    }, [project]);
+    // // Set the Model when the project changes
+    // useEffect(() => {
+    //     if (project !== undefined && projects[project] !== undefined) {
+    //         setModels(projects[project]);
+    //     }
+    // }, [project]);
 
     return (
         <p className="nav-bar"><ProjectSelector projects={projects} setProject={setProject} /> | <ModelSelector project={project} models={models} /></p>

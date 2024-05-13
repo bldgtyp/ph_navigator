@@ -1,0 +1,43 @@
+.project-browser {
+    background-color: #f3f3f3 !important;
+    width: 75%;
+    height: 75%;
+    margin: 100px auto;
+    padding: 25px;
+}
+
+.project-browser-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 15px;
+}
+
+.project-card {
+    background-color: #f3f3f3 !important;
+    border: 1px solid #ccc;
+    width: 300px;
+    height: 300px;
+    padding: 15px;
+    margin: 15px;
+    cursor: pointer;
+}
+
+.project-card-new {
+    border: 2px dashed #4d4d4d;
+    box-shadow: none !important;
+}
+
+.project-card:hover {
+    background-color: #ebebeb !important;
+}
+
+.card-id {
+    font-size: 0.7em;
+    font-weight: bold !important;
+    color: #858585 !important;
+}
+
+.card-name {
+    font-weight: bold !important;
+}
