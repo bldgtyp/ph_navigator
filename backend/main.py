@@ -70,6 +70,10 @@ project_2306.add_model_from_github_url(
     "test_model",
     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
 )
+project_2306.add_model_from_github_url(
+    "test_model_230513",
+    "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model_240513.hbjson",
+)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

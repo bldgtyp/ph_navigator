@@ -1,10 +1,8 @@
 import "../styles/NavBar.css";
 import React from 'react';
 import { ReactComponent as NavIcon } from '../icons/navigator.svg';
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { fetchModelServer } from "../hooks/fetchModelServer";
 
 function ModelSelector(props: { teamId: string | undefined, projectId: string | undefined, models: string[] | undefined }) {
     const { teamId, projectId, models } = props;
@@ -18,9 +16,7 @@ function ModelSelector(props: { teamId: string | undefined, projectId: string | 
 
     return (
         <>
-
             <select className="nav-bar-model-name" value={value} onChange={handleChange}>
-                <option value="">...</option>
                 {models?.map((model) => {
                     return <option key={model} value={model}>{model}</option>
                 })}
@@ -29,16 +25,10 @@ function ModelSelector(props: { teamId: string | undefined, projectId: string | 
     )
 }
 
-function NavigationBar() {
+function NavigationBar(props: { modelsList: string[] | undefined }) {
+    const { modelsList } = props;
     const navigate = useNavigate();
     const { teamId, projectId } = useParams();
-    const [models, setModels] = useState<string[] | undefined>(["..."]);
-
-    useEffect(() => {
-        fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(data => {
-            setModels(data);
-        });
-    }, [teamId, projectId]);
 
     return (
         <div className="nav-bar">
@@ -47,7 +37,7 @@ function NavigationBar() {
                 <p className='nav-bar-team-name'>{teamId} /</p>
             </div>
             <p className='nav-bar-project-name'>{projectId} /</p>
-            <ModelSelector teamId={teamId} projectId={projectId} models={models} />
+            <ModelSelector teamId={teamId} projectId={projectId} models={modelsList} />
         </div>
     );
 }
