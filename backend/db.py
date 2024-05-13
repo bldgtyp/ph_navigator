@@ -100,9 +100,11 @@ class PhNavigatorProject:
                 return model
         return None
 
+    @property
     def model_ids(self) -> list[UUID]:
         return list(self.models.keys())
 
+    @property
     def model_names(self) -> list[str]:
         return [model.display_name for model in self.models.values()]
 
@@ -158,9 +160,11 @@ class PhNavigatorTeam:
                 return project
         return None
 
+    @property
     def project_ids(self) -> list[UUID]:
         return list(self.projects.keys())
 
+    @property
     def project_names(self) -> list[str]:
         return [project.display_name for project in self.projects.values()]
 
@@ -252,3 +256,11 @@ class FakeDB:
         # for team_id, team in self._data.items():
         #     d[team_id] = asdict(team)
         return d
+
+    @property
+    def team_ids(self) -> list[UUID]:
+        return list(self._data.keys())
+
+    @property
+    def team_names(self) -> list[str]:
+        return [team.display_name for team in self._data.values()]

@@ -11,6 +11,7 @@ import { AppStateContextProvider } from '../contexts/app_state_context';
 import { SelectedObjectContextProvider } from '../contexts/selected_object_context';
 import { Model } from './Model';
 import { Route, Routes } from "react-router-dom";
+import NavigationBar from './NavigationBar';
 
 function Project() {
     const world = useRef(new SceneSetup());
@@ -20,22 +21,25 @@ function Project() {
     world.current.scene.add(dimensionLinesRef.current);
 
     return (
-        <AppStateContextProvider>
-            <SelectedObjectContextProvider>
-                <Viewer
-                    world={world}
-                    hoveringVertex={hoveringVertex}
-                    dimensionLinesRef={dimensionLinesRef}
-                />
-                <InfoPanel />
-                <Routes>
-                    <Route path="/" element={<Model world={world} />} />
-                    <Route path=":modelId/" element={<Model world={world} />} />
-                </Routes>
-            </SelectedObjectContextProvider>
-            <AppStateMenubar />
-            <ResultsSidebar />
-        </AppStateContextProvider>
+        <>
+            <NavigationBar />
+            <AppStateContextProvider>
+                <SelectedObjectContextProvider>
+                    <Viewer
+                        world={world}
+                        hoveringVertex={hoveringVertex}
+                        dimensionLinesRef={dimensionLinesRef}
+                    />
+                    <InfoPanel />
+                    <Routes>
+                        <Route path="/" element={<Model world={world} />} />
+                        <Route path=":modelId/" element={<Model world={world} />} />
+                    </Routes>
+                </SelectedObjectContextProvider>
+                <AppStateMenubar />
+                <ResultsSidebar />
+            </AppStateContextProvider>
+        </>
     );
 }
 

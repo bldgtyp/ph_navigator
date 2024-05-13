@@ -81,6 +81,27 @@ def get_project_listing(team_id: str):
     return {"message": json.dumps(db.get_projects_by_team_name(team_id))}
 
 
+@app.get("/{team_id}/{project_id}/get_model_names")
+def get_model_names(team_id: str, project_id: str):
+    """Return a list of all the Models with their IDs
+
+    message : [
+        {"name":"model_1", "identifier":UUID},
+        {"name":"model_2", "identifier":UUID},
+        ...
+    ]
+    """
+    team = db.get_team_by_name(team_id)
+    if not team:
+        return {"message": "No team found with that name."}
+
+    project = team.get_ph_navigator_project_by_name(project_id)
+    if not project:
+        return {"message": "No project found with that ID."}
+
+    return {"message": json.dumps(project.model_names)}
+
+
 @app.post("/upload_hbjson_file")
 async def upload_hbjson_file(
     _team_name: str, _project_name: str, _model_name: str, _file: UploadFile | None = File(...)

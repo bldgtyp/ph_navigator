@@ -16,16 +16,14 @@ function ProjectCard(props: ProjectCardProps) {
     const { display_name, identifier, teamId } = props;
     const navigate = useNavigate();
 
-    function handleOnClick() {
-        if (teamId !== undefined) {
-            navigate(`/${teamId}/${display_name}`);
-        }
-    }
-
     return (
         <Paper
             className={"project-card " + (display_name === "..." ? "project-card-new" : "")}
-            onClick={handleOnClick}>
+            onClick={() => {
+                if (teamId !== undefined) {
+                    navigate(`/${teamId}/${display_name}`);
+                }
+            }}>
             <p className="card-id">ID: {identifier}</p>
             <p className="card-name">Project: {display_name}</p>
             {display_name === "..." ? <p className="card-description">Start a new project</p> : null}
@@ -37,7 +35,6 @@ function ProjectBrowser() {
     const [projectDataList, setProjectDataList] = useState<ProjectDataType[]>([{ display_name: "", identifier: "" }])
     const { teamId } = useParams();
 
-    // Pull down the list of this team's Projects
     useEffect(() => {
         fetchModelServer<ProjectDataType[]>(`${teamId}/get_project_listing`).then((response) => {
             setProjectDataList(response);

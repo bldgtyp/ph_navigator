@@ -7,12 +7,10 @@ import ProjectBrowser from './ProjectBrowser';
 function Team() {
 
     return (
-        <div>
-            <Routes>
-                <Route path="*" element={<ProjectBrowser />} />
-                <Route path=":projectId/*" element={<Project />} />
-            </Routes>
-        </div>
+        <Routes>
+            <Route path="*" element={<ProjectBrowser />} />
+            <Route path=":projectId/*" element={<Project />} />
+        </Routes>
     );
 }
 

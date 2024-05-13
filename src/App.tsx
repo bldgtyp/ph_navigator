@@ -5,7 +5,6 @@ import theme from "./styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
 import { HashRouter as Router } from "react-router-dom";
-import NavigationBar from './components/NavigationBar';
 import Team from './components/Team';
 
 // ----------------------------------------------------------------------------
@@ -15,7 +14,6 @@ function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        <NavigationBar />
         <Routes>
           <Route path=":teamId/*" element={<Team />} />
         </Routes>

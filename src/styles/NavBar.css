@@ -1,20 +1,50 @@
 .nav-bar {
-    position: absolute;
+    align-items: center;
+    position: fixed;
+    display: flex;
+    width: 100%;
     left: 20px;
     top: 7px;
     margin: 0px;
     background: none;
 }
 
-.project-selector {
-    background: none;
-    font-size: 0.7em;
-    font-weight: 800;
-    border: none;
-    text-decoration: none;
+.nav-bar-home-link {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
-.model-selector {
+.nav-bar-team-name {
+    color: #565656;
+    background: none;
+    font-size: 0.7em;
+    font-weight: 900;
+    border: none;
+    text-decoration: none;
+    margin-right: 4px;
+    border-bottom: 0.5px solid rgb(255, 255, 255);
+}
+
+.nav-bar-team-name:hover {
+    color: #080808;
+    border-bottom: 0.5px dotted black;
+}
+
+.nav-bar-project-name {
+    color: #565656;
+    align-self: center;
+    background: none;
+    font-size: 0.7em;
+    font-weight: 900;
+    border: none;
+    text-decoration: none;
+    margin-right: 4px;
+}
+
+.nav-bar-model-name {
+    color: #565656;
+    align-self: center;
     background: none;
     font-size: 0.7em;
     font-weight: 300;
