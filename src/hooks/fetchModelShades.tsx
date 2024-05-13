@@ -5,7 +5,7 @@ export default fetchModelShades; export type hbShadeGroup = {
     [key: string]: hbShade;
 };
 
-export async function fetchModelShades(endpoint: string): Promise<hbShadeGroup[]> {
+export async function fetchModelShades(endpoint: string): Promise<hbShadeGroup[] | { error: string }> {
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     const response = await fetch(API_ENDPOINT);

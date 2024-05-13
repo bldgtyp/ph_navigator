@@ -14,6 +14,7 @@ import { Model } from './Model';
 import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { useNavigate } from "react-router-dom";
+import { putModelServer } from "../hooks/putModelServer";
 
 function Project() {
     const navigate = useNavigate();
@@ -33,8 +34,9 @@ function Project() {
             if (data.length > 0) {
                 navigate(`/${teamId}/${projectId}/${data[0]}`);
             } else {
-                // Upload a new HBJSON model 
-                navigate(`/${teamId}/${projectId}/upload_model`);
+                putModelServer(`${teamId}/${projectId}/create_new_model`, { model_data: {} }).then(response => {
+                    navigate(`/${teamId}/${projectId}/${response.model_id}`);
+                });
             }
         });
     }, [teamId, projectId]);

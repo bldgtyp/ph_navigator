@@ -20,6 +20,15 @@ type ModelProps = {
     world: React.MutableRefObject<SceneSetup>;
 };
 
+function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | { error: string }) {
+    if (Array.isArray(data)) {
+        return _func(world, data);
+    } else {
+        console.error(data.error);
+        return [];
+    }
+}
+
 export function Model(props: ModelProps) {
     const { teamId, projectId, modelId } = useParams();
     const { world } = props;
@@ -29,12 +38,23 @@ export function Model(props: ModelProps) {
     useEffect(() => {
         world.current.reset();
         if (modelId !== undefined && projectId !== undefined) {
-            fetchModelFaces(`${teamId}/${projectId}/${modelId}/model_faces`).then(data => loadModelFaces(world, data))
-            fetchModelSpaces(`${teamId}/${projectId}/${modelId}/model_spaces`).then(data => loadModelSpaces(world, data));
+
+            fetchModelFaces(`${teamId}/${projectId}/${modelId}/model_faces`)
+                .then(data => handleError(loadModelFaces, world, data))
+
+            fetchModelSpaces(`${teamId}/${projectId}/${modelId}/model_spaces`)
+                .then(data => handleError(loadModelSpaces, world, data));
+
             // fetchSunPath(`${teamId}/${projectId}/${modelId}/sun_path`).then(data => loadModelSunPath(world, data));
-            fetchModelHotWaterPiping(`${teamId}/${projectId}/${modelId}/hot_water_systems`).then(data => loadModelHotWaterPiping(world, data));
-            fetchModelERVDucting(`${teamId}/${projectId}/${modelId}/ventilation_systems`).then(data => loadModelERVDucting(world, data));
-            fetchModelShades(`${teamId}/${projectId}/${modelId}/shading_elements`).then(data => loadModelShades(world, data));
+
+            fetchModelHotWaterPiping(`${teamId}/${projectId}/${modelId}/hot_water_systems`)
+                .then(data => handleError(loadModelHotWaterPiping, world, data));
+
+            fetchModelERVDucting(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
+                .then(data => handleError(loadModelERVDucting, world, data));
+
+            fetchModelShades(`${teamId}/${projectId}/${modelId}/shading_elements`)
+                .then(data => handleError(loadModelShades, world, data));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teamId, projectId, modelId]);

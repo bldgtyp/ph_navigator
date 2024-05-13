@@ -114,18 +114,28 @@ class PhNavigatorProject:
     def model_names(self) -> list[str]:
         return [model.display_name for model in self.models.values()]
 
-    def add_model_from_hbjson_dict(self, _model_name: str, hb_json: dict):
+    def add_model_from_hbjson_dict(self, _model_name: str, hb_json: dict) -> PhNavigatorModelInstance:
         """Add a new HBJSON model object to the Project."""
-        hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json)
+        try:
+            hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json)
+        except Exception as e:
+            logger.error(f"Failed to convert HBJSON to HB Model: {e}")
+            hb_model = None
         model_instance = PhNavigatorModelInstance(display_name=_model_name, url="", hb_model=hb_model)
         self.add_ph_navigator_model(model_instance)
+        return model_instance
 
-    def add_model_from_github_url(self, _model_name: str, url: str):
+    def add_model_from_github_url(self, _model_name: str, url: str) -> PhNavigatorModelInstance:
         """Add a new HBJSON model to the Project from a URL address."""
-        url = get_github_raw_url(url)
-        hb_model = get_hb_model_from_url(url)
+        try:
+            url = get_github_raw_url(url)
+            hb_model = get_hb_model_from_url(url)
+        except Exception as e:
+            logger.error(f"Failed to download HBJSON from URL: {e}")
+            hb_model = None
         model_instance = PhNavigatorModelInstance(display_name=_model_name, url=url, hb_model=hb_model)
         self.add_ph_navigator_model(model_instance)
+        return model_instance
 
 
 @dataclass
