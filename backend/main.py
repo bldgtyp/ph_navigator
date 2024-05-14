@@ -107,7 +107,7 @@ def create_new_project(team_id: str, project: Project | None = None):
 
 
 @app.put("/{team_id}/{project_id}/create_new_model")
-def create_new_model(team_id: str, project_id: str, model_data: dict):
+def create_new_model(team_id: str, project_id: str):
     ph_nav_team = db.get_team_by_name(team_id)
     if not ph_nav_team:
         return {"message": {"error": f"No team found with name: {team_id}."}}
@@ -116,7 +116,7 @@ def create_new_model(team_id: str, project_id: str, model_data: dict):
     if not ph_nav_project:
         return {"message": {"error": f"No project found with name: {project_id}."}}
 
-    ph_nav_model = ph_nav_project.add_model_from_hbjson_dict(generate_random_name("mdl"), model_data)
+    ph_nav_model = ph_nav_project.create_new_model(generate_random_name("mdl"))
     return {
         "message": json.dumps(
             {
@@ -161,32 +161,38 @@ def get_model_names(team_id: str, project_id: str):
     return {"message": json.dumps(project.model_names)}
 
 
-@app.post("/upload_hbjson_file")
-async def upload_hbjson_file(
-    _team_name: str, _project_name: str, _model_name: str, _file: UploadFile | None = File(...)
+@app.post("/{team_id}/{project_id}/{model_id}/upload_hbjson_file_to_model")
+async def upload_hbjson_file_to_model(
+    team_id: str, project_id: str, model_id: str, file: UploadFile | None = File(...)
 ):
     # -------------------------------------------------------------------------
-    if not _file:
-        return {"error": "No file provided?"}
+    if not file:
+        return {"message": {"error": "No file provided?"}}
 
     # -------------------------------------------------------------------------
-    filename = _file.filename or ""
+    filename = file.filename or ""
     if not filename.endswith(".hbjson"):
-        return {"error": "Sorry, only HBJSON files are allowed."}
+        return {"message": {"error": "Sorry, only HBJSON files are allowed."}}
 
     # -------------------------------------------------------------------------
-    contents = await _file.read()  # Read the contents of the uploaded file as bytes
+    contents = await file.read()  # Read the contents of the uploaded file as bytes
     json_data: dict = json.loads(contents)  # Decode the bytes to string and parse it as JSON
 
     # -------------------------------------------------------------------------
     try:
-        team = db.add_new_team(_team_name)
-        project = team.create_new_project(_project_name)
-        project.add_model_from_hbjson_dict(_model_name, json_data)
-    except Exception as e:
-        return {"error": str(e)}
+        team = db.get_team_by_name(team_id)
+        if not team:
+            return {"message": {"error": f"No team found with name: {team_id}."}}
 
-    return {"message": {"success": f"File: '{_file.filename}' uploaded successfully."}}
+        project = team.get_ph_navigator_project_by_name(project_id)
+        if not project:
+            return {"message": {"error": f"No project found with name: {project_id}."}}
+
+        project.set_model_hb_json(model_id, json_data)
+    except Exception as e:
+        return {"message": {"error": str(e)}}
+
+    return {"message": {"success": f"File: '{file.filename}' uploaded successfully."}}
 
 
 # ----------------------------------------------------------------------------------------------------------------------

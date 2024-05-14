@@ -7,6 +7,7 @@ import Viewer from './Viewer';
 import InfoPanel from './InfoPanel';
 import AppStateMenubar from './AppStateMenubar';
 import ResultsSidebar from './ResultsSidebar';
+import UploadModelDialog from './UploadModelDialog';
 import { SceneSetup } from '../scene/SceneSetup';
 import { AppStateContextProvider } from '../contexts/app_state_context';
 import { SelectedObjectContextProvider } from '../contexts/selected_object_context';
@@ -14,12 +15,12 @@ import { Model } from './Model';
 import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { useNavigate } from "react-router-dom";
-import { putModelServer } from "../hooks/putModelServer";
 
 function Project() {
     const navigate = useNavigate();
-    const { teamId, projectId, modelId } = useParams();
-    const [models, setModels] = useState<string[] | undefined>([]);
+    const { teamId, projectId } = useParams();
+    const [models, setModels] = useState<string[] | undefined>(undefined);
+    const [showUploadModel, setShowUploadModel] = useState(false);
 
     const world = useRef(new SceneSetup());
     const hoveringVertex = useRef<THREE.Vector3 | null>(null); // For THREE.js Rendering
@@ -34,9 +35,7 @@ function Project() {
             if (data.length > 0) {
                 navigate(`/${teamId}/${projectId}/${data[0]}`);
             } else {
-                putModelServer(`${teamId}/${projectId}/create_new_model`, { model_data: {} }).then(response => {
-                    navigate(`/${teamId}/${projectId}/${response.model_id}`);
-                });
+                setShowUploadModel(true);
             }
         });
     }, [teamId, projectId]);
@@ -59,6 +58,7 @@ function Project() {
                 </SelectedObjectContextProvider>
                 <AppStateMenubar />
                 <ResultsSidebar />
+                {showUploadModel ? <UploadModelDialog /> : null}
             </AppStateContextProvider>
         </>
     );

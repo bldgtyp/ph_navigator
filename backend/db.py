@@ -1,6 +1,5 @@
 # Fake DB for now...
-from collections import defaultdict
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 import logging
 import requests
 from urllib.parse import urlparse
@@ -97,6 +96,15 @@ class PhNavigatorProject:
     def add_ph_navigator_model(self, model_instance: PhNavigatorModelInstance):
         self.models[model_instance.identifier] = model_instance
 
+    def create_new_model(self, model_name: str) -> PhNavigatorModelInstance:
+        model = self.get_ph_navigator_model_by_name(model_name)
+        if model:
+            return model
+
+        model_id = uuid4()
+        self.models[model_id] = PhNavigatorModelInstance(display_name=model_name)
+        return self.models[model_id]
+
     def get_ph_navigator_model_by_id(self, model_id: UUID) -> PhNavigatorModelInstance | None:
         return self.models.get(model_id, None)
 
@@ -113,6 +121,18 @@ class PhNavigatorProject:
     @property
     def model_names(self) -> list[str]:
         return [model.display_name for model in self.models.values()]
+
+    def set_model_hb_json(self, model_id: str, hb_json: dict) -> PhNavigatorModelInstance | None:
+        """Set the HBModel of a specific PH-Nav Model using an HBJSON model object to the Project."""
+        try:
+            hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_json)
+        except Exception as e:
+            logger.error(f"Failed to convert HBJSON to HB Model: {e}")
+            hb_model = None
+        ph_nav_model = self.get_ph_navigator_model_by_name(model_id)
+        if ph_nav_model:
+            ph_nav_model.hb_model = hb_model
+        return ph_nav_model
 
     def add_model_from_hbjson_dict(self, _model_name: str, hb_json: dict) -> PhNavigatorModelInstance:
         """Add a new HBJSON model object to the Project."""
