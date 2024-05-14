@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { putModelServer } from "../hooks/putModelServer";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { putModelServeFile } from "../hooks/putModelServerFile";
+import { postModelServeFile } from "../hooks/postModelServerFile";
 import { useNavigate } from "react-router-dom";
 
 function UploadModelDialog() {
@@ -39,7 +39,7 @@ function UploadModelDialog() {
             }).then(() => {
                 // Upload the File to the new model
                 if (model_id !== undefined) {
-                    putModelServeFile(
+                    postModelServeFile(
                         `${teamId}/${projectId}/${model_id}/upload_hbjson_file_to_model`,
                         formData,
                         setUploadProgress,

@@ -1,7 +1,7 @@
 import constants from "../data/constants.json";
 import axios from 'axios';
 
-export async function putModelServeFile(
+export async function postModelServeFile(
     endpoint: string,
     formData: FormData | null = null,
     setUploadProgress: React.Dispatch<React.SetStateAction<number>>,
@@ -41,4 +41,4 @@ export async function putModelServeFile(
     }
 }
 
-export default putModelServeFile;
+export default postModelServeFile;
