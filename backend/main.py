@@ -3,12 +3,15 @@
 
 from collections import defaultdict
 import json
+import requests
 
 # import os
 import pathlib
+from rich import print
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
 
 # from pyairtable import Api
@@ -40,6 +43,8 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",
     "localhost:3000",
+    "http://localhost:8000",
+    "localhost:8000",
     "https://ph-tools.github.io",
     "https://bldgtyp.github.io",
 ]
@@ -53,6 +58,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# OAuth2 configuration
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl="https://github.com/login/oauth/authorize",
+    tokenUrl="https://github.com/login/oauth/access_token",
+)
+
+
+def get_github_api_headers(token: str) -> dict:
+    return {"Authorization": f"Bearer {token}"}
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -60,24 +75,62 @@ app.add_middleware(
 # -- Create the fake DB and add some sample project data for testing
 db = FakeDB()
 team = db.add_new_team("bldgtyp")
-project_2305 = team.create_new_project("2305")
-project_2305.add_model_from_github_url(
-    "409_SACKETT_240508",
-    "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson",
-)
-project_2306 = team.create_new_project("2306")
-project_2306.add_model_from_github_url(
-    "test_model",
-    "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
-)
-project_2306.add_model_from_github_url(
-    "test_model_230513",
-    "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model_240513.hbjson",
-)
+# project_2305 = team.create_new_project("2305")
+# project_2305.add_model_from_github_url(
+#     "409_SACKETT_240508",
+#     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson",
+# )
+# project_2306 = team.create_new_project("2306")
+# project_2306.add_model_from_github_url(
+#     "test_model",
+#     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
+# )
+# project_2306.add_model_from_github_url(
+#     "test_model_230513",
+#     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model_240513.hbjson",
+# )
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- DB Endpoints
+
+
+class GitHubPathElement(BaseModel):
+    """A GitHub Path Element object that represents a file or folder within a GitHub repository."""
+
+    name: str
+    path: str
+    sha: str
+    size: int
+    url: str
+    html_url: str
+    git_url: str
+    download_url: str | None
+    type: str
+    _links: dict[str, str]
+    children: list["GitHubPathElement"] = []
+
+
+def walk_github_folders(headers: dict, parent: list[GitHubPathElement], url: str) -> list[GitHubPathElement]:
+    """Recursively walk through the GitHub folders and files and return a list of all the GitHubPathElement objects."""
+    response = requests.get(url, headers)
+    response.raise_for_status()  # Raise exception if invalid response
+    for responseData in response.json():
+        new_path_object = GitHubPathElement(**responseData)
+        if new_path_object.type == "dir":
+            new_path_object.children = walk_github_folders(headers, new_path_object.children, new_path_object.url)
+        parent.append(new_path_object)
+    return parent
+
+
+@app.get("/test", response_model=list[GitHubPathElement])
+def get_github_files(token: str = Header(None)):
+    headers = get_github_api_headers(token)
+    github_folder_elements: list[GitHubPathElement] = []
+    walk_github_folders(
+        headers, github_folder_elements, "https://api.github.com/repos/bldgtyp/ph_navigator_data/contents/projects"
+    )
+    return github_folder_elements
 
 
 class Project(BaseModel):
@@ -88,7 +141,7 @@ class Project(BaseModel):
 def create_new_project(team_id: str, project: Project | None = None):
     team = db.get_team_by_name(team_id)
     if not team:
-        return {"message": "No team found with that name."}
+        return {"message": {"error": "No team found with that name."}}
 
     if not project:
         project_name = generate_random_name("proj")
@@ -107,7 +160,7 @@ def create_new_project(team_id: str, project: Project | None = None):
 
 
 @app.put("/{team_id}/{project_id}/create_new_model")
-def create_new_model(team_id: str, project_id: str):
+def create_new_model(team_id: str, project_id: str, model_id: str | None = None):
     ph_nav_team = db.get_team_by_name(team_id)
     if not ph_nav_team:
         return {"message": {"error": f"No team found with name: {team_id}."}}
@@ -116,7 +169,9 @@ def create_new_model(team_id: str, project_id: str):
     if not ph_nav_project:
         return {"message": {"error": f"No project found with name: {project_id}."}}
 
-    ph_nav_model = ph_nav_project.create_new_model(generate_random_name("mdl"))
+    if not model_id:
+        model_id = generate_random_name("mdl")
+        ph_nav_model = ph_nav_project.create_new_model(model_id)
     return {
         "message": json.dumps(
             {

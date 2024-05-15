@@ -28,7 +28,7 @@ function Project() {
 
     world.current.scene.add(dimensionLinesRef.current);
 
-    // Get the team-project model names list
+    // Get the project's model names list
     useEffect(() => {
         fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(data => {
             setModels(data);

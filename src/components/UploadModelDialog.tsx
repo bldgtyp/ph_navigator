@@ -33,7 +33,7 @@ function UploadModelDialog() {
 
         // Create the New Model in the Database
         let model_id: string | undefined = undefined;
-        putModelServer(`${teamId}/${projectId}/create_new_model`, { model_data: {} })
+        putModelServer<any>(`${teamId}/${projectId}/create_new_model`, { model_data: {} })
             .then(response => {
                 model_id = response.model_id;
             }).then(() => {
