@@ -1,14 +1,21 @@
-# Fake DB for now...
-from dataclasses import dataclass, field
-import logging
-import requests
-from urllib.parse import urlparse
-from uuid import uuid4, UUID
+# -*- coding: utf-8 -*-
+# -*- Python Version: 3.11 -*-
 
+"""A Fake Database for testing and development."""
+
+import logging
+from dataclasses import dataclass, field
+from urllib.parse import urlparse
+from uuid import UUID, uuid4
+
+import requests
 from honeybee.model import Model
 from PHX.from_HBJSON import read_HBJSON_file
 
 logger = logging.getLogger("uvicorn")
+
+
+# -----------------------------------------------------------------------------
 
 
 def generate_random_name(prefix: str | None = None) -> str:
@@ -64,6 +71,9 @@ def get_hb_model_from_url(url: str) -> Model | None:
     logger.info(f"Getting HB-Model from: {url}")
     model_dict = download_hb_json(url)
     return read_HBJSON_file.convert_hbjson_dict_to_hb_model(model_dict)
+
+
+# -----------------------------------------------------------------------------
 
 
 @dataclass
@@ -301,3 +311,24 @@ class FakeDB:
     @property
     def team_names(self) -> list[str]:
         return [team.display_name for team in self._data.values()]
+
+
+# -----------------------------------------------------------------------------
+
+db = FakeDB()
+db.add_new_team("bldgtyp")
+
+# project_2305 = team.create_new_project("2305")
+# project_2305.add_model_from_github_url(
+#     "409_SACKETT_240508",
+#     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2305/409_SACKETT_240508.hbjson",
+# )
+# project_2306 = team.create_new_project("2306")
+# project_2306.add_model_from_github_url(
+#     "test_model",
+#     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model.hbjson",
+# )
+# project_2306.add_model_from_github_url(
+#     "test_model_230513",
+#     "https://github.com/bldgtyp/ph_navigator_data/blob/main/projects/2306/test_model_240513.hbjson",
+# )
