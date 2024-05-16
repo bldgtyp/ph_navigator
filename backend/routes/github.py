@@ -4,9 +4,13 @@
 """Routes for GitHub API."""
 
 import requests
+from logging import getLogger
+
 from fastapi import APIRouter, Header
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
+
+logger = getLogger("uvicorn")
 
 router = APIRouter()
 
@@ -33,10 +37,6 @@ class GitHubPathElement(BaseModel):
     children: list["GitHubPathElement"] = []
 
 
-def get_github_api_headers(token: str) -> dict:
-    return {"Authorization": f"Bearer {token}"}
-
-
 def walk_github_folders(headers: dict, parent: list[GitHubPathElement], url: str) -> list[GitHubPathElement]:
     """Recursively walk through the GitHub folders and files and return a list of all the GitHubPathElement objects."""
     response = requests.get(url, headers)
@@ -49,11 +49,18 @@ def walk_github_folders(headers: dict, parent: list[GitHubPathElement], url: str
     return parent
 
 
-@router.get("/test", response_model=list[GitHubPathElement])
+fuck_you_github_rate_limits = {"temp": []}
+
+
+@router.get("/get_team_project_data_from_source", response_model=list[GitHubPathElement])
 def get_github_files(token: str = Header(None)):
-    headers = get_github_api_headers(token)
+    if fuck_you_github_rate_limits["temp"] != []:
+        logger.info("using cached github data")
+        return fuck_you_github_rate_limits["temp"]
+
+    URL = "https://api.github.com/repos/bldgtyp/ph_navigator_data/contents/projects"
+    headers = {"Authorization": f"Bearer {token}"}
     github_folder_elements: list[GitHubPathElement] = []
-    walk_github_folders(
-        headers, github_folder_elements, "https://api.github.com/repos/bldgtyp/ph_navigator_data/contents/projects"
-    )
+    walk_github_folders(headers, github_folder_elements, URL)
+    fuck_you_github_rate_limits["temp"] = github_folder_elements
     return github_folder_elements

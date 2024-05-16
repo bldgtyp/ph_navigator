@@ -13,7 +13,7 @@ except Exception as e:
     print(e)
 
 from backend.routes import fake_database, github, three_js
-from backend.storage.db import db
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Setup the FastAPI app and routes
