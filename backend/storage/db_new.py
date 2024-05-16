@@ -32,6 +32,7 @@ class ModelView(BaseModel):
 
     @property
     def name_and_id(self) -> str:
+        """Return the ModelView's display name and identifier as a single string."""
         return f"{self.display_name} | {self.identifier}"
 
 
@@ -44,21 +45,26 @@ class Project(BaseModel):
 
     @property
     def name_and_id(self) -> str:
+        """Return the Project's display name and identifier as a single string."""
         return f"{self.display_name} | {self.identifier}"
 
     @property
     def model_views(self) -> list[ModelView]:
+        """Return a list of all the ModelView's in the Project."""
         return list(self.model_storage.values())
 
     @property
     def model_view_ids(self) -> list[str]:
+        """Return a list of all the ModelView's identifiers."""
         return list(self.model_storage.keys())
 
     @property
     def model_view_names(self) -> list[str]:
+        """Return a list of all the ModelView's display names."""
         return [model_view.display_name for model_view in self.model_storage.values()]
 
     def add_model_view(self, model_view: ModelView) -> ModelView:
+        """Add a new empty ModelView to the Project."""
         if existing_model_view := self.get_model_view_by_name(model_view.display_name):
             return existing_model_view
 
@@ -67,6 +73,7 @@ class Project(BaseModel):
         return model_view
 
     def get_model_view_by_name(self, model_view_name: str) -> ModelView | None:
+        """Return a specific ModelView by its display name."""
         for model_view in self.model_views:
             if model_view.display_name == model_view_name:
                 return model_view

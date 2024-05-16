@@ -1,7 +1,7 @@
 import { SceneSetup } from '../scene/SceneSetup';
 import { convertLBTFace3DToMesh } from '../to_three_geometry/ladybug_geometry/geometry3d/face';
 import { appMaterials } from '../scene/Materials';
-import { hbShadeGroup } from '../hooks/fetchModelShades';
+import { hbShadeGroup } from '../hooks/_old_/fetchModelShades';
 
 export function loadModelShades(
     world: React.MutableRefObject<SceneSetup>,

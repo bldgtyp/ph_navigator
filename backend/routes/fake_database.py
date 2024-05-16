@@ -19,7 +19,7 @@ router = APIRouter()
 logger = getLogger("uvicorn")
 
 # ----------------------------------------------------------------------------------------------------------------------
-# -- NEW ONES:
+# -- GET
 
 
 @router.get("/{team_name}/get_projects", response_model=list[Project])
@@ -29,6 +29,26 @@ def get_projects(team_name: str) -> list[Project]:
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
     return team.projects
+
+
+@router.get("/{team_name}/{project_name}/get_model_names", response_model=list[str])
+def get_model_names(team_name: str, project_name: str) -> list[str]:
+    """Return a list of all the Project's Model's names."""
+    team = _db_new_.get_team_by_name(team_name)
+    if not team:
+        raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
+
+    project = team.get_project_by_name(project_name)
+    if not project:
+        raise HTTPException(
+            status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
+        )
+
+    return project.model_view_names
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- PUT
 
 
 @router.put("/{team_name}/add_new_project_to_team", response_model=Project)

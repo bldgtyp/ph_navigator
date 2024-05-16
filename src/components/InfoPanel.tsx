@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import * as THREE from 'three';
 import { Stack, Paper, Button, Slider, Typography } from "@mui/material";
-import { fetchModelUValues } from '../hooks/fetchModelUValues';
+import { fetchModelUValues } from '../hooks/_old_/fetchModelUValues';
 import { hbEnergyOpaqueConstruction } from '../types/honeybee_energy/construction/opaque';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 

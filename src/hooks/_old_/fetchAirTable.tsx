@@ -1,4 +1,4 @@
-import constants from "../data/constants.json";
+import constants from "../../data/constants.json";
 
 export async function fetchData<T>(endpoint: string): Promise<T[]> {
   const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;

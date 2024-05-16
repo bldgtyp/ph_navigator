@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Paper, IconButton, Stack } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import fetchData from "../hooks/fetchAirTable";
+import fetchData from "../hooks/_old_/fetchAirTable";
 import { AirTableResultsRecord, ResultType } from "../types/airtable/record_results";
 import { generateDefaultRow } from "./graphs/DataGridFunctions";
 import { BarGraph } from "./graphs/BarGraph";

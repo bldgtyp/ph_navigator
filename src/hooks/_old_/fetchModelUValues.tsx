@@ -1,5 +1,5 @@
-import constants from "../data/constants.json";
-import { hbEnergyOpaqueConstruction } from "../types/honeybee_energy/construction/opaque";
+import constants from "../../data/constants.json";
+import { hbEnergyOpaqueConstruction } from "../../types/honeybee_energy/construction/opaque";
 
 
 export async function fetchModelUValues(endpoint: string): Promise<hbEnergyOpaqueConstruction[]> {

@@ -1,9 +1,11 @@
-import constants from "../data/constants.json";
-import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
+import constants from "../../data/constants.json";
+import { hbShade } from "../../types/honeybee/shade";
 
+export default fetchModelShades; export type hbShadeGroup = {
+    [key: string]: hbShade;
+};
 
-export async function fetchModelERVDucting(endpoint: string): Promise<hbPhHvacVentilationSystem[] | { error: string }> {
-    // https://bldgtyp.github.io/PH_View/#/proj_2305/ventilation_systems
+export async function fetchModelShades(endpoint: string): Promise<hbShadeGroup[] | { error: string }> {
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     const response = await fetch(API_ENDPOINT);
@@ -14,7 +16,7 @@ export async function fetchModelERVDucting(endpoint: string): Promise<hbPhHvacVe
 
     // Pull out the Face's json data
     const responseJson: { "message": string } = await response.json();
-    return JSON.parse(responseJson['message']);
+    const typeSpaces: any[] = JSON.parse(responseJson['message']);
+    return typeSpaces;
 }
 
-export default fetchModelERVDucting;
