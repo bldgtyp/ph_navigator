@@ -47,6 +47,26 @@ def get_model_names(team_name: str, project_name: str) -> list[str]:
     return project.model_view_names
 
 
+@router.get("/{team_name}/{project_name}/get_model", response_model=ModelView)
+def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
+    """Return a specific Model from a Project"""
+    team = _db_new_.get_team_by_name(team_name)
+    if not team:
+        raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
+
+    project = team.get_project_by_name(project_name)
+    if not project:
+        raise HTTPException(
+            status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
+        )
+
+    model = project.get_model_view_by_name(model_name)
+    if not model:
+        raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
+    logger.info(f"Returning model: {model.dict()}")
+    return model
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 # -- CREATE
 

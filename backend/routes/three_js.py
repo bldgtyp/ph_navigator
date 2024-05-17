@@ -53,7 +53,7 @@ def model_faces(team_id: str, project_id: str, model_id: str):
     if not model_view:
         raise HTTPException(status_code=404, detail=f"No Model found for: '{model_id}'")
 
-    if model_view._hb_model is None:
+    if (model_view._hb_model is None) and (model_view.hbjson_url is not None):
         hb_model_dict = download_hb_json(model_view.hbjson_url)
         try:
             hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_model_dict)
@@ -62,10 +62,13 @@ def model_faces(team_id: str, project_id: str, model_id: str):
                 status_code=404, detail=f"Failed to read in the HB-Model from URL: '{model_view.hbjson_url}' | {e}"
             )
         model_view._hb_model = hb_model
+        hb_faces = model_view._hb_model.faces
+    else:
+        hb_faces = []
 
     # -- Note: Add the Mesh3D to each to the Faces before returning
     face_dicts: list[FaceSchema] = []
-    for hb_face in model_view._hb_model.faces:
+    for hb_face in hb_faces:
         face_DTO = FaceSchema(**hb_face.to_dict())
 
         # -- Get the extra Geometry attributes

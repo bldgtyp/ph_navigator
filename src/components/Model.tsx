@@ -35,8 +35,8 @@ function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, d
 };
 
 export function Model(props: ModelProps) {
-    const { teamId, projectId, modelId } = useParams();
     const { world } = props;
+    const { teamId, projectId, modelId } = useParams();
 
     // Load the Model-Elements from the API based on the project / model ids
     // ------------------------------------------------------------------------

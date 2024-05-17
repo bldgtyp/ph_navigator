@@ -15,6 +15,13 @@ import { Model } from './Model';
 import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
 
+type ModelView = {
+    identifier: string;
+    display_name: string;
+    hbjson_url: string;
+    has_hb_model: boolean;
+}
+
 function Project() {
     const navigate = useNavigate();
     const { teamId, projectId } = useParams();
@@ -32,9 +39,20 @@ function Project() {
         fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(data => {
             setModels(data);
             if (data.length > 0) {
-                navigate(`/${teamId}/${projectId}/${data[0]}`);
+                const modelId = data[0];
+                fetchModelServer<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` })
+                    .then(data => {
+                        console.log(data);
+                        if (data.hbjson_url === "" || data.hbjson_url === null) {
+                            setShowUploadModel(true);
+                            return;
+                        } else {
+                            navigate(`/${teamId}/${projectId}/${modelId}`);
+                        }
+                    });
             } else {
                 setShowUploadModel(true);
+                return;
             }
         });
     }, [teamId, projectId]);

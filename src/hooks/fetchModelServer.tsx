@@ -1,11 +1,20 @@
 import constants from "../data/constants.json";
 
-export async function fetchModelServer<T>(endpoint: string, token: string = ""): Promise<T> {
+export async function fetchModelServer<T>(
+    endpoint: string,
+    token: string = "",
+    params: Record<string, string | number> = {}
+): Promise<T> {
     console.log("fetchModelServer", endpoint, token);
     const HEADERS = { 'token': token };
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
-    const response = await fetch(API_ENDPOINT, { headers: HEADERS })
+
+    // Add query parameters to the URL
+    const url = new URL(API_ENDPOINT);
+    Object.keys(params).forEach(key => url.searchParams.append(key, String(params[key])));
+
+    const response = await fetch(url.toString(), { headers: HEADERS })
 
     if (!response.ok) {
         const txt: any = await response.json();

@@ -21,15 +21,12 @@ def generate_identifier(_prefix: str = "") -> str:
 
 
 class ModelView(BaseModel):
-    """A view of a Honeybee-Model."""
+    """A 3D Model View with an associated source and a Honeybee Model."""
 
     identifier: str = Field(default_factory=lambda: generate_identifier("mv_"))
     display_name: str = ""
-    hbjson_url: str = ""
-    _hb_model: None | HBModel = PrivateAttr(None)
-
-    class Config:
-        arbitrary_types_allowed = True
+    hbjson_url: str | None = None
+    _hb_model: HBModel | None = PrivateAttr(None)
 
     @property
     def name_and_id(self) -> str:
