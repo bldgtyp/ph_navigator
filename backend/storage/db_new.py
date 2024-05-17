@@ -36,10 +36,6 @@ class ModelView(BaseModel):
         """Return the ModelView's display name and identifier as a single string."""
         return f"{self.display_name} | {self.identifier}"
 
-    def set_hb_model(self, hb_model: HBModel):
-        logger.info(f"Setting HBModel: '{hb_model.display_name}' for model-view: '{self.name_and_id}'.")
-        self._hb_model = hb_model
-
 
 class Project(BaseModel):
     """A single Project can have multiple ModelViews."""

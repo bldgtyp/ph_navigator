@@ -6,7 +6,7 @@
 import requests
 from logging import getLogger
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, HTTPException
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
 
@@ -39,10 +39,13 @@ class GitHubPathElement(BaseModel):
 
 def download_hb_json(url: str) -> dict:
     """Download the HBJSON data from the URL and return the JSON content."""
-    logger.info(f"Downloading: {url}")
-
-    response = requests.get(url)
-    response.raise_for_status()  # Raise an exception for HTTP errors
+    logger.info(f"Downloading from: {url}")
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to download {url}: {e}")
+        raise HTTPException(status_code=404, detail=f"Failed to download from URL: {url} | {e}")
     return response.json()
 
 

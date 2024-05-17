@@ -42,25 +42,25 @@ def model_faces(team_id: str, project_id: str, model_id: str):
 
     team = _db_new_.get_team_by_name(team_id)
     if not team:
-        raise HTTPException(status_code=404, detail=f"No Team found for: {team_id}.")
+        raise HTTPException(status_code=404, detail=f"No Team found for: '{team_id}'")
 
     project = team.get_project_by_name(project_id)
     if not project:
-        raise HTTPException(status_code=404, detail=f"No Project found for: {project_id}.")
+        raise HTTPException(status_code=404, detail=f"No Project found for: '{project_id}'")
 
     model_view = project.get_model_view_by_name(model_id)
     if not model_view:
-        raise HTTPException(status_code=404, detail=f"No Model found for: {model_id}.")
+        raise HTTPException(status_code=404, detail=f"No Model found for: '{model_id}'")
 
     if model_view._hb_model is None:
+        hb_model_dict = download_hb_json(model_view.hbjson_url)
         try:
-            hb_model_dict = download_hb_json(model_view.hbjson_url)
-            model_view.set_hb_model(read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_model_dict))
+            hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_model_dict)
         except Exception as e:
             raise HTTPException(
-                status_code=404, detail=f"Failed to load HB-Model from URL: {model_view.hbjson_url}, {e}"
+                status_code=404, detail=f"Failed to create HB-Model from URL: '{model_view.hbjson_url}' | {e}"
             )
-        return []
+        model_view._hb_model = hb_model
 
     # -- Note: Add the Mesh3D to each to the Faces before returning
     face_dicts: list[FaceSchema] = []
@@ -91,7 +91,6 @@ def model_faces(team_id: str, project_id: str, model_id: str):
 
         face_dicts.append(face_DTO)
 
-    logger.info(f"Returning {len(face_dicts)} Faces from model {model_view._hb_model.display_name}.")
     return face_dicts
 
 
