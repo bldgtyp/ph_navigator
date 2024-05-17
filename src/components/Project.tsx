@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { useRef, useEffect, useState } from 'react';
-import { Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams, useNavigate } from "react-router-dom";
 import Viewer from './Viewer';
 import InfoPanel from './InfoPanel';
 import AppStateMenubar from './AppStateMenubar';
@@ -14,7 +14,6 @@ import { SelectedObjectContextProvider } from '../contexts/selected_object_conte
 import { Model } from './Model';
 import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
-import { useNavigate } from "react-router-dom";
 
 function Project() {
     const navigate = useNavigate();

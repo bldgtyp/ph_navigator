@@ -48,6 +48,42 @@ def get_model_names(team_name: str, project_name: str) -> list[str]:
 
 
 # ----------------------------------------------------------------------------------------------------------------------
+# -- CREATE
+
+
+@router.get("/{team_name}/create_new_project", response_model=Project)
+def create_new_project(team_name: str) -> Project:
+    """Create a new Project for a Team"""
+    team = _db_new_.get_team_by_name(team_name)
+    if not team:
+        raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
+
+    new_project = Project()
+    new_project.display_name = new_project.identifier
+    team.add_project(new_project)
+    return new_project
+
+
+@router.get("/{team_name}/{project_name}/create_new_model_view", response_model=Project)
+def create_new_model_view(team_name: str, project_name: str) -> ModelView:
+    """Create a new ModelView for a Project"""
+    team = _db_new_.get_team_by_name(team_name)
+    if not team:
+        raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
+
+    project = team.get_project_by_name(project_name)
+    if not project:
+        raise HTTPException(
+            status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
+        )
+
+    new_model_view = ModelView()
+    new_model_view.display_name = new_model_view.identifier
+    project.add_model_view(new_model_view)
+    return new_model_view
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 # -- PUT
 
 

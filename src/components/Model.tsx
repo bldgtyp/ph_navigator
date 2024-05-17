@@ -33,6 +33,7 @@ function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, d
         return _func(world, data);
     }
 };
+
 export function Model(props: ModelProps) {
     const { teamId, projectId, modelId } = useParams();
     const { world } = props;
