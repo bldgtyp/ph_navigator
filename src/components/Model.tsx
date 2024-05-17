@@ -26,14 +26,13 @@ type ModelProps = {
 };
 
 function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | { error: string }) {
-    if (Array.isArray(data)) {
-        return _func(world, data);
-    } else {
+    if (!Array.isArray(data) && data.error) {
         console.error(data.error);
         return [];
+    } else {
+        return _func(world, data);
     }
-}
-
+};
 export function Model(props: ModelProps) {
     const { teamId, projectId, modelId } = useParams();
     const { world } = props;

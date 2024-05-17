@@ -37,7 +37,11 @@ function addModelsToDBFromGHData(teamId: string | undefined, project_name: strin
     ghPathElement.children.forEach((child) => {
         const modelName = hbjsonFileName(child.name);
         if (childIsHBJSONFile(child)) {
-            putModelServer(`${teamId}/${project_name}/add_new_model_to_project`, { display_name: modelName });
+            const payload = {
+                display_name: modelName,
+                hbjson_url: child.download_url,
+            }
+            putModelServer(`${teamId}/${project_name}/add_new_model_to_project`, payload);
         }
     });
 };

@@ -11,8 +11,8 @@ export async function fetchModelServer<T>(endpoint: string, token: string = ""):
         const txt: any = await response.json();
         throw new Error(`HTTP error! status: ${response.status} | ${txt.detail}`);
     }
-
     const responseJson = await response.json();
+    console.log(responseJson)
     try {
         return 'message' in responseJson ? JSON.parse(responseJson['message']) : responseJson;
     } catch (e) {

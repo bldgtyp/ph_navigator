@@ -37,6 +37,15 @@ class GitHubPathElement(BaseModel):
     children: list["GitHubPathElement"] = []
 
 
+def download_hb_json(url: str) -> dict:
+    """Download the HBJSON data from the URL and return the JSON content."""
+    logger.info(f"Downloading: {url}")
+
+    response = requests.get(url)
+    response.raise_for_status()  # Raise an exception for HTTP errors
+    return response.json()
+
+
 def walk_github_folders(headers: dict, parent: list[GitHubPathElement], url: str) -> list[GitHubPathElement]:
     """Recursively walk through the GitHub folders and files and return a list of all the GitHubPathElement objects."""
     response = requests.get(url, headers)

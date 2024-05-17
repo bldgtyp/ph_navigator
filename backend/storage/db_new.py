@@ -4,7 +4,7 @@
 """Pydantic fake Database."""
 
 from uuid import uuid4
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PrivateAttr
 from logging import getLogger
 
 from honeybee.model import Model as HBModel
@@ -25,15 +25,20 @@ class ModelView(BaseModel):
 
     identifier: str = Field(default_factory=lambda: generate_identifier("mv_"))
     display_name: str = ""
-    # hb_model: None | HBModel = None  # This breaks a lot of things.....
+    hbjson_url: str = ""
+    _hb_model: None | HBModel = PrivateAttr(None)
 
-    # class Config:
-    #     arbitrary_types_allowed = True
+    class Config:
+        arbitrary_types_allowed = True
 
     @property
     def name_and_id(self) -> str:
         """Return the ModelView's display name and identifier as a single string."""
         return f"{self.display_name} | {self.identifier}"
+
+    def set_hb_model(self, hb_model: HBModel):
+        logger.info(f"Setting HBModel: '{hb_model.display_name}' for model-view: '{self.name_and_id}'.")
+        self._hb_model = hb_model
 
 
 class Project(BaseModel):
