@@ -59,7 +59,7 @@ def model_faces(team_id: str, project_id: str, model_id: str):
             hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(hb_model_dict)
         except Exception as e:
             raise HTTPException(
-                status_code=404, detail=f"Failed to create HB-Model from URL: '{model_view.hbjson_url}' | {e}"
+                status_code=404, detail=f"Failed to read in the HB-Model from URL: '{model_view.hbjson_url}' | {e}"
             )
         model_view._hb_model = hb_model
 
