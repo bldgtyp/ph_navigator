@@ -1,6 +1,12 @@
+# -*- coding: utf-8 -*-
+# -*- Python Version: 3.11 -*-
+
+"""Pydantic Schema: honeybee_energy.properties.face.FaceEnergyProperties"""
+
 from pydantic import BaseModel
-from backend.schemas.honeybee_energy.construction.opaque import EnergyOpaqueConstructionSchema
+
+from backend.schemas.honeybee_energy.construction.opaque import OpaqueConstructionSchema
 
 
 class FaceEnergyPropertiesSchema(BaseModel):
-    construction: EnergyOpaqueConstructionSchema | None = None
+    construction: OpaqueConstructionSchema | None = None

@@ -6,13 +6,13 @@
 import json
 from logging import getLogger
 
-from rich import print
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
+from rich import print
 
 # from backend.storage.db import db, generate_random_name
-from backend.storage.db_new import Project, ModelView, _db_new_, generate_identifier
+from backend.storage.db_new import ModelView, Project, _db_new_, generate_identifier
 
 router = APIRouter()
 

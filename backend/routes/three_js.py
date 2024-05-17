@@ -3,10 +3,10 @@
 
 """Routes for the THREE.js 3D Model Viewer."""
 
-from collections import defaultdict
 import json
-from logging import getLogger
 import pathlib
+from collections import defaultdict
+from logging import getLogger
 
 from fastapi import APIRouter, HTTPException
 from honeybee import face, model
@@ -22,11 +22,11 @@ from ladybug_geometry.geometry2d.pointvector import Point2D
 from PHX.from_HBJSON import read_HBJSON_file
 
 from backend.routes.github import download_hb_json
-from backend.storage.db_new import _db_new_
 from backend.schemas.honeybee.face import FaceSchema
+from backend.schemas.honeybee_energy.construction.opaque import OpaqueConstructionSchema
+from backend.schemas.honeybee_energy.construction.window import WindowConstructionSchema
 from backend.schemas.ladybug_geometry.geometry3d.face3d import Mesh3DSchema
-from backend.schemas.honeybee_energy.construction.opaque import EnergyOpaqueConstructionSchema
-from backend.schemas.honeybee_energy.construction.window import ApertureConstructionSchema
+from backend.storage.db_new import _db_new_
 
 router = APIRouter()
 
@@ -73,7 +73,7 @@ def model_faces(team_id: str, project_id: str, model_id: str):
         face_DTO.geometry.area = hb_face.punched_geometry.area
 
         # -- Get the HB-Energy Construction and extra attributes
-        construction = EnergyOpaqueConstructionSchema(**hb_face.properties.energy.construction.to_dict())
+        construction = OpaqueConstructionSchema(**hb_face.properties.energy.construction.to_dict())
         face_DTO.properties.energy.construction = construction
         face_DTO.properties.energy.construction.r_factor = hb_face.properties.energy.construction.r_factor
         face_DTO.properties.energy.construction.u_factor = hb_face.properties.energy.construction.u_factor
@@ -85,7 +85,7 @@ def model_faces(team_id: str, project_id: str, model_id: str):
             aperture_DTO.geometry.area = hb_aperture.geometry.area
 
             # -- Aperture Construction
-            ap_construction = ApertureConstructionSchema(**hb_aperture.properties.energy.construction.to_dict())
+            ap_construction = WindowConstructionSchema(**hb_aperture.properties.energy.construction.to_dict())
             ap_construction.r_factor = hb_aperture.properties.energy.construction.r_factor
             ap_construction.u_factor = hb_aperture.properties.energy.construction.u_factor
             aperture_DTO.properties.energy.construction = ap_construction

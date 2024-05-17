@@ -1,8 +1,15 @@
+# -*- coding: utf-8 -*-
+# -*- Python Version: 3.11 -*-
+
+"""Pydantic Schema: honeybee.face.Face"""
+
+
 from pydantic import BaseModel
-from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
-from backend.schemas.honeybee.properties import FacePropertiesSchema
+
 from backend.schemas.honeybee.aperture import ApertureSchema
 from backend.schemas.honeybee.boundarycondition import BoundaryConditionSchema
+from backend.schemas.honeybee.properties import FacePropertiesSchema
+from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
 
 
 class FaceSchema(BaseModel):

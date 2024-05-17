@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+# -*- Python Version: 3.11 -*-
+
+"""Pydantic Schema: honeybee_energy.material.opaque.EnergyMaterial"""
+
 from pydantic import BaseModel
 
 
-class EnergyOpaqueMaterialSchema(BaseModel):
+class EnergyMaterialSchema(BaseModel):
     type: str
     thickness: float
     conductivity: float

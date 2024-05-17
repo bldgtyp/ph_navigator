@@ -14,7 +14,6 @@ except Exception as e:
 
 from backend.routes import fake_database, github, three_js
 
-
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Setup the FastAPI app and routes
 

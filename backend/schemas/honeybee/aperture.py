@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
+# -*- Python Version: 3.11 -*-
+
+"""Pydantic Schema: honeybee.aperture.Aperture"""
+
 from pydantic import BaseModel
-from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
-from backend.schemas.honeybee.properties import AperturePropertiesSchema
+
 from backend.schemas.honeybee.boundarycondition import BoundaryConditionSchema
+from backend.schemas.honeybee.properties import AperturePropertiesSchema
+from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
 
 
 class ApertureSchema(BaseModel):

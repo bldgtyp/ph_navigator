@@ -3,11 +3,11 @@
 
 """Pydantic fake Database."""
 
-from uuid import uuid4
-from pydantic import BaseModel, Field, PrivateAttr
 from logging import getLogger
+from uuid import uuid4
 
 from honeybee.model import Model as HBModel
+from pydantic import BaseModel, Field, PrivateAttr
 
 logger = getLogger("uvicorn")
 

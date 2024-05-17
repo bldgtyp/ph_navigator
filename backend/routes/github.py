@@ -3,9 +3,9 @@
 
 """Routes for GitHub API."""
 
-import requests
 from logging import getLogger
 
+import requests
 from fastapi import APIRouter, Header, HTTPException
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
