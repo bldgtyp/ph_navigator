@@ -38,6 +38,7 @@ logger = getLogger("uvicorn")
 
 @router.get("/{team_id}/{project_id}/{model_id}/model_faces", response_model=list[FaceSchema])
 def model_faces(team_id: str, project_id: str, model_id: str):
+    """Return a list of all the Faces in a Honeybee Model."""
     logger.info(f"Getting Faces for: {team_id} | {project_id} | {model_id}")
 
     team = _db_new_.get_team_by_name(team_id)

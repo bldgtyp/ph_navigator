@@ -22,7 +22,7 @@ oauth2_scheme = OAuth2AuthorizationCodeBearer(
 
 
 class GitHubPathElement(BaseModel):
-    """A GitHub Path Element object that represents a file or folder within a GitHub repository."""
+    """A GitHub Path-Element representing a file or directory within a GitHub repository."""
 
     name: str
     path: str
@@ -50,7 +50,7 @@ def download_hb_json(url: str) -> dict:
 
 
 def walk_github_folders(headers: dict, parent: list[GitHubPathElement], url: str) -> list[GitHubPathElement]:
-    """Recursively walk through the GitHub folders and files and return a list of all the GitHubPathElement objects."""
+    """Recursively walk through the GitHub folders and files and return a list of all the GitHubPathElement (dir, file, ...) objects."""
     response = requests.get(url, headers)
     response.raise_for_status()  # Raise exception if invalid response
     for responseData in response.json():
@@ -66,6 +66,7 @@ fuck_you_github_rate_limits = {"temp": []}
 
 @router.get("/get_team_project_data_from_source", response_model=list[GitHubPathElement])
 def get_github_files(token: str = Header(None)):
+    """Return all the GitHub path elements (dir, file, ...) for the specified URL."""
     if fuck_you_github_rate_limits["temp"] != []:
         logger.info("using cached github data")
         return fuck_you_github_rate_limits["temp"]
