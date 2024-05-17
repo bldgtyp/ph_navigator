@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { useParams } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { putModelServer } from "../hooks/putModelServer";
+import { fetchModelServer } from "../hooks/fetchModelServer";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { postModelServeFile } from "../hooks/postModelServerFile";
 import { useNavigate } from "react-router-dom";
 
-function UploadModelDialog() {
+function UploadModelDialog(props: any) {
+    const { setModelNames } = props;
     const navigate = useNavigate();
     const { teamId, projectId, modelId } = useParams();
     const [open, setOpen] = useState(true);
@@ -33,9 +35,9 @@ function UploadModelDialog() {
 
         // Create the New Model in the Database
         let model_id: string | undefined = undefined;
-        putModelServer<any>(`${teamId}/${projectId}/create_new_model`, { model_data: {} })
+        fetchModelServer<{ display_name: string }>(`${teamId}/${projectId}/create_new_model_view`)
             .then(response => {
-                model_id = response.model_id;
+                model_id = response.display_name;
             }).then(() => {
                 // Upload the File to the new model
                 if (model_id !== undefined) {
@@ -47,6 +49,7 @@ function UploadModelDialog() {
                 }
             }).then(() => {
                 // Close the Dialog and Navigate to the new Model
+                setModelNames([model_id]);
                 handleClose();
                 navigate(`/${teamId}/${projectId}/${model_id}`);
             });

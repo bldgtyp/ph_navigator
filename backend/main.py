@@ -12,7 +12,7 @@ try:
 except Exception as e:
     print(e)
 
-from backend.routes import fake_database, github, three_js
+from backend.routes import github, storage, three_js
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Setup the FastAPI app and routes
@@ -20,7 +20,7 @@ from backend.routes import fake_database, github, three_js
 app = FastAPI()
 app.include_router(three_js.router)
 app.include_router(github.router)
-app.include_router(fake_database.router)
+app.include_router(storage.router)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

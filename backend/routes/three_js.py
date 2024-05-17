@@ -26,7 +26,7 @@ from backend.schemas.honeybee.face import FaceSchema
 from backend.schemas.honeybee_energy.construction.opaque import OpaqueConstructionSchema
 from backend.schemas.honeybee_energy.construction.window import WindowConstructionSchema
 from backend.schemas.ladybug_geometry.geometry3d.face3d import Mesh3DSchema
-from backend.storage.db_new import _db_new_
+from backend.storage.fake_db import _db_new_
 
 router = APIRouter()
 
@@ -53,6 +53,11 @@ def model_faces(team_id: str, project_id: str, model_id: str):
     if not model_view:
         raise HTTPException(status_code=404, detail=f"No Model found for: '{model_id}'")
 
+    #
+    #
+    #
+    #
+    # TODO: Move this to a 'startup' function of some sort...
     if (model_view._hb_model is None) and (model_view.hbjson_url is not None):
         hb_model_dict = download_hb_json(model_view.hbjson_url)
         try:
@@ -63,8 +68,13 @@ def model_faces(team_id: str, project_id: str, model_id: str):
             )
         model_view._hb_model = hb_model
         hb_faces = model_view._hb_model.faces
+    elif model_view._hb_model:
+        hb_faces = model_view._hb_model.faces
     else:
         hb_faces = []
+    #
+    #
+    #
 
     # -- Note: Add the Mesh3D to each to the Faces before returning
     face_dicts: list[FaceSchema] = []
@@ -94,6 +104,8 @@ def model_faces(team_id: str, project_id: str, model_id: str):
             aperture_DTO.properties.energy.construction = ap_construction
 
         face_dicts.append(face_DTO)
+
+    logger.info(f"Returning {len(face_dicts)} Faces.")
 
     return face_dicts
 

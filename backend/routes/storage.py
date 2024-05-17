@@ -11,6 +11,8 @@ from fastapi.security import OAuth2AuthorizationCodeBearer
 from pydantic import BaseModel
 from rich import print
 
+from PHX.from_HBJSON import read_HBJSON_file
+
 from backend.storage.fake_db import ModelView, Project, _db_new_, generate_identifier
 
 router = APIRouter()
@@ -137,37 +139,49 @@ def add_new_model_to_project(team_name: str, project_name: str, model: ModelView
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# -- OLD ONES:
+# -- POST
 
-# @router.post("/{team_id}/{project_id}/{model_id}/upload_hbjson_file_to_model")
-# async def upload_hbjson_file_to_model(
-#     team_id: str, project_id: str, model_id: str, file: UploadFile | None = File(...)
-# ):
-#     # -------------------------------------------------------------------------
-#     if not file:
-#         return {"message": {"error": "No file provided?"}}
 
-#     # -------------------------------------------------------------------------
-#     filename = file.filename or ""
-#     if not filename.endswith(".hbjson"):
-#         return {"message": {"error": "Sorry, only HBJSON files are allowed."}}
+@router.post("/{team_name}/{project_name}/{model_name}/upload_hbjson_file_to_model")
+async def upload_hbjson_file_to_model(
+    team_name: str, project_name: str, model_name: str, file: UploadFile | None = File(...)
+):
+    logger.info(f"Uploading HBJSON file to Model: '{model_name}' in Project: '{project_name}' for Team: '{team_name}'")
+    # -------------------------------------------------------------------------
+    if not file:
+        return {"error": "No file provided?"}
 
-#     # -------------------------------------------------------------------------
-#     contents = await file.read()  # Read the contents of the uploaded file as bytes
-#     json_data: dict = json.loads(contents)  # Decode the bytes to string and parse it as JSON
+    # -------------------------------------------------------------------------
+    filename = file.filename or ""
+    if not filename.endswith(".hbjson"):
+        return {"error": "Sorry, only HBJSON files are allowed."}
 
-#     # -------------------------------------------------------------------------
-#     try:
-#         team = db.get_team_by_name(team_id)
-#         if not team:
-#             return {"message": {"error": f"No team found with name: {team_id}."}}
+    # -------------------------------------------------------------------------
+    contents = await file.read()  # Read the contents of the uploaded file as bytes
+    json_data: dict = json.loads(contents)  # Decode the bytes to string and parse it as JSON
 
-#         project = team.get_ph_navigator_project_by_name(project_id)
-#         if not project:
-#             return {"message": {"error": f"No project found with name: {project_id}."}}
+    # -------------------------------------------------------------------------
+    try:
+        team = _db_new_.get_team_by_name(team_name)
+        if not team:
+            raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-#         project.set_model_hb_json(model_id, json_data)
-#     except Exception as e:
-#         return {"message": {"error": str(e)}}
+        project = team.get_project_by_name(project_name)
+        if not project:
+            raise HTTPException(
+                status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
+            )
 
-#     return {"message": {"success": f"File: '{file.filename}' uploaded successfully."}}
+        model_view = project.get_model_view_by_name(model_name)
+        if not model_view:
+            raise HTTPException(
+                status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'"
+            )
+
+        logger.info(f"Updating model: '{model_name}' in project: '{project_name}' for team: '{team_name}'")
+        model_view._hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(json_data)
+
+    except Exception as e:
+        return {"error": str(e)}
+
+    return {"success": f"File: '{file.filename}' uploaded successfully."}

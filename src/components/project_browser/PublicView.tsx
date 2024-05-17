@@ -6,10 +6,10 @@ export function Public() {
     const { teamId } = useParams();
     function handleOnClick() {
         // Create a new Project on the Public Team
-        fetchModelServer<any>(`${teamId}/create_new_project`)
+        fetchModelServer<{ display_name: string }>(`${teamId}/create_new_project`)
             .then(data => {
                 const newProjectId = data.display_name;
-                fetchModelServer<any>(`${teamId}/${newProjectId}/create_new_model_view`)
+                fetchModelServer<{ display_name: string }>(`${teamId}/${newProjectId}/create_new_model_view`)
                     .then(data => {
                         // Create a new, empty Model in the Project
                         // Navigate to the new Model. This should automatically load Uploader.

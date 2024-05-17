@@ -25,7 +25,7 @@ type ModelView = {
 function Project() {
     const navigate = useNavigate();
     const { teamId, projectId } = useParams();
-    const [models, setModels] = useState<string[] | undefined>(undefined);
+    const [modelNames, setModelNames] = useState<string[] | undefined>(undefined);
     const [showUploadModel, setShowUploadModel] = useState(false);
 
     const world = useRef(new SceneSetup());
@@ -34,16 +34,15 @@ function Project() {
 
     world.current.scene.add(dimensionLinesRef.current);
 
-    // Get the project's model names list
     useEffect(() => {
-        fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(data => {
-            setModels(data);
-            if (data.length > 0) {
-                const modelId = data[0];
+        fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(projectModelNames => {
+            console.log(`${teamId}/${projectId}`, projectModelNames)
+            setModelNames(projectModelNames);
+            if (projectModelNames.length > 0) {
+                const modelId = projectModelNames[0];
                 fetchModelServer<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` })
-                    .then(data => {
-                        console.log(data);
-                        if (data.hbjson_url === "" || data.hbjson_url === null) {
+                    .then(modelView => {
+                        if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
                             setShowUploadModel(true);
                             return;
                         } else {
@@ -59,7 +58,7 @@ function Project() {
 
     return (
         <>
-            <NavigationBar modelsList={models} />
+            <NavigationBar modelsList={modelNames} />
             <AppStateContextProvider>
                 <SelectedObjectContextProvider>
                     <Viewer
@@ -75,7 +74,7 @@ function Project() {
                 </SelectedObjectContextProvider>
                 <AppStateMenubar />
                 <ResultsSidebar />
-                {showUploadModel ? <UploadModelDialog /> : null}
+                {showUploadModel ? <UploadModelDialog setModelNames={setModelNames} /> : null}
             </AppStateContextProvider>
         </>
     );
