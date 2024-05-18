@@ -74,6 +74,7 @@ export function TeamView() {
 
     useEffect(() => {
         console.log("TeamView useEffect", teamId, "- - - - - - - - - -");
+        console.log("process.env.REACT_APP_TEST_GH_ACCESS_KEY:", process.env.REACT_APP_TEST_GH_ACCESS_KEY)
         setIsLoading(true);
         fetchModelServer<GitHubPathElement[]>("get_team_project_data_from_source", process.env.REACT_APP_TEST_GH_ACCESS_KEY)
             // Load all the Team's Project Data FROM the source TO the server
