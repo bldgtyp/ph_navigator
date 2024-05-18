@@ -3,11 +3,12 @@
 
 """Routes for the THREE.js 3D Model Viewer."""
 
+from collections import defaultdict
 import pathlib
 from logging import getLogger
 
 from fastapi import APIRouter, HTTPException
-from honeybee import face, room
+from honeybee import face, room, shade
 from honeybee.boundarycondition import Surface
 from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_energy.properties.face import FaceEnergyProperties
@@ -21,6 +22,7 @@ from ladybug.sunpath import Sunpath
 from ladybug_geometry.geometry2d.pointvector import Point2D
 
 from backend.schemas.honeybee.face import FaceSchema
+from backend.schemas.honeybee.shade import ShadeSchema, ShadeGroupSchema
 from backend.schemas.honeybee_energy.construction.opaque import OpaqueConstructionSchema
 from backend.schemas.honeybee_energy.construction.window import WindowConstructionSchema
 from backend.schemas.honeybee_ph.space import SpaceSchema
@@ -267,19 +269,22 @@ def ventilation_systems(team_id: str, project_id: str, model_id: str) -> list[Ph
     return ventilation_system_DTOs
 
 
-# @router.get("/{team_id}/{project_id}/{model_id}/shading_elements")
-# def shading_elements(team_id: str, project_id: str, model_id: str):
-#     # -- Get the right project model
-#     ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
-#     if not ph_nav_model or not ph_nav_model.hb_model:
-#         return {"message": json.dumps({"error": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."})}
+@router.get("/{team_id}/{project_id}/{model_id}/shading_elements", response_model=list[ShadeGroupSchema])
+def shading_elements(team_id: str, project_id: str, model_id: str) -> list[ShadeGroupSchema]:
+    """Return a list of all the Shading elements in a Honeybee Model."""
+    logger.info(f"Getting Shading Elements for: {team_id} | {project_id} | {model_id}")
 
-#     # -- Pull out all the model-level shades
-#     # -- Group them by display-name
-#     shades = defaultdict(list)
-#     for shade in ph_nav_model.hb_model.shades:
-#         d = shade.to_dict()
-#         d["geometry"]["mesh"] = shade.geometry.triangulated_mesh3d.to_dict()
-#         shades[shade.display_name].append(d)
+    model_view = get_model(team_id, project_id, model_id)
+    if not model_view._hb_model:
+        raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
-#     return {"message": json.dumps(shades)}
+    # -- Pull out all the model-level shades
+    # -- Group them by their display-name
+    shade_DTOs = defaultdict(ShadeGroupSchema)
+    hb_shades: list[shade.Shade] = model_view._hb_model.shades
+    for hb_shade in hb_shades:
+        shade_DTO = ShadeSchema(**hb_shade.to_dict())
+        shade_DTO.geometry.mesh = Mesh3DSchema(**hb_shade.geometry.triangulated_mesh3d.to_dict())
+        shade_DTOs[hb_shade.display_name].shades.append(shade_DTO)
+
+    return list(shade_DTOs.values())

@@ -7,9 +7,6 @@ import InfoPanel from './InfoPanel';
 import ResultsSidebar from './ResultsSidebar';
 
 import { fetchModelServer } from "../hooks/fetchModelServer";
-import { fetchModelERVDucting } from '../hooks/_old_/fetchModelERVDucting';
-import { fetchModelShades } from '../hooks/_old_/fetchModelShades';
-
 import { loadModelFaces } from '../loaders/load_model_faces';
 import { loadModelSpaces } from '../loaders/load_model_spaces';
 import { loadModelSunPath } from '../loaders/load_sun_path';
@@ -17,14 +14,12 @@ import { loadModelHotWaterPiping } from '../loaders/load_hot_water_piping';
 import { loadModelERVDucting } from '../loaders/load_erv_ducting';
 import { loadModelShades } from '../loaders/load_model_shades';
 
-
 import { hbFace } from "../types/honeybee/face";
 import { hbPHSpace } from "../types/honeybee_ph/space";
-import { ModelView } from "../types/fake_database/ModelView";
 import { lbtSunPathDTO } from "../types/ladybug/sunpath";
 import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_system";
 import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
-
+import { hbShadeGroup } from "../types/honeybee/shade";
 
 type ModelProps = {
     world: React.MutableRefObject<SceneSetup>;
@@ -69,8 +64,8 @@ export function Model(props: ModelProps) {
                     fetchModelServer<hbPhHvacVentilationSystem[]>(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
                         .then(data => handleError(loadModelERVDucting, world, data));
 
-                    // fetchModelShades(`${teamId}/${projectId}/${modelId}/shading_elements`)
-                    //     .then(data => handleError(loadModelShades, world, data));
+                    fetchModelServer<hbShadeGroup[]>(`${teamId}/${projectId}/${modelId}/shading_elements`)
+                        .then(data => handleError(loadModelShades, world, data));
                 })
 
         }

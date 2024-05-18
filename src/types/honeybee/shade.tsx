@@ -7,3 +7,7 @@ export type hbShade = {
     is_detached: boolean;
     geometry: lbtFace3D
 };
+
+export type hbShadeGroup = {
+    shades: hbShade[];
+};
