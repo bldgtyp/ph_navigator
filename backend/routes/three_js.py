@@ -13,6 +13,7 @@ from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_energy.properties.face import FaceEnergyProperties
 from honeybee_ph.properties.room import RoomPhProperties
 from honeybee_phhvac.properties.room import RoomPhHvacProperties
+from honeybee_phhvac.hot_water_system import PhHotWaterSystem
 from ladybug import epw
 from ladybug.compass import Compass
 from ladybug.sunpath import Sunpath
@@ -22,6 +23,7 @@ from backend.schemas.honeybee.face import FaceSchema
 from backend.schemas.honeybee_energy.construction.opaque import OpaqueConstructionSchema
 from backend.schemas.honeybee_energy.construction.window import WindowConstructionSchema
 from backend.schemas.honeybee_ph.space import SpaceSchema
+from backend.schemas.honeybee_phhvac.hot_water_system import PhHotWaterSystemSchema
 from backend.schemas.ladybug.compass import CompassSchema
 from backend.schemas.ladybug.sunpath import SunPathAndCompassDTOSchema, SunPathSchema
 from backend.schemas.ladybug_geometry.geometry2d.arc import Arc2D
@@ -179,8 +181,8 @@ def get_exterior_constructions(team_id: str, project_id: str, model_id: str) -> 
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/sun_path", response_model=SunPathAndCompassDTOSchema)
-def sun_path(team_id: str, project_id: str, model_id: str):
-    """Return a list of all the Exterior Constructions in a Honeybee Model."""
+def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassDTOSchema:
+    """Return the SunPath and Compass for a Honeybee-Model"""
     logger.info(f"Getting SunPath for: {team_id} | {project_id} | {model_id}")
 
     SCALE = 0.4
@@ -215,25 +217,28 @@ def sun_path(team_id: str, project_id: str, model_id: str):
     return SunPathAndCompassDTOSchema(sunpath=sunpath_DTO, compass=compass_DTO)
 
 
-# @router.get("/{team_id}/{project_id}/{model_id}/hot_water_systems")
-# def hot_water_systems(team_id: str, project_id: str, model_id: str):
-#     # -- Get the right project model
-#     ph_nav_model = db.get_ph_navigator_model_by_name(team_id, project_id, model_id)
-#     if not ph_nav_model or not ph_nav_model.hb_model:
-#         return {"message": json.dumps({"error": f"No HB-Model found for: {team_id} | {project_id} | {model_id}."})}
+@router.get("/{team_id}/{project_id}/{model_id}/hot_water_systems", response_model=list[PhHotWaterSystemSchema])
+def hot_water_systems(team_id: str, project_id: str, model_id: str) -> list[PhHotWaterSystemSchema]:
+    """Return a list of all the Hot Water Systems in a Honeybee Model."""
+    logger.info(f"Getting Hot-Water System for: {team_id} | {project_id} | {model_id}")
 
-#     # -- Get each unique HW system in the model
-#     hw_systems = {}
-#     for room in ph_nav_model.hb_model.rooms:
-#         room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
-#         if not room_prop_phhvac.hot_water_system:
-#             continue
-#         hw_systems[room_prop_phhvac.hot_water_system.display_name] = room_prop_phhvac.hot_water_system
+    model_view = get_model(team_id, project_id, model_id)
+    if not model_view._hb_model:
+        raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
-#     hw_system_dicts = []
-#     for hw_system in hw_systems.values():
-#         hw_system_dicts.append(hw_system.to_dict(_include_properties=True))
-#     return {"message": json.dumps(hw_system_dicts)}
+    # -- Get each unique Honeybee-PH-HVAC Hot-Water system in the HB-Model
+    hb_phHvac_hw_systems: dict[str, PhHotWaterSystem] = {}
+    for room in model_view._hb_model.rooms:
+        room_prop_phhvac: RoomPhHvacProperties = getattr(room.properties, "ph_hvac")
+        if not room_prop_phhvac.hot_water_system:
+            continue
+        hb_phHvac_hw_systems[room_prop_phhvac.hot_water_system.display_name] = room_prop_phhvac.hot_water_system
+
+    # -- Convert the Honeybee-PH-HVAC Hot-Water systems to DTOs
+    hw_system_DTOs: list[PhHotWaterSystemSchema] = []
+    for hw_system in hb_phHvac_hw_systems.values():
+        hw_system_DTOs.append(PhHotWaterSystemSchema(**hw_system.to_dict(_include_properties=True)))
+    return hw_system_DTOs
 
 
 # @router.get("/{team_id}/{project_id}/{model_id}/ventilation_systems")

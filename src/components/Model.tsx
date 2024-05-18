@@ -7,10 +7,6 @@ import InfoPanel from './InfoPanel';
 import ResultsSidebar from './ResultsSidebar';
 
 import { fetchModelServer } from "../hooks/fetchModelServer";
-import { fetchSunPath } from '../hooks/_old_/fetchSunPath'
-import { fetchModelFaces } from '../hooks/_old_/fetchModelFaces';
-import { fetchModelSpaces } from '../hooks/_old_/fetchModelSpaces';
-import { fetchModelHotWaterPiping } from '../hooks/_old_/fetchModelHotWaterPiping';
 import { fetchModelERVDucting } from '../hooks/_old_/fetchModelERVDucting';
 import { fetchModelShades } from '../hooks/_old_/fetchModelShades';
 
@@ -26,6 +22,8 @@ import { hbFace } from "../types/honeybee/face";
 import { hbPHSpace } from "../types/honeybee_ph/space";
 import { ModelView } from "../types/fake_database/ModelView";
 import { lbtSunPathDTO } from "../types/ladybug/sunpath";
+import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_system";
+
 
 
 type ModelProps = {
@@ -65,8 +63,8 @@ export function Model(props: ModelProps) {
 
                     fetchModelServer<lbtSunPathDTO>(`${teamId}/${projectId}/${modelId}/sun_path`).then(data => loadModelSunPath(world, data));
 
-                    // fetchModelHotWaterPiping(`${teamId}/${projectId}/${modelId}/hot_water_systems`)
-                    //     .then(data => handleError(loadModelHotWaterPiping, world, data));
+                    fetchModelServer<hbPhHvacHotWaterSystem[]>(`${teamId}/${projectId}/${modelId}/hot_water_systems`)
+                        .then(data => handleError(loadModelHotWaterPiping, world, data));
 
                     // fetchModelERVDucting(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
                     //     .then(data => handleError(loadModelERVDucting, world, data));

@@ -3,7 +3,7 @@ import { lbtLineSegment3D } from '../ladybug_geometry/geometry3d/line';
 type hbPhHvacPipeSegment = {
     geometry: lbtLineSegment3D;
     diameter_value: string;
-    insulation_thickness: number;
+    insulation_thickness: string;
     insulation_conductivity: number;
     insulation_reflective: boolean;
     insulation_quality: any;
