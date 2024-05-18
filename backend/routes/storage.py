@@ -7,10 +7,7 @@ import json
 from logging import getLogger
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from fastapi.security import OAuth2AuthorizationCodeBearer
 from PHX.from_HBJSON import read_HBJSON_file
-from pydantic import BaseModel
-from rich import print
 
 from backend.storage.fake_db import ModelView, Project, _db_new_
 

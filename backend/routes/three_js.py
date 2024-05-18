@@ -6,6 +6,7 @@
 from collections import defaultdict
 import pathlib
 from logging import getLogger
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from honeybee import face, room, shade
@@ -42,6 +43,11 @@ router = APIRouter()
 logger = getLogger("uvicorn")
 
 # ----------------------------------------------------------------------------------------------------------------------
+
+
+def any_dict(d: dict[Any, Any]) -> dict[Any, Any]:
+    """Wrap un-typed LBT dictionaries (like 'to_dict()') to avoid type-checking errors."""
+    return d
 
 
 def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
@@ -81,7 +87,7 @@ def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSchema]:
     # -- Note: Add the Mesh3D to each to the Faces before returning
     face_dicts: list[FaceSchema] = []
     for hb_face in hb_faces:
-        face_DTO = FaceSchema(**hb_face.to_dict())
+        face_DTO = FaceSchema(**any_dict(hb_face.to_dict()))
 
         # -- Get the extra Geometry attributes
         face_DTO.geometry.mesh = Mesh3DSchema(**hb_face.punched_geometry.triangulated_mesh3d.to_dict())
@@ -89,10 +95,11 @@ def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSchema]:
 
         # -- Get the HB-Energy Construction and extra attributes
         hb_face_energy_prop: FaceEnergyProperties = getattr(hb_face.properties, "energy")
-        construction = OpaqueConstructionSchema(**hb_face_energy_prop.construction.to_dict())
+        construction = OpaqueConstructionSchema(**any_dict(hb_face_energy_prop.construction.to_dict()))
         face_DTO.properties.energy.construction = construction
-        face_DTO.properties.energy.construction.r_factor = hb_face_energy_prop.construction.r_factor
-        face_DTO.properties.energy.construction.u_factor = hb_face_energy_prop.construction.u_factor
+
+        face_DTO.properties.energy.construction.r_factor = getattr(hb_face_energy_prop.construction, "r_factor", 0.0)
+        face_DTO.properties.energy.construction.u_factor = getattr(hb_face_energy_prop.construction, "u_factor", 0.0)
 
         # -- Get the Aperture data
         for aperture_DTO, hb_aperture in zip(face_DTO.apertures or [], hb_face.apertures or []):
@@ -177,7 +184,7 @@ def get_exterior_constructions(team_id: str, project_id: str, model_id: str) -> 
 
     constructions: list[OpaqueConstructionSchema] = []
     for construction in unique_constructions.values():
-        d = OpaqueConstructionSchema(**construction.to_dict())
+        d = OpaqueConstructionSchema(**any_dict(construction.to_dict()))
         d.u_factor = construction.u_factor
         constructions.append(d)
 
@@ -283,7 +290,7 @@ def shading_elements(team_id: str, project_id: str, model_id: str) -> list[Shade
     shade_DTOs = defaultdict(ShadeGroupSchema)
     hb_shades: list[shade.Shade] = model_view._hb_model.shades
     for hb_shade in hb_shades:
-        shade_DTO = ShadeSchema(**hb_shade.to_dict())
+        shade_DTO = ShadeSchema(**any_dict(hb_shade.to_dict()))
         shade_DTO.geometry.mesh = Mesh3DSchema(**hb_shade.geometry.triangulated_mesh3d.to_dict())
         shade_DTOs[hb_shade.display_name].shades.append(shade_DTO)
 

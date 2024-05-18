@@ -8,7 +8,6 @@ import os
 
 from fastapi import APIRouter
 from pyairtable import Api
-from pyairtable.api.types import RecordDict
 
 from backend.storage._old_db_ import db
 
