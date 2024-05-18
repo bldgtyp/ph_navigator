@@ -23,7 +23,7 @@ import { hbPHSpace } from "../types/honeybee_ph/space";
 import { ModelView } from "../types/fake_database/ModelView";
 import { lbtSunPathDTO } from "../types/ladybug/sunpath";
 import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_system";
-
+import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
 
 
 type ModelProps = {
@@ -52,13 +52,13 @@ export function Model(props: ModelProps) {
         world.current.reset();
         if (showModel === true && modelId !== undefined && projectId !== undefined) {
 
-            fetchModelServer<hbFace[] | { error: string }>(`${teamId}/${projectId}/${modelId}/load_hb_model`)
+            fetchModelServer<hbFace[]>(`${teamId}/${projectId}/${modelId}/load_hb_model`)
                 .then(data => {
 
-                    fetchModelServer<hbFace[] | { error: string }>(`${teamId}/${projectId}/${modelId}/faces`)
+                    fetchModelServer<hbFace[]>(`${teamId}/${projectId}/${modelId}/faces`)
                         .then(data => handleError(loadModelFaces, world, data))
 
-                    fetchModelServer<hbPHSpace[] | { error: string }>(`${teamId}/${projectId}/${modelId}/spaces`)
+                    fetchModelServer<hbPHSpace[]>(`${teamId}/${projectId}/${modelId}/spaces`)
                         .then(data => handleError(loadModelSpaces, world, data));
 
                     fetchModelServer<lbtSunPathDTO>(`${teamId}/${projectId}/${modelId}/sun_path`).then(data => loadModelSunPath(world, data));
@@ -66,8 +66,8 @@ export function Model(props: ModelProps) {
                     fetchModelServer<hbPhHvacHotWaterSystem[]>(`${teamId}/${projectId}/${modelId}/hot_water_systems`)
                         .then(data => handleError(loadModelHotWaterPiping, world, data));
 
-                    // fetchModelERVDucting(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
-                    //     .then(data => handleError(loadModelERVDucting, world, data));
+                    fetchModelServer<hbPhHvacVentilationSystem[]>(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
+                        .then(data => handleError(loadModelERVDucting, world, data));
 
                     // fetchModelShades(`${teamId}/${projectId}/${modelId}/shading_elements`)
                     //     .then(data => handleError(loadModelShades, world, data));
