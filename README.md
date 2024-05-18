@@ -19,13 +19,13 @@
 - [X] Get Boundary Condition
 - [X] Get HB-Construction Name and Props
 - [X] Get Outdoor Shades
-- [ ] Get Doors
+- [X] Refactor Poly-lines so material gets set in Viewer/useEffect
 - [X] Spaces
   - [X] Spaces need to be Rotated in hp-ph
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
-- [X] Refactor Poly-lines so material gets set in Viewer/useEffect
+- [ ] Get Doors
 
 #### Get Systems:
 - [ ] Ventilation
@@ -41,8 +41,20 @@
 - [X] Add all app-state event listeners
 - [X] Fix Measurement Vertex Selector behavior. Super jankey right now.
   - [X] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
+- [X] move the face data panel to the left
+- [X] add 'results' buttons on the right
+- [X] Refactor App State to useReducer / useContext
+- [X] Refactor AppState to Custom-Context
+  - [X] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
+- [X] Refactor Selected-Object to useReducer / useContext / Custom-Context
+- [X] Refactor Dimension-Lines to useReducer / useContext / Custom-Context
+- [X] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
+- [X] Select Rooms, display room-data in panel on left side
 - [X] Add Sun-path diagram State
   - [ ] Time of Day control (connect to sunlight position)
+- [X] add a u-value list with sliders to the face data panel 
+  - [X] Make exterior surfaces only
+  - [ ] Add a Window U-Value section below
 - [ ] Face Data - truncate names / identifiers
 - [ ] Constructions Table (with Materials)
 - [ ] Windows Table (frames, glass, units)
@@ -55,32 +67,20 @@
   - [ ] Add guard against 0-length markers
   - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
-- [X] move the face data panel to the left
-- [X] add 'results' buttons on the right
-- [X] add a u-value list with sliders to the face data panel 
-  - [X] Make exterior surfaces only
-  - [ ] Add a Window U-Value section below
-- [X] Refactor App State to useReducer / useContext
-- [X] Refactor AppState to Custom-Context
-  - [X] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
-- [X] Refactor Selected-Object to useReducer / useContext / Custom-Context
-- [X] Refactor Dimension-Lines to useReducer / useContext / Custom-Context
 - [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
-- [X] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
-- [X] Select Rooms, display room-data in panel on left side
 - [ ] When selecting a surface for query - show all the edge dims in very light text
 - [ ] Move results to top to allow for app-state bar to the right
 - [ ] When selecting a pipe, show the dims alongside
-- [ ] Add Loading modals
+- [ ] Add Loading modal dialogs
   - [ ] Browser Project Loading
   - [ ] Model Faces Load
 
 #### NavBar:
-- [ ] Add model source url
 - [X] Add 'home' icon on left side (Navigator)
 - [X] Make so project cannot be selected from the dropdown, only the home page
-- [ ] Fix EPW file data source. Location in upper right (map link)
 - [X] Create new Model Upload dialogue and endpoint
+- [ ] Add model source url
+- [ ] Fix EPW file data source. Location in upper right (map link)
 - [ ] Add model refresh button
 
 #### Comments 
@@ -102,10 +102,11 @@
   - [ ] shadow map
 
 #### API:
-- [ ] Create Pydantic Response Models
-- [ ] Refactor all API endpoints to use Pydantic Models
+- [X] Create Pydantic Response Models
+- [X] Refactor all API endpoints to use Pydantic Models
+- [X] Re-write the other endpoints (spaces, pipes, etc..) with Pydantic
 - [ ] Move file paths into config file
-- [ ] Re-write the other endpoints (spaces, pipes, etc..) with Pydantic
+- [ ] Add some form of basic Auth
 
 
 
