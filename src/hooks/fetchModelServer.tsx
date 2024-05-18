@@ -24,7 +24,7 @@ export async function fetchModelServer<T>(
     Object.keys(params).forEach(key => url.searchParams.append(key, String(params[key])));
 
     // Delay for Testing...
-    await new Promise(resolve => setTimeout(resolve, 4000)); // 2 seconds delay
+    // await new Promise(resolve => setTimeout(resolve, 4000)); // 2 seconds delay
 
 
     const response = await fetch(url.toString(), { headers: HEADERS })
