@@ -3,30 +3,24 @@
 import * as THREE from 'three';
 import { useRef, useEffect, useState } from 'react';
 import { Route, Routes, useParams, useNavigate } from "react-router-dom";
+
 import Viewer from './Viewer';
-import InfoPanel from './InfoPanel';
 import AppStateMenubar from './AppStateMenubar';
-import ResultsSidebar from './ResultsSidebar';
 import UploadModelDialog from './UploadModelDialog';
+import { Model } from './Model';
 import { SceneSetup } from '../scene/SceneSetup';
 import { AppStateContextProvider } from '../contexts/app_state_context';
 import { SelectedObjectContextProvider } from '../contexts/selected_object_context';
-import { Model } from './Model';
 import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
-
-type ModelView = {
-    identifier: string;
-    display_name: string;
-    hbjson_url: string;
-    has_hb_model: boolean;
-}
+import { ModelView } from "../types/fake_database/ModelView";
 
 function Project() {
     const navigate = useNavigate();
     const { teamId, projectId } = useParams();
     const [modelNames, setModelNames] = useState<string[] | undefined>(undefined);
     const [showUploadModel, setShowUploadModel] = useState(false);
+    const [showModel, setShowModel] = useState(false);
 
     const world = useRef(new SceneSetup());
     const hoveringVertex = useRef<THREE.Vector3 | null>(null); // For THREE.js Rendering
@@ -34,22 +28,31 @@ function Project() {
 
     world.current.scene.add(dimensionLinesRef.current);
 
+    // Load in the ModelViews for the Project
     useEffect(() => {
         fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(projectModelNames => {
-            console.log(`${teamId}/${projectId}`, projectModelNames)
             setModelNames(projectModelNames);
+
+            // If the Project has any ModelViews...
             if (projectModelNames.length > 0) {
+
                 const modelId = projectModelNames[0];
                 fetchModelServer<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` })
                     .then(modelView => {
+
+                        // If the ModelView is missing a source-URL, ask the user to upload a model
                         if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
                             setShowUploadModel(true);
                             return;
+
                         } else {
+                            /// If the ModelView has a source-URL, show the model...
+                            setShowModel(true);
                             navigate(`/${teamId}/${projectId}/${modelId}`);
                         }
                     });
             } else {
+                // If the project has no ModelViews...
                 setShowUploadModel(true);
                 return;
             }
@@ -66,15 +69,13 @@ function Project() {
                         hoveringVertex={hoveringVertex}
                         dimensionLinesRef={dimensionLinesRef}
                     />
-                    <InfoPanel />
+                    {showUploadModel ? <UploadModelDialog setModelNames={setModelNames} setShowModel={setShowModel} /> : null}
                     <Routes>
-                        <Route path="/" element={<Model world={world} />} />
-                        <Route path=":modelId/" element={<Model world={world} />} />
+                        <Route path="/" element={<Model world={world} showModel={showModel} />} />
+                        <Route path=":modelId/" element={<Model world={world} showModel={showModel} />} />
                     </Routes>
                 </SelectedObjectContextProvider>
                 <AppStateMenubar />
-                <ResultsSidebar />
-                {showUploadModel ? <UploadModelDialog setModelNames={setModelNames} /> : null}
             </AppStateContextProvider>
         </>
     );

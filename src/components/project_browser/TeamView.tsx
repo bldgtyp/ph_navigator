@@ -90,7 +90,6 @@ export function TeamView() {
         <div className="project-browser-cards">
             {!isLoading && (
                 <>
-                    <ProjectCard display_name={"..."} identifier={""} key={""} teamId={teamId} />
                     {projectDataList.map((d) => {
                         return <ProjectCard {...d} key={d.identifier} teamId={teamId} />;
                     })}

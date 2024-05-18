@@ -33,7 +33,7 @@
   - [ ] ERV unit
 - [ ] Plumbing
   - [X] Piping
-  - [ ] Hot Water Tanks and Heaters
+  - [ ] Hot Water Tanks and Heaters (note: need to add geom to HBPH / GH)
 
 #### UI:
 - [X] Refactor App-State and Mouse-Events
@@ -71,13 +71,17 @@
 - [ ] When selecting a surface for query - show all the edge dims in very light text
 - [ ] Move results to top to allow for app-state bar to the right
 - [ ] When selecting a pipe, show the dims alongside
+- [ ] Add Loading modals
+  - [ ] Browser Project Loading
+  - [ ] Model Faces Load
 
 #### NavBar:
 - [ ] Add model source url
 - [X] Add 'home' icon on left side (Navigator)
 - [X] Make so project cannot be selected from the dropdown, only the home page
 - [ ] Fix EPW file data source. Location in upper right (map link)
-- [ ] Create new Model Upload dialogue and endpoint
+- [X] Create new Model Upload dialogue and endpoint
+- [ ] Add model refresh button
 
 #### Comments 
 - [ ] Create new honeybee-tracker plugin
@@ -101,6 +105,8 @@
 - [ ] Create Pydantic Response Models
 - [ ] Refactor all API endpoints to use Pydantic Models
 - [ ] Move file paths into config file
+- [ ] Re-write the other endpoints (spaces, pipes, etc..) with Pydantic
+
 
 
 # Backend Setup (FastAPI)

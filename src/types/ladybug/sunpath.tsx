@@ -14,9 +14,13 @@ type lbtCompass = {
     minor_azimuth_ticks: lbtLineSegment2D[]
 }
 
-export type lbtSunPath = {
+type lbtSunPath = {
     hourly_analemma_polyline3d: lbtPolyline3D[],
     monthly_day_arc3d: lbtArc3D[],
+}
+
+export type lbtSunPathDTO = {
+    sunpath: lbtSunPath,
     compass: lbtCompass
 };
 

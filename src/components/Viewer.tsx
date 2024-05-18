@@ -208,7 +208,7 @@ function Viewer(props: ViewerProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return <div ref={mountRef} />;
+    return <div ref={mountRef} />
 
 }
 

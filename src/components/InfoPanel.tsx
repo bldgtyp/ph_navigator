@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import * as THREE from 'three';
 import { Stack, Paper, Button, Slider, Typography } from "@mui/material";
-import { fetchModelUValues } from '../hooks/_old_/fetchModelUValues';
+import { fetchModelServer } from '../hooks/fetchModelServer';
 import { hbEnergyOpaqueConstruction } from '../types/honeybee_energy/construction/opaque';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 
@@ -73,16 +73,16 @@ function PipeData({ selectedObject }: { selectedObject: THREE.Object3D | null })
 }
 
 function UValueSliders() {
-    const { projectId } = useParams();
+    const { teamId, projectId, modelId } = useParams();
     const [constructions, setConstructions] = useState<hbEnergyOpaqueConstruction[]>([]);
     const SLIDER_MIN = 0.01;
     const SLIDER_MAX = 1.00;
 
     useEffect(() => {
-        fetchModelUValues(`${projectId}/model_exterior_constructions`).then(data => {
+        fetchModelServer<hbEnergyOpaqueConstruction[]>(`${teamId}/${projectId}/${modelId}/exterior_constructions`).then(data => {
             setConstructions(data);
         });
-    }, [projectId]);
+    }, [teamId, projectId, modelId]);
 
     return (
         <>
@@ -106,7 +106,6 @@ function UValueSliders() {
                         />
                     </div>
                 ))}
-
             </Stack>
         </>
     );

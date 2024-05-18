@@ -1,4 +1,5 @@
 export type ModelView = {
-    display_name: string,
-    identifier: string,
+    identifier: string;
+    display_name: string;
+    hbjson_url: string;
 }

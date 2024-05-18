@@ -8,12 +8,11 @@ from logging import getLogger
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.security import OAuth2AuthorizationCodeBearer
+from PHX.from_HBJSON import read_HBJSON_file
 from pydantic import BaseModel
 from rich import print
 
-from PHX.from_HBJSON import read_HBJSON_file
-
-from backend.storage.fake_db import ModelView, Project, _db_new_, generate_identifier
+from backend.storage.fake_db import ModelView, Project, _db_new_
 
 router = APIRouter()
 
@@ -64,6 +63,7 @@ def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     model = project.get_model_view_by_name(model_name)
     if not model:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
+
     logger.info(f"Returning model: {model.dict()}")
     return model
 

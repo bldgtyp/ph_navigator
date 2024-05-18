@@ -8,8 +8,8 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { postModelServeFile } from "../hooks/postModelServerFile";
 import { useNavigate } from "react-router-dom";
 
-function UploadModelDialog(props: any) {
-    const { setModelNames } = props;
+function UploadModelDialog(props: { setModelNames: any, setShowModel: any }) {
+    const { setModelNames, setShowModel } = props;
     const navigate = useNavigate();
     const { teamId, projectId, modelId } = useParams();
     const [open, setOpen] = useState(true);
@@ -51,6 +51,7 @@ function UploadModelDialog(props: any) {
                 // Close the Dialog and Navigate to the new Model
                 setModelNames([model_id]);
                 handleClose();
+                setShowModel(true);
                 navigate(`/${teamId}/${projectId}/${model_id}`);
             });
     };

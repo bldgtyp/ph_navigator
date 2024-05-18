@@ -2,7 +2,7 @@
     background-color: rgba(241, 241, 241, 0.6) !important;
     width: 15%;
     max-width: 15%;
-    position: absolute;
+    position: fixed;
     left: 20px;
     top: 50px;
     text-align: left;

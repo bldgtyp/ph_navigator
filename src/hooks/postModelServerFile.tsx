@@ -6,6 +6,7 @@ export async function postModelServeFile(
     formData: FormData | null = null,
     setUploadProgress: React.Dispatch<React.SetStateAction<number>>,
 ) {
+    console.log("postModelServeFile", endpoint, formData);
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
     const API_ENDPOINT: string = API_BASE_URL + endpoint;
     if (formData === null) {
