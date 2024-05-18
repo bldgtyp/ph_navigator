@@ -50,19 +50,19 @@ def any_dict(d: dict[Any, Any]) -> dict[Any, Any]:
     return d
 
 
-def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
+async def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Return a specific Model from a Project"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-    project = team.get_project_by_name(project_name)
+    project = await team.get_project_by_name(project_name)
     if not project:
         raise HTTPException(
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
         )
 
-    model = project.get_model_view_by_name(model_name)
+    model = await project.get_model_view_by_name(model_name)
     if not model:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
 
@@ -74,11 +74,11 @@ def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/faces", response_model=list[FaceSchema])
-def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSchema]:
+async def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSchema]:
     """Return a list of all the Faces in a Honeybee Model."""
     logger.info(f"Getting Faces for: {team_id} | {project_id} | {model_id}")
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
@@ -121,11 +121,11 @@ def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSchema]:
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/spaces", response_model=list[SpaceSchema])
-def get_spaces(team_id: str, project_id: str, model_id: str) -> list[SpaceSchema]:
+async def get_spaces(team_id: str, project_id: str, model_id: str) -> list[SpaceSchema]:
     """Return a list of all the Spaces in a Honeybee Model."""
     logger.info(f"Getting Spaces for: {team_id} | {project_id} | {model_id}")
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
@@ -159,11 +159,11 @@ def is_inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/exterior_constructions", response_model=list[OpaqueConstructionSchema])
-def get_exterior_constructions(team_id: str, project_id: str, model_id: str) -> list[OpaqueConstructionSchema]:
+async def get_exterior_constructions(team_id: str, project_id: str, model_id: str) -> list[OpaqueConstructionSchema]:
     """Return a list of all the Exterior Constructions in a Honeybee Model."""
     logger.info(f"Getting Spaces for: {team_id} | {project_id} | {model_id}")
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
@@ -192,7 +192,7 @@ def get_exterior_constructions(team_id: str, project_id: str, model_id: str) -> 
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/sun_path", response_model=SunPathAndCompassDTOSchema)
-def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassDTOSchema:
+async def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassDTOSchema:
     """Return the SunPath and Compass for a Honeybee-Model"""
     logger.info(f"Getting SunPath for: {team_id} | {project_id} | {model_id}")
 
@@ -203,7 +203,7 @@ def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassD
     RADIUS: int = 100 * SCALE  # type: ignore # 'int' is a lie to placate the un-typed Ladybug functions...
     SOURCE_FILE = pathlib.Path("backend/climate/USA_NY_New.York-J.F.Kennedy.Intl.AP.744860_TMY3.epw").resolve()
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
@@ -229,11 +229,11 @@ def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassD
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/hot_water_systems", response_model=list[PhHotWaterSystemSchema])
-def hot_water_systems(team_id: str, project_id: str, model_id: str) -> list[PhHotWaterSystemSchema]:
+async def hot_water_systems(team_id: str, project_id: str, model_id: str) -> list[PhHotWaterSystemSchema]:
     """Return a list of all the Hot Water Systems in a Honeybee Model."""
     logger.info(f"Getting Hot-Water Systems for: {team_id} | {project_id} | {model_id}")
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
@@ -253,11 +253,11 @@ def hot_water_systems(team_id: str, project_id: str, model_id: str) -> list[PhHo
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/ventilation_systems", response_model=list[PhVentilationSystemSchema])
-def ventilation_systems(team_id: str, project_id: str, model_id: str) -> list[PhVentilationSystemSchema]:
+async def ventilation_systems(team_id: str, project_id: str, model_id: str) -> list[PhVentilationSystemSchema]:
     """Return a list of all the Hot Water Systems in a Honeybee Model."""
     logger.info(f"Getting Ventilation Systems for: {team_id} | {project_id} | {model_id}")
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
@@ -277,11 +277,11 @@ def ventilation_systems(team_id: str, project_id: str, model_id: str) -> list[Ph
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/shading_elements", response_model=list[ShadeGroupSchema])
-def shading_elements(team_id: str, project_id: str, model_id: str) -> list[ShadeGroupSchema]:
+async def shading_elements(team_id: str, project_id: str, model_id: str) -> list[ShadeGroupSchema]:
     """Return a list of all the Shading elements in a Honeybee Model."""
     logger.info(f"Getting Shading Elements for: {team_id} | {project_id} | {model_id}")
 
-    model_view = get_model(team_id, project_id, model_id)
+    model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 

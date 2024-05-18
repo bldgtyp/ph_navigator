@@ -91,20 +91,20 @@ def download_hb_json(url: str) -> dict:
 
 
 @router.get("/{team_name}/{project_name}/{model_name}/load_hb_model", response_model=ModelView)
-def load_hb_model(team_name: str, project_name: str, model_name: str) -> ModelView:
+async def load_hb_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Load the Honeybee-Model from its source for a specific ModelView."""
     logger.info(f"Loading HB-Model for: {team_name} | {project_name} | {model_name}")
 
     # -- Find the Model in the Database
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"No Team found for: '{team_name}'")
 
-    project = team.get_project_by_name(project_name)
+    project = await team.get_project_by_name(project_name)
     if not project:
         raise HTTPException(status_code=404, detail=f"No Project found for: '{project_name}'")
 
-    model_view = project.get_model_view_by_name(model_name)
+    model_view = await project.get_model_view_by_name(model_name)
     if not model_view:
         raise HTTPException(status_code=404, detail=f"No Model found for: '{model_name}'")
 

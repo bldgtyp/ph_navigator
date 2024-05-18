@@ -20,22 +20,22 @@ logger = getLogger("uvicorn")
 
 
 @router.get("/{team_name}/get_projects", response_model=list[Project])
-def get_projects(team_name: str) -> list[Project]:
+async def get_projects(team_name: str) -> list[Project]:
     """Return a list of all the Team's Projects"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
     return team.projects
 
 
 @router.get("/{team_name}/{project_name}/get_model_names", response_model=list[str])
-def get_model_names(team_name: str, project_name: str) -> list[str]:
+async def get_model_names(team_name: str, project_name: str) -> list[str]:
     """Return a list of all the Project's Model's names."""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-    project = team.get_project_by_name(project_name)
+    project = await team.get_project_by_name(project_name)
     if not project:
         raise HTTPException(
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
@@ -45,19 +45,19 @@ def get_model_names(team_name: str, project_name: str) -> list[str]:
 
 
 @router.get("/{team_name}/{project_name}/get_model", response_model=ModelView)
-def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
+async def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Return a specific Model from a Project"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-    project = team.get_project_by_name(project_name)
+    project = await team.get_project_by_name(project_name)
     if not project:
         raise HTTPException(
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
         )
 
-    model = project.get_model_view_by_name(model_name)
+    model = await project.get_model_view_by_name(model_name)
     if not model:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
 
@@ -70,26 +70,26 @@ def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
 
 
 @router.get("/{team_name}/create_new_project", response_model=Project)
-def create_new_project(team_name: str) -> Project:
+async def create_new_project(team_name: str) -> Project:
     """Create a new Project for a Team"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
     new_project = Project()
     new_project.display_name = new_project.identifier
-    team.add_project(new_project)
+    await team.add_project(new_project)
     return new_project
 
 
 @router.get("/{team_name}/{project_name}/create_new_model_view", response_model=Project)
-def create_new_model_view(team_name: str, project_name: str) -> ModelView:
+async def create_new_model_view(team_name: str, project_name: str) -> ModelView:
     """Create a new ModelView for a Project"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-    project = team.get_project_by_name(project_name)
+    project = await team.get_project_by_name(project_name)
     if not project:
         raise HTTPException(
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
@@ -97,7 +97,7 @@ def create_new_model_view(team_name: str, project_name: str) -> ModelView:
 
     new_model_view = ModelView()
     new_model_view.display_name = new_model_view.identifier
-    project.add_model_view(new_model_view)
+    await project.add_model_view(new_model_view)
     return new_model_view
 
 
@@ -106,32 +106,32 @@ def create_new_model_view(team_name: str, project_name: str) -> ModelView:
 
 
 @router.put("/{team_name}/add_new_project_to_team", response_model=Project)
-def add_new_project_to_team(team_name: str, project: Project) -> Project:
+async def add_new_project_to_team(team_name: str, project: Project) -> Project:
     """Add a new Project to a Team"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
     logger.info(f"Creating a new project with name: '{project.display_name}' for team: '{team_name}'")
-    team.add_project(project)
+    await team.add_project(project)
     return project
 
 
 @router.put("/{team_name}/{project_name}/add_new_model_to_project", response_model=ModelView)
-def add_new_model_to_project(team_name: str, project_name: str, model: ModelView) -> ModelView:
+async def add_new_model_to_project(team_name: str, project_name: str, model: ModelView) -> ModelView:
     """Add a new Model to a Project"""
-    team = _db_new_.get_team_by_name(team_name)
+    team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-    project = team.get_project_by_name(project_name)
+    project = await team.get_project_by_name(project_name)
     if not project:
         raise HTTPException(
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
         )
 
     logger.info(f"Creating a new model with name: '{model.display_name}' for project: '{project_name}'")
-    project.add_model_view(model)
+    await project.add_model_view(model)
     return model
 
 
@@ -159,17 +159,17 @@ async def upload_hbjson_file_to_model(
 
     # -------------------------------------------------------------------------
     try:
-        team = _db_new_.get_team_by_name(team_name)
+        team = await _db_new_.get_team_by_name(team_name)
         if not team:
             raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-        project = team.get_project_by_name(project_name)
+        project = await team.get_project_by_name(project_name)
         if not project:
             raise HTTPException(
                 status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
             )
 
-        model_view = project.get_model_view_by_name(model_name)
+        model_view = await project.get_model_view_by_name(model_name)
         if not model_view:
             raise HTTPException(
                 status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'"

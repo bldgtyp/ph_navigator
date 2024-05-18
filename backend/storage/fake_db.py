@@ -61,16 +61,16 @@ class Project(BaseModel):
         """Return a list of all the ModelView's display names."""
         return [model_view.display_name for model_view in self.model_storage.values()]
 
-    def add_model_view(self, model_view: ModelView) -> ModelView:
+    async def add_model_view(self, model_view: ModelView) -> ModelView:
         """Add a new empty ModelView to the Project."""
-        if existing_model_view := self.get_model_view_by_name(model_view.display_name):
+        if existing_model_view := await self.get_model_view_by_name(model_view.display_name):
             return existing_model_view
 
         logger.info(f"Adding model-view: '{model_view.name_and_id}' to project: '{self.name_and_id}'.")
         self.model_storage[model_view.identifier] = model_view
         return model_view
 
-    def get_model_view_by_name(self, model_view_name: str) -> ModelView | None:
+    async def get_model_view_by_name(self, model_view_name: str) -> ModelView | None:
         """Return a specific ModelView by its display name."""
         for model_view in self.model_views:
             if model_view.display_name == model_view_name:
@@ -107,15 +107,15 @@ class Team(BaseModel):
     def project_names(self) -> list[str]:
         return [project.display_name for project in self.project_storage.values()]
 
-    def add_project(self, project: Project) -> Project:
-        if existing_project := self.get_project_by_name(project.display_name):
+    async def add_project(self, project: Project) -> Project:
+        if existing_project := await self.get_project_by_name(project.display_name):
             return existing_project
 
         logger.info(f"Adding project: '{project.name_and_id}' to team: '{self.name_and_id}'.")
         self.project_storage[project.identifier] = project
         return project
 
-    def get_project_by_name(self, project_name: str) -> Project | None:
+    async def get_project_by_name(self, project_name: str) -> Project | None:
         for project in self.projects:
             if project.display_name == project_name:
                 return project
@@ -155,7 +155,7 @@ class FakeDB(BaseModel):
     def get_team_by_id(self, team_id: str) -> Team:
         return self.team_storage[team_id]
 
-    def get_team_by_name(self, team_name: str) -> Team | None:
+    async def get_team_by_name(self, team_name: str) -> Team | None:
         for team in self.team_storage.values():
             if team.display_name == team_name:
                 return team

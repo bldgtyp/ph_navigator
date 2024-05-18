@@ -1,5 +1,14 @@
 import constants from "../data/constants.json";
 
+/**
+ * Fetches data from the server using the specified endpoint and parameters.
+ *
+ * @param endpoint - The endpoint to fetch data from.
+ * @param token - The token to include in the request headers.
+ * @param params - The query parameters to include in the request URL.
+ * @returns A promise that resolves to the fetched data.
+ * @throws An error if the HTTP response is not successful.
+ */
 export async function fetchModelServer<T>(
     endpoint: string,
     token: string = "",

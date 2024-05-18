@@ -1,5 +1,13 @@
 import constants from "../data/constants.json";
 
+/**
+ * Sends a PUT request to the specified endpoint with the provided data.
+ * 
+ * @param endpoint - The endpoint to send the request to.
+ * @param data - The data to include in the request body.
+ * @returns A Promise that resolves to the response data.
+ * @throws An error if the request fails or returns a non-successful status.
+ */
 export async function putModelServer<T>(endpoint: string, data: any | null = null): Promise<T> {
     console.log('putModelServer', endpoint, data);
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;

@@ -1,6 +1,15 @@
 import constants from "../data/constants.json";
 import axios from 'axios';
 
+/**
+ * Sends a POST request to the server with the provided endpoint and form data.
+ * 
+ * @param endpoint - The endpoint to send the request to.
+ * @param formData - The form data to include in the request.
+ * @param setUploadProgress - A state setter function to update the upload progress.
+ * @returns A Promise that resolves to the server response message.
+ * @throws An error if there is an HTTP error or no response from the server.
+ */
 export async function postModelServeFile(
     endpoint: string,
     formData: FormData | null = null,
