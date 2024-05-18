@@ -107,6 +107,7 @@
 - [X] Re-write the other endpoints (spaces, pipes, etc..) with Pydantic
 - [ ] Move file paths into config file
 - [ ] Add some form of basic Auth
+- [ ] Try moving file storage to AirTable records
 
 
 
