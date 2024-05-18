@@ -6,6 +6,8 @@ import { GitHubPathElement } from '../../types/github/PathElement';
 import { Project } from '../../types/fake_database/Project';
 import { ProjectDataType, ProjectCard } from './ProjectCard';
 
+import { Dialog } from '@mui/material';
+
 /**
  * Checks if the given child is an HBJSON file.
  * @param child - The GitHubPathElement representing the child.
@@ -34,6 +36,7 @@ function hbjsonFileName(fullName: string): string {
  * @param ghPathElement - The GitHub path element.
  */
 function addModelsToDBFromGHData(teamId: string | undefined, project_name: string, ghPathElement: GitHubPathElement) {
+    console.log("addModelsToDBFromGHData", teamId, project_name);
     ghPathElement.children.forEach((child) => {
         const modelName = hbjsonFileName(child.name);
         if (childIsHBJSONFile(child)) {
@@ -53,6 +56,7 @@ function addModelsToDBFromGHData(teamId: string | undefined, project_name: strin
  * @param ghPathElements - An array of GitHub path elements.
  */
 function addProjectsToDBFromGHData(teamId: string | undefined, ghPathElements: GitHubPathElement[]) {
+    console.log("addProjectsToDBFromGHData", teamId);
     ghPathElements.forEach((ghPathElement) => {
         if (ghPathElement.type == 'dir') {
             putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: ghPathElement.name })
@@ -69,9 +73,10 @@ export function TeamView() {
     const [projectDataList, setProjectDataList] = useState<ProjectDataType[]>([{ display_name: "", identifier: "" }]);
 
     useEffect(() => {
-        // Load all the Team's Project Data FROM the source TO the server
+        console.log("TeamView useEffect", teamId, "- - - - - - - - - -");
         setIsLoading(true);
         fetchModelServer<GitHubPathElement[]>("get_team_project_data_from_source", process.env.REACT_APP_TEST_GH_ACCESS_KEY)
+            // Load all the Team's Project Data FROM the source TO the server
             .then((response: GitHubPathElement[]) => {
                 addProjectsToDBFromGHData(teamId, response);
             })
@@ -88,6 +93,9 @@ export function TeamView() {
 
     return (
         <div className="project-browser-cards">
+            <Dialog open={isLoading}>
+                <div>Loading...</div>
+            </Dialog>
             {!isLoading && (
                 <>
                     {projectDataList.map((d) => {

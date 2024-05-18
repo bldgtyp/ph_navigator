@@ -23,6 +23,10 @@ export async function fetchModelServer<T>(
     const url = new URL(API_ENDPOINT);
     Object.keys(params).forEach(key => url.searchParams.append(key, String(params[key])));
 
+    // Delay for Testing...
+    await new Promise(resolve => setTimeout(resolve, 4000)); // 2 seconds delay
+
+
     const response = await fetch(url.toString(), { headers: HEADERS })
 
     if (!response.ok) {
@@ -31,8 +35,10 @@ export async function fetchModelServer<T>(
     }
     const responseJson = await response.json();
     try {
+        console.log("returning from fetchModelServer...")
         return 'message' in responseJson ? JSON.parse(responseJson['message']) : responseJson;
     } catch (e) {
+        console.log("returning from fetchModelServer...")
         return responseJson;
     }
 }
