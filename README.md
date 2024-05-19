@@ -72,8 +72,10 @@
 - [ ] Move results to top to allow for app-state bar to the right
 - [ ] When selecting a pipe, show the dims alongside
 - [ ] Add Loading modal dialogs
-  - [ ] Browser Project Loading
+  - [X] Browser Project Loading
   - [ ] Model Faces Load
+  - [ ] Shading Surfaces
+- [ ] Check EPW Load path. Loads fine locally, not working when deployed.
 
 #### NavBar:
 - [X] Add 'home' icon on left side (Navigator)
@@ -101,13 +103,13 @@
   - [ ] camera location
   - [ ] shadow map
 
-#### API:
+#### API & Data Storage:
 - [X] Create Pydantic Response Models
 - [X] Refactor all API endpoints to use Pydantic Models
 - [X] Re-write the other endpoints (spaces, pipes, etc..) with Pydantic
+- [X] Try moving file storage to AirTable records
 - [ ] Move file paths into config file
 - [ ] Add some form of basic Auth
-- [ ] Try moving file storage to AirTable records
 
 
 
@@ -143,7 +145,6 @@
 
 
 # Deployment as Web-service
-
 1. Make sure origins = [..., "https://bldgtyp.github.io"] is set in [`main.py`](https://github.com/bldgtyp/ph_navigator/blob/main/backend/main.py) to fix CORS
 1. Push changes to [GitHub](https://github.com/bldgtyp/ph_navigator)
 1. [Render.com](https://render.com/) | Settings:
