@@ -49,6 +49,8 @@ jobs:
         run: npm ci
 
       - name: Building project
+        env:
+          REACT_APP_TEST_GH_ACCESS_KEY: ${{ secrets.REACT_APP_TEST_GH_ACCESS_KEY }}
         run: npm run build
 
       # - name: Running tests
@@ -56,8 +58,6 @@ jobs:
 
       - name: Uploading production-ready build files
         uses: actions/upload-pages-artifact@v1
-        env:
-          REACT_APP_TEST_GH_ACCESS_KEY: ${{ secrets.REACT_APP_TEST_GH_ACCESS_KEY }}
         with:
           path: ./build
 
