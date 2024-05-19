@@ -24,8 +24,8 @@ router = APIRouter()
 # ---------------------------------------------------------------------------------------
 # --- Project Data Listing
 
-AIRTABLE_BASE_ID = "appk1jRPHnfZwc8A8"
-AIRTABLE_TABLE_ID = "tblm15v0S09KY6wn2"
+AT_BLDGTYP_PROJ_LIST_BASE_ID = "appk1jRPHnfZwc8A8"
+AT_BLDGTYP_PROJ_LIST_TABLE_ID = "tblm15v0S09KY6wn2"
 
 
 # ---------------------------------------------------------------------------------------
@@ -33,11 +33,12 @@ AIRTABLE_TABLE_ID = "tblm15v0S09KY6wn2"
 
 @router.get("/get_project_metadata_from_source", response_model=AT_ProjectListingTableSchema)
 async def get_project_metadata_from_source(token: str = Header(None)):
+    """Get the Team's Project metadata (project names, ...) from the Airtable Source Master List."""
     try:
         logger.info(f"Getting project data from source with token: {token}")
 
         api = Api(token)
-        project_data_table = api.table(AIRTABLE_BASE_ID, AIRTABLE_TABLE_ID)
+        project_data_table = api.table(AT_BLDGTYP_PROJ_LIST_BASE_ID, AT_BLDGTYP_PROJ_LIST_TABLE_ID)
         table_data = project_data_table.all()
         return AT_ProjectListingTableSchema(records=table_data)
     except HTTPError as e:
@@ -54,6 +55,7 @@ async def get_project_metadata_from_source(token: str = Header(None)):
 
 @router.get("/get_model_metadata_from_source", response_model=AT_ProjectTableSchema)
 async def get_model_metadata_from_source(token: str = Header(None), app_id: str = "", tbl_id: str = ""):
+    """Get the ModelView metadata (name, url, ...) from the specified Airtable app_id/tbl_id."""
     try:
         logger.info(f"Getting model data from source: '{app_id} | {tbl_id}' using token: {token}")
         api = Api(token)
