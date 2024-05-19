@@ -8,6 +8,17 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { postModelServeFile } from "../hooks/postModelServerFile";
 import { useNavigate } from "react-router-dom";
 
+async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
+    if (error) {
+        const message = `Error getting data: ${error}`
+        alert(message);
+        return null;
+    } else {
+        return data;
+    }
+};
+
 function UploadModelDialog(props: { setModelNames: any, setShowModel: any }) {
     const { setModelNames, setShowModel } = props;
     const navigate = useNavigate();
@@ -34,26 +45,27 @@ function UploadModelDialog(props: { setModelNames: any, setShowModel: any }) {
         formData.append('file', selectedFile);
 
         // Create the New Model in the Database
-        // let model_id: string | undefined = undefined;
-        // fetchModelServer<{ display_name: string }>(`${teamId}/${projectId}/create_new_model_view`)
-        //     .then(response => {
-        //         model_id = response.display_name;
-        //     }).then(() => {
-        //         // Upload the File to the new model
-        //         if (model_id !== undefined) {
-        //             postModelServeFile(
-        //                 `${teamId}/${projectId}/${model_id}/upload_hbjson_file_to_model`,
-        //                 formData,
-        //                 setUploadProgress,
-        //             )
-        //         }
-        //     }).then(() => {
-        //         // Close the Dialog and Navigate to the new Model
-        //         setModelNames([model_id]);
-        //         handleClose();
-        //         setShowModel(true);
-        //         navigate(`/${teamId}/${projectId}/${model_id}`);
-        //     });
+        let model_id: string | undefined = undefined;
+        fetchWithModal<{ display_name: string }>(`${teamId}/${projectId}/create_new_model_view`)
+            .then(response => {
+                if (!response) { return null };
+                model_id = response.display_name;
+            }).then(() => {
+                // Upload the File to the new model
+                if (model_id !== undefined) {
+                    postModelServeFile(
+                        `${teamId}/${projectId}/${model_id}/upload_hbjson_file_to_model`,
+                        formData,
+                        setUploadProgress,
+                    )
+                }
+            }).then(() => {
+                // Close the Dialog and Navigate to the new Model
+                setModelNames([model_id]);
+                handleClose();
+                setShowModel(true);
+                navigate(`/${teamId}/${projectId}/${model_id}`);
+            });
     };
 
     // ------------------------------------------------------------------------

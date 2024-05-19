@@ -8,6 +8,17 @@ import { hbEnergyOpaqueConstruction } from '../types/honeybee_energy/constructio
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 
 
+async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
+    if (error) {
+        const message = `Error getting data: ${error}`
+        alert(message);
+        return null;
+    } else {
+        return data;
+    }
+};
+
 function PanelItem(props: { label: React.ReactNode, value: string }) {
     return (
         <Stack direction="column">
@@ -79,9 +90,10 @@ function UValueSliders() {
     const SLIDER_MAX = 1.00;
 
     useEffect(() => {
-        // fetchModelServer<hbEnergyOpaqueConstruction[]>(`${teamId}/${projectId}/${modelId}/exterior_constructions`).then(data => {
-        //     setConstructions(data);
-        // });
+        fetchWithModal<hbEnergyOpaqueConstruction[]>(`${teamId}/${projectId}/${modelId}/exterior_constructions`)
+            .then(data => {
+                if (data) { setConstructions(data); };
+            });
     }, [teamId, projectId, modelId]);
 
     return (
