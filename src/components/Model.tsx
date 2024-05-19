@@ -21,16 +21,27 @@ import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_syste
 import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
 import { hbShadeGroup } from "../types/honeybee/shade";
 
+
+async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
+    if (error) {
+        const message = `Error getting data: ${error}`
+        alert(message);
+        return null;
+    } else {
+        return data;
+    }
+};
+
 type ModelProps = {
     world: React.MutableRefObject<SceneSetup>;
     showModel: boolean;
 };
 
-function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | { error: string }) {
-    if (!Array.isArray(data) && data.error) {
-        console.error(data.error);
+function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | null) {
+    if (!data) {
         return [];
-    } else {
+    } else if (Array.isArray(data)) {
         return _func(world, data);
     }
 };
@@ -40,34 +51,35 @@ export function Model(props: ModelProps) {
     const { world, showModel } = props;
     const { teamId, projectId, modelId } = useParams();
 
-    // Load the Model-Elements from the API based on the project / model ids
+    // Load the Model-Elements from the Server based on: team-id / project-id / model-id
     // ------------------------------------------------------------------------
     useEffect(() => {
         console.log("Loading Model Elements...")
         world.current.reset();
         if (showModel === true && modelId !== undefined && projectId !== undefined) {
 
-            fetchModelServer<hbFace[]>(`${teamId}/${projectId}/${modelId}/load_hb_model`)
+            fetchWithModal<hbFace[]>(`${teamId}/${projectId}/${modelId}/load_hb_model`)
                 .then(data => {
+                    if (!data) { return null }
 
-                    fetchModelServer<hbFace[]>(`${teamId}/${projectId}/${modelId}/faces`)
+                    fetchWithModal<hbFace[]>(`${teamId}/${projectId}/${modelId}/faces`)
                         .then(data => handleError(loadModelFaces, world, data))
 
-                    fetchModelServer<hbPHSpace[]>(`${teamId}/${projectId}/${modelId}/spaces`)
+                    fetchWithModal<hbPHSpace[]>(`${teamId}/${projectId}/${modelId}/spaces`)
                         .then(data => handleError(loadModelSpaces, world, data));
 
-                    fetchModelServer<lbtSunPathDTO>(`${teamId}/${projectId}/${modelId}/sun_path`).then(data => loadModelSunPath(world, data));
+                    fetchWithModal<lbtSunPathDTO[]>(`${teamId}/${projectId}/${modelId}/sun_path`)
+                        .then(data => handleError(loadModelSunPath, world, data));
 
-                    fetchModelServer<hbPhHvacHotWaterSystem[]>(`${teamId}/${projectId}/${modelId}/hot_water_systems`)
+                    fetchWithModal<hbPhHvacHotWaterSystem[]>(`${teamId}/${projectId}/${modelId}/hot_water_systems`)
                         .then(data => handleError(loadModelHotWaterPiping, world, data));
 
-                    fetchModelServer<hbPhHvacVentilationSystem[]>(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
+                    fetchWithModal<hbPhHvacVentilationSystem[]>(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
                         .then(data => handleError(loadModelERVDucting, world, data));
 
-                    fetchModelServer<hbShadeGroup[]>(`${teamId}/${projectId}/${modelId}/shading_elements`)
+                    fetchWithModal<hbShadeGroup[]>(`${teamId}/${projectId}/${modelId}/shading_elements`)
                         .then(data => handleError(loadModelShades, world, data));
                 })
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teamId, projectId, modelId, showModel]);

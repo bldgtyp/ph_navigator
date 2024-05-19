@@ -79,9 +79,9 @@ function UValueSliders() {
     const SLIDER_MAX = 1.00;
 
     useEffect(() => {
-        fetchModelServer<hbEnergyOpaqueConstruction[]>(`${teamId}/${projectId}/${modelId}/exterior_constructions`).then(data => {
-            setConstructions(data);
-        });
+        // fetchModelServer<hbEnergyOpaqueConstruction[]>(`${teamId}/${projectId}/${modelId}/exterior_constructions`).then(data => {
+        //     setConstructions(data);
+        // });
     }, [teamId, projectId, modelId]);
 
     return (

@@ -2,69 +2,26 @@ import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { fetchModelServer } from '../../hooks/fetchModelServer';
 import { putModelServer } from '../../hooks/putModelServer';
-import { GitHubPathElement } from '../../types/github/PathElement';
 import { Project } from '../../types/fake_database/Project';
 import { ProjectDataType, ProjectCard } from './ProjectCard';
+import { ProjectListingTable } from '../../types/airtable/project_listing_table';
+import { ProjectTable } from '../../types/airtable/project_table';
 
 import { Dialog } from '@mui/material';
 
-/**
- * Checks if the given child is an HBJSON file.
- * @param child - The GitHubPathElement representing the child.
- * @returns True if the child is an HBJSON file, false otherwise.
- */
-function childIsHBJSONFile(child: GitHubPathElement): boolean {
-    return child.type === 'file' && child.name.endsWith(".hbjson");
-};
+function stringToUrlSafe(str: string) {
+    return str.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s/g, "_").toLowerCase();
+}
 
-/**
- * Removes the file extension (.hbjson) from the given full name.
- * 
- * @param fullName - The full name of the file.
- * @returns The file name without the extension.
- */
-function hbjsonFileName(fullName: string): string {
-    // Break off the file extension (.hbjson)
-    return fullName.substring(0, fullName.lastIndexOf('.'));
-};
-
-/**
- * Adds models to the database from GitHub data.
- * 
- * @param teamId - The ID of the team.
- * @param project_name - The name of the project.
- * @param ghPathElement - The GitHub path element.
- */
-function addModelsToDBFromGHData(teamId: string | undefined, project_name: string, ghPathElement: GitHubPathElement) {
-    console.log("addModelsToDBFromGHData", teamId, project_name);
-    ghPathElement.children.forEach((child) => {
-        const modelName = hbjsonFileName(child.name);
-        if (childIsHBJSONFile(child)) {
-            const payload = {
-                display_name: modelName,
-                hbjson_url: child.download_url,
-            }
-            putModelServer(`${teamId}/${project_name}/add_new_model_to_project`, payload);
-        }
-    });
-};
-
-/**
- * Adds projects to the database from GitHub data.
- * 
- * @param teamId - The ID of the team.
- * @param ghPathElements - An array of GitHub path elements.
- */
-function addProjectsToDBFromGHData(teamId: string | undefined, ghPathElements: GitHubPathElement[]) {
-    console.log("addProjectsToDBFromGHData", teamId);
-    ghPathElements.forEach((ghPathElement) => {
-        if (ghPathElement.type == 'dir') {
-            putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: ghPathElement.name })
-                .then((newProject) => {
-                    addModelsToDBFromGHData(teamId, newProject.display_name, ghPathElement);
-                });
-        };
-    });
+async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
+    if (error) {
+        const message = `Error getting data: ${error}`
+        alert(message);
+        return null;
+    } else {
+        return data;
+    }
 };
 
 export function TeamView() {
@@ -73,19 +30,47 @@ export function TeamView() {
     const [projectDataList, setProjectDataList] = useState<ProjectDataType[]>([{ display_name: "", identifier: "" }]);
 
     useEffect(() => {
-        console.log("TeamView useEffect", teamId, "- - - - - - - - - -");
-        console.log("process.env.REACT_APP_TEST_GH_ACCESS_KEY:", process.env.REACT_APP_TEST_GH_ACCESS_KEY)
+        const tkn = process.env.REACT_APP_PH_NAV_AIRTABLE_TEST_TOKEN
+        console.log(`- - - - - - - - - - TeamView useEffect ${teamId} - - - - - - - - - -`);
+        console.log(`process.env.REACT_APP_TEST_GH_ACCESS_KEY: ${tkn}`,)
         setIsLoading(true);
-        fetchModelServer<GitHubPathElement[]>("get_team_project_data_from_source", process.env.REACT_APP_TEST_GH_ACCESS_KEY)
-            // Load all the Team's Project Data FROM the source TO the server
-            .then((response: GitHubPathElement[]) => {
-                addProjectsToDBFromGHData(teamId, response);
-            })
-            .then(() => {
-                // Get all the Team's Project Data FROM the server
-                fetchModelServer<ProjectDataType[]>(`${teamId}/get_projects`, process.env.REACT_APP_TEST_GH_ACCESS_KEY)
+
+        // 1) PUT all the Team's Project metadata ONTO the SERVER from the SOURCE
+        fetchWithModal<ProjectListingTable>("get_project_metadata_from_source", tkn)
+            .then((response) => {
+                if (!response) { return null };
+
+                // Create a new project on the server for each record
+                response.records.forEach((record) => {
+                    const project_name = stringToUrlSafe(record.fields.PROJECT_NUMBER);
+                    putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name })
+                        .then(() => {
+
+                            // Get the model listing for the project from the source
+                            fetchWithModal<ProjectTable>("get_model_metadata_from_source", tkn, { "app_id": record.fields.APP_ID, "tbl_id": record.fields.TABLE_ID })
+                                .then((response) => {
+                                    if (!response) { return null };
+
+                                    // Create a new ModelView on the Project for each record
+                                    response.records.forEach((record: any) => {
+                                        const payload = {
+                                            display_name: stringToUrlSafe(record.fields.DISPLAY_NAME),
+                                            // TODO: handle multiple files, or None...
+                                            hbjson_url: record.fields.HBJSON_FILE[0].url,
+                                        }
+                                        putModelServer(`${teamId}/${project_name}/add_new_model_view_to_project`, payload);
+                                    });
+                                });
+                        });
+                });
+            }).then(() => {
+                // 2) Now GET all the Team's Project metadata FROM the SERVER
+                // TODO: can this be done during tha first fetch? Try....
+                fetchWithModal<ProjectDataType[]>(`${teamId}/get_projects`, tkn)
                     .then((response) => {
-                        setProjectDataList(response);
+                        if (response) {
+                            setProjectDataList(response);
+                        };
                         setIsLoading(false);
                     });
             });

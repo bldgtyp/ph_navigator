@@ -15,6 +15,17 @@ import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { ModelView } from "../types/fake_database/ModelView";
 
+async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
+    if (error) {
+        const message = `Error getting data: ${error}`
+        alert(message);
+        return null;
+    } else {
+        return data;
+    }
+};
+
 function Project() {
     const navigate = useNavigate();
     const { teamId, projectId } = useParams();
@@ -30,33 +41,36 @@ function Project() {
 
     // Load in the ModelViews for the Project
     useEffect(() => {
-        fetchModelServer<string[]>(`${teamId}/${projectId}/get_model_names`).then(projectModelNames => {
-            setModelNames(projectModelNames);
+        fetchWithModal<string[]>(`${teamId}/${projectId}/get_model_names`)
+            .then(projectModelNames => {
+                if (!projectModelNames) { return null }
 
-            // If the Project has any ModelViews...
-            if (projectModelNames.length > 0) {
+                setModelNames(projectModelNames);
 
-                const modelId = projectModelNames[0];
-                fetchModelServer<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` })
-                    .then(modelView => {
+                // If the Project has any ModelViews...
+                if (projectModelNames.length > 0) {
 
-                        // If the ModelView is missing a source-URL, ask the user to upload a model
-                        if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
-                            setShowUploadModel(true);
-                            return;
+                    const modelId = projectModelNames[0];
+                    fetchWithModal<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` })
+                        .then(modelView => {
+                            if (!modelView) { return null }
 
-                        } else {
-                            /// If the ModelView has a source-URL, show the model...
-                            setShowModel(true);
-                            navigate(`/${teamId}/${projectId}/${modelId}`);
-                        }
-                    });
-            } else {
-                // If the project has no ModelViews...
-                setShowUploadModel(true);
-                return;
-            }
-        });
+                            // If the ModelView is missing a source-URL, ask the user to upload a model
+                            if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
+                                setShowUploadModel(true);
+                                return;
+                            } else {
+                                /// If the ModelView has a source-URL, show the model...
+                                setShowModel(true);
+                                navigate(`/${teamId}/${projectId}/${modelId}`);
+                            }
+                        });
+                } else {
+                    // If the project has no ModelViews, ask the user to upload a model...
+                    setShowUploadModel(true);
+                    return;
+                }
+            });
     }, [teamId, projectId]);
 
     return (

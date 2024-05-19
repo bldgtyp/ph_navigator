@@ -117,8 +117,8 @@ async def add_new_project_to_team(team_name: str, project: Project) -> Project:
     return project
 
 
-@router.put("/{team_name}/{project_name}/add_new_model_to_project", response_model=ModelView)
-async def add_new_model_to_project(team_name: str, project_name: str, model: ModelView) -> ModelView:
+@router.put("/{team_name}/{project_name}/add_new_model_view_to_project", response_model=ModelView)
+async def add_new_model_view_to_project(team_name: str, project_name: str, model: ModelView) -> ModelView:
     """Add a new Model to a Project"""
     team = await _db_new_.get_team_by_name(team_name)
     if not team:

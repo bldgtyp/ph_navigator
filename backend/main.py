@@ -12,15 +12,15 @@ try:
 except Exception as e:
     print(e)
 
-from backend.routes import github, storage, three_js
+from backend.routes import storage, three_js, airtable
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Setup the FastAPI app and routes
 
 app = FastAPI()
 app.include_router(three_js.router)
-app.include_router(github.router)
 app.include_router(storage.router)
+app.include_router(airtable.router)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

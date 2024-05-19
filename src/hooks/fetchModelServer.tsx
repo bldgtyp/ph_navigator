@@ -1,19 +1,11 @@
 import constants from "../data/constants.json";
 
-/**
- * Fetches data from the server using the specified endpoint and parameters.
- *
- * @param endpoint - The endpoint to fetch data from.
- * @param token - The token to include in the request headers.
- * @param params - The query parameters to include in the request URL.
- * @returns A promise that resolves to the fetched data.
- * @throws An error if the HTTP response is not successful.
- */
+
 export async function fetchModelServer<T>(
     endpoint: string,
     token: string = "",
     params: Record<string, string | number> = {}
-): Promise<T> {
+): Promise<{ data: T | null, error: any }> {
     console.log("fetchModelServer", endpoint, token);
     const HEADERS = { 'token': token };
     const API_BASE_URL: string = process.env.REACT_APP_API_URL || constants.RENDER_API_BASE_URL;
@@ -24,23 +16,20 @@ export async function fetchModelServer<T>(
     Object.keys(params).forEach(key => url.searchParams.append(key, String(params[key])));
 
     // Delay for Testing...
-    // await new Promise(resolve => setTimeout(resolve, 4000)); // 2 seconds delay
-
+    await new Promise(resolve => setTimeout(resolve, 500)); // 1/2 second delay
 
     const response = await fetch(url.toString(), { headers: HEADERS })
 
     if (!response.ok) {
         const txt: any = await response.json();
-        throw new Error(`HTTP error! status: ${response.status} | ${txt.detail}`);
+        console.log(`HTTP error [${response.status}] ${txt.detail} | ${API_ENDPOINT}`);
+        return { data: null, error: `HTTP error [${response.status}] ${txt.detail} | ${API_ENDPOINT}` };
     }
-    const responseJson = await response.json();
-    try {
-        console.log("returning from fetchModelServer...")
-        return 'message' in responseJson ? JSON.parse(responseJson['message']) : responseJson;
-    } catch (e) {
-        console.log("returning from fetchModelServer...")
-        return responseJson;
-    }
+
+    const data: T = await response.json();
+    console.log("returning from fetchModelServer...")
+    return { data, error: null };
+
 }
 
 export default fetchModelServer;
