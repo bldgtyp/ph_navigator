@@ -50,7 +50,7 @@ jobs:
 
       - name: Building project
         env:
-          REACT_APP_TEST_GH_ACCESS_KEY: ${{ secrets.REACT_APP_TEST_GH_ACCESS_KEY }}
+          REACT_APP_PH_NAV_AIRTABLE_TEST_TOKEN: ${{ secrets.REACT_APP_PH_NAV_AIRTABLE_TEST_TOKEN }}
         run: npm run build
 
       # - name: Running tests
