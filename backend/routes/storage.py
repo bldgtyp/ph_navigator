@@ -61,7 +61,7 @@ async def get_model(team_name: str, project_name: str, model_name: str) -> Model
     if not model:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
 
-    logger.info(f"Returning model: {model.dict()}")
+    logger.info(f"Returning: {team_name} | {project_name} | {model.display_name}")
     return model
 
 
