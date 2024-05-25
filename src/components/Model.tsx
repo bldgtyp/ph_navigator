@@ -1,11 +1,12 @@
 // 3D-Geometry and Views of a Specific Model Instance
-
+import "../styles/Model.css";
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { SceneSetup } from '../scene/SceneSetup';
 import InfoPanel from './InfoPanel';
 import ResultsSidebar from './ResultsSidebar';
 import { Dialog } from '@mui/material';
+import MoonLoader from "react-spinners/MoonLoader";
 
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { loadModelFaces } from '../loaders/load_model_faces';
@@ -94,8 +95,22 @@ export function Model(props: ModelProps) {
     return (
         <>
             {isLoading && (
-                <Dialog open={isLoading}>
-                    <div>Loading...</div>
+                <Dialog className="model-loading" open={isLoading}>
+                    <div className="model-loading">
+                        <div>Please wait while the model is loaded.</div>
+                        <div>For large models this may take some time to download.</div>
+                        <MoonLoader
+                            color="#1976d2"
+                            cssOverride={{
+                                display: "block",
+                                margin: "0 auto",
+                                padding: "8px",
+                            }}
+                            size="25px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </Dialog>)
             }
             <ResultsSidebar />

@@ -7,6 +7,7 @@ import { ProjectDataType, ProjectCard } from './ProjectCard';
 import { ProjectListingTable } from '../../types/airtable/project_listing_table';
 import { ProjectTable } from '../../types/airtable/project_table';
 import { Dialog } from '@mui/material';
+import MoonLoader from "react-spinners/MoonLoader";
 
 function stringToUrlSafe(str: string) {
     return str.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s/g, "_").toLowerCase();
@@ -82,8 +83,21 @@ export function TeamView() {
 
     return (
         <div className="project-browser-cards">
-            <Dialog open={isLoading}>
-                <div>Please wait. Loading {teamId} Project data from source...</div>
+            <Dialog className="model-loading" open={isLoading}>
+                <div className="model-loading">
+                    <div>Please wait while the Team&apos;s Projects are Loaded.</div>
+                    <MoonLoader
+                        color="#1976d2"
+                        cssOverride={{
+                            display: "block",
+                            margin: "0 auto",
+                            padding: "8px",
+                        }}
+                        size="25px"
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                    />
+                </div>
             </Dialog>
             {!isLoading && (
                 <>
