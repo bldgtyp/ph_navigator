@@ -63,22 +63,27 @@ class Project(BaseModel):
 
     async def add_model_view(self, model_view: ModelView) -> ModelView:
         """Add a new empty ModelView to the Project."""
-        logger.info(f"Adding model-view: '{model_view.name_and_id}' to project: '{self.name_and_id}'.")
+        logger.info(f"  | DB | Adding model-view: '{model_view.name_and_id}' to project: '{self.name_and_id}'.")
         if existing_model_view := await self.get_model_view_by_name(model_view.display_name):
-            logger.info(f"Model-view: '{model_view.name_and_id}' already exists in project: '{self.name_and_id}'.")
+            logger.info(
+                f"  | DB | Model-view: '{model_view.name_and_id}' already exists in project: '{self.name_and_id}'."
+            )
             return existing_model_view
 
         self.model_storage[model_view.identifier] = model_view
+        logger.info(
+            f"  | DB | NEW Model-view: '{model_view.name_and_id}' created on the project: '{self.name_and_id}'."
+        )
         return model_view
 
     async def get_model_view_by_name(self, model_view_name: str) -> ModelView | None:
         """Return a specific ModelView by its display name."""
-        logger.info(f"Getting model-view: '{model_view_name}' from project: '{self.name_and_id}'.")
+        logger.info(f"  | DB | Getting model-view: '{model_view_name}' from project: '{self.name_and_id}'.")
         for model_view in self.model_views:
             if model_view.display_name == model_view_name:
                 return model_view
 
-        logger.info(f"Model-view: '{model_view_name}' not found in project: '{self.name_and_id}'.")
+        logger.info(f"  | DB | Model-view: '{model_view_name}' not found in project: '{self.name_and_id}'.")
         return None
 
     def __getitem__(self, key: str) -> ModelView:
@@ -113,22 +118,23 @@ class Team(BaseModel):
 
     async def add_project(self, project: Project) -> Project:
         """Add a new empty Project to the Team."""
-        logger.info(f"Adding project: '{project.name_and_id}' to team: '{self.name_and_id}'.")
+        logger.info(f"  | DB | Adding project: '{project.name_and_id}' to team: '{self.name_and_id}'.")
         if existing_project := await self.get_project_by_name(project.display_name):
-            logger.info(f"Project: '{project.name_and_id}' already exists in team: '{self.name_and_id}'.")
+            logger.info(f"  | DB | Project: '{project.name_and_id}' already exists in team: '{self.name_and_id}'.")
             return existing_project
 
+        logger.info(f"  | DB | NEW Project: '{project.name_and_id}' created on the team: '{self.name_and_id}'.")
         self.project_storage[project.identifier] = project
         return project
 
     async def get_project_by_name(self, project_name: str) -> Project | None:
         """Return a specific Project by its display name."""
-        logger.info(f"Getting project: '{project_name}' from team: '{self.name_and_id}'.")
+        logger.info(f"  | DB | Getting project: '{project_name}' from team: '{self.name_and_id}'.")
         for project in self.projects:
             if project.display_name == project_name:
                 return project
 
-        logger.info(f"Project: '{project_name}' not found in team: '{self.name_and_id}'.")
+        logger.info(f"  | DB | Project: '{project_name}' not found in team: '{self.name_and_id}'.")
         return None
 
     def __getitem__(self, key: str) -> Project:
@@ -159,7 +165,12 @@ class FakeDB(BaseModel):
 
     def add_team(self, team: Team):
         """Add a new empty Team to the database."""
-        logger.info(f"Adding team '{team.display_name} | {team.identifier}' to the database.")
+        logger.info(f"  | DB | Adding team '{team.display_name} | {team.identifier}' to the database.")
+        if team.identifier in self.team_storage:
+            logger.info(f"  | DB | Team '{team.display_name}' already exists in the database.")
+            return self.team_storage[team.identifier]
+
+        logger.info(f"  | DB | NEW Team '{team.display_name}' created.")
         self.team_storage[team.identifier] = team
         return team
 
@@ -168,16 +179,16 @@ class FakeDB(BaseModel):
 
     async def get_team_by_name(self, team_name: str) -> Team | None:
         """Return a specific Team by its display name."""
-        logger.info(f"Getting team: '{team_name}' from database: '{self.display_name}'.")
+        logger.info(f"  | DB | Getting team: '{team_name}' from database: '{self.display_name}'.")
         for team in self.team_storage.values():
             if team.display_name == team_name:
                 return team
 
-        logger.info(f"Team: '{team_name}' not found in database: '{self.display_name}'.")
+        logger.info(f"  | DB | Team: '{team_name}' not found in database: '{self.display_name}'.")
         return None
 
     def preview(self):
-        s = ["- " * 25]
+        s = ["- - - - - - - - DATABASE PREVIEW - - - - - - - - "]
         f"({self.__class__.__name__}) | {self.identifier} [{len(self.teams)} teams]"
         for team in self.teams:
             s.append(f"  - Team ({id(team)}): {team.display_name} |  {team.identifier} ({len(team.projects)} projects)")
@@ -189,6 +200,7 @@ class FakeDB(BaseModel):
                     s.append(
                         f"      - ModelView ({id(model_view)}): {model_view.display_name} | {model_view.identifier}"
                     )
+        s.append("- " * 25)
         return "\n".join(s)
 
     def __getitem__(self, key: str) -> Team:
@@ -199,11 +211,13 @@ class FakeDB(BaseModel):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-logger.info("- " * 25)
-logger.info("Creating a new fake database.")
+logger.info("- " * 50)
+logger.info("- " * 50)
+logger.info("** Creating a new fake database... **")
 _db_new_ = FakeDB()
 _db_new_.add_team(Team(display_name="public"))
 _db_new_.add_team(Team(display_name="bldgtyp"))
 logger.info(_db_new_.preview())
-logger.info("Done creating a new fake database.")
-logger.info("- " * 25)
+logger.info("** Done creating a new fake database **")
+logger.info("- " * 50)
+logger.info("- " * 50)
