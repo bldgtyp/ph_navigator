@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Paper, IconButton, Stack } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import fetchData from "../hooks/_old_/fetchAirTable";
 import { AirTableResultsRecord, ResultType } from "../types/airtable/record_results";
 import { generateDefaultRow } from "./graphs/DataGridFunctions";
 import { BarGraph } from "./graphs/BarGraph";
@@ -84,26 +83,26 @@ function ResultsView(props: ResultsViewProps) {
     const { projectId } = useParams();
     const [rowData, setRowData] = useState<Array<DataGridRow>>(defaultRow);
 
-    useEffect(() => {
-        fetchData<AirTableResultsRecord>(`${projectId}/cert_results/${results_type}`).then(data => {
-            const filteredData = data.filter(
-                (record) => record.fields.TYPE === results_type
-            );
+    // useEffect(() => {
+    //     fetchData<AirTableResultsRecord>(`${projectId}/cert_results/${results_type}`).then(data => {
+    //         const filteredData = data.filter(
+    //             (record) => record.fields.TYPE === results_type
+    //         );
 
-            // ----------------------------------------------------------------
-            // Build all of the new Rows
-            const newRowData: DataGridRow[] = createRowDataArray(filteredData);
+    //         // ----------------------------------------------------------------
+    //         // Build all of the new Rows
+    //         const newRowData: DataGridRow[] = createRowDataArray(filteredData);
 
-            // ----------------------------------------------------------------
-            // Set the row state
-            newRowData.length > 0 ? setRowData(newRowData) : setRowData(defaultRow);
+    //         // ----------------------------------------------------------------
+    //         // Set the row state
+    //         newRowData.length > 0 ? setRowData(newRowData) : setRowData(defaultRow);
 
-            // ----------------------------------------------------------------
-            // Set the 'Limits' for each of the graphs
-            // setSourceEnergyLimits(createAnnualEnergyLimits(sourceEnergyData));
+    //         // ----------------------------------------------------------------
+    //         // Set the 'Limits' for each of the graphs
+    //         // setSourceEnergyLimits(createAnnualEnergyLimits(sourceEnergyData));
 
-        });
-    }, [results_type, projectId]);
+    //     });
+    // }, [results_type, projectId]);
 
     return (
         <Paper className="results-view">

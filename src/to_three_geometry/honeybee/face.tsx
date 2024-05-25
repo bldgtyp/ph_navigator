@@ -5,11 +5,12 @@ import { convertLBTFace3DToMesh } from '../ladybug_geometry/geometry3d/face';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 
 
-export function convertHBFaceToMesh(face: hbFace | hbAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } {
+export function convertHBFaceToMesh(face: hbFace | hbAperture): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } | null {
     // ------------------------------------------------------------------------
     // Build the Surface geometry elements
     const lbtFace3D = face.geometry
     const mesh = convertLBTFace3DToMesh(lbtFace3D)
+    if (!mesh) { return null }
 
     // -- Add the HB-Face properties to the Mesh's user-data
     mesh.mesh.userData['display_name'] = face.display_name;

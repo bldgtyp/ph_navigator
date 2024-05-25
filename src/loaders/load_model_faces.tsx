@@ -7,6 +7,8 @@ import { SceneSetup } from '../scene/SceneSetup';
 export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFaces: hbFace[]) {
     hbFaces.forEach(face => {
         const geom = convertHBFaceToMesh(face)
+        if (!geom) { return }
+
         geom.mesh.name = face.display_name
         geom.mesh.userData["type"] = "faceMesh"
         geom.mesh.material = appMaterials.geometryStandard
@@ -29,25 +31,27 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
 
         face.apertures.forEach(aperture => {
             const apertureGeom = convertHBFaceToMesh(aperture)
-            apertureGeom.mesh.name = face.display_name
-            apertureGeom.mesh.userData["type"] = "apertureMeshFace"
-            apertureGeom.mesh.material = appMaterials.geometryWindow
-            apertureGeom.mesh.visible = true
-            world.current.buildingGeometryMeshes.add(apertureGeom.mesh)
+            if (apertureGeom !== null) {
+                apertureGeom.mesh.name = face.display_name
+                apertureGeom.mesh.userData["type"] = "apertureMeshFace"
+                apertureGeom.mesh.material = appMaterials.geometryWindow
+                apertureGeom.mesh.visible = true
+                world.current.buildingGeometryMeshes.add(apertureGeom.mesh)
 
-            apertureGeom.vertexHelper.name = face.display_name
-            apertureGeom.vertexHelper.userData["type"] = "apertureMeshFaceVertexHelper"
-            apertureGeom.vertexHelper.visible = true
-            world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper)
+                apertureGeom.vertexHelper.name = face.display_name
+                apertureGeom.vertexHelper.userData["type"] = "apertureMeshFaceVertexHelper"
+                apertureGeom.vertexHelper.visible = true
+                world.current.buildingGeometryMeshes.add(apertureGeom.vertexHelper)
 
-            apertureGeom.wireframe.name = face.display_name
-            apertureGeom.wireframe.userData["type"] = "apertureMeshFaceWireframe"
-            apertureGeom.wireframe.material = appMaterials.wireframe
-            apertureGeom.wireframe.visible = true
-            world.current.buildingGeometryOutlines.add(apertureGeom.wireframe)
+                apertureGeom.wireframe.name = face.display_name
+                apertureGeom.wireframe.userData["type"] = "apertureMeshFaceWireframe"
+                apertureGeom.wireframe.material = appMaterials.wireframe
+                apertureGeom.wireframe.visible = true
+                world.current.buildingGeometryOutlines.add(apertureGeom.wireframe)
 
-            apertureGeom.vertices.visible = false
-            world.current.buildingGeometryVertices.add(apertureGeom.vertices)
+                apertureGeom.vertices.visible = false
+                world.current.buildingGeometryVertices.add(apertureGeom.vertices)
+            }
         });
     });
 }

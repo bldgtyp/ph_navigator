@@ -5,7 +5,7 @@ export type hbShade = {
     identifier: string;
     display_name: string;
     is_detached: boolean;
-    geometry: lbtFace3D
+    geometry: lbtFace3D;
 };
 
 export type hbShadeGroup = {

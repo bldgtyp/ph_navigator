@@ -313,10 +313,10 @@ async def get_shading_elements(team_id: str, project_id: str, model_id: str) -> 
     hb_shades: list[shade.Shade] = model_view._hb_model.shades
     for hb_shade in hb_shades:
         shade_DTO = ShadeSchema(**any_dict(hb_shade.to_dict()))
-        shade_DTO.geometry.mesh = Mesh3DSchema(**hb_shade.geometry.triangulated_mesh3d.to_dict())
-        logger.info(
-            f"Converted {hb_shade.display_name} to Mesh: {len(shade_DTO.geometry.mesh.faces)}-faces {len(shade_DTO.geometry.mesh.vertices)}-vertices"
-        )
+        # shade_DTO.geometry.mesh = Mesh3DSchema(**hb_shade.geometry.triangulated_mesh3d.to_dict())
+        # logger.info(
+        #     f"Converted {hb_shade.display_name} to Mesh: {len(shade_DTO.geometry.mesh.faces)}-faces {len(shade_DTO.geometry.mesh.vertices)}-vertices"
+        # )
         shade_DTOs[hb_shade.display_name].shades.append(shade_DTO)
         number_of_shades += 1
 

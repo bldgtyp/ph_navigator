@@ -6,6 +6,6 @@ export type lbtFace3D = {
     type: string;
     boundary: lbtPoint3D[];
     plane: lbtPlane;
-    mesh: lbtMesh3D;
-    area: number;
+    mesh: lbtMesh3D | null;
+    area: number | null;
 };

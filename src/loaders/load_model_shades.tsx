@@ -10,6 +10,8 @@ export function loadModelShades(
     data.forEach((shadeGroup) => {
         shadeGroup.shades.forEach((shade) => {
             const geom = convertLBTFace3DToMesh(shade.geometry)
+            if (!geom) { return null }
+
             geom.mesh.material = appMaterials.geometryShading;
             world.current.shadingGeometry.add(geom.mesh);
             world.current.shadingGeometry.visible = false;

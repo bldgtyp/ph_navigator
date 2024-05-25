@@ -3,7 +3,9 @@ import { lbtFace3D } from "../../../types/ladybug_geometry/geometry3d/face";
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 
-export function convertLBTFace3DToMesh(lbtFace3D: lbtFace3D): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } {
+export function convertLBTFace3DToMesh(lbtFace3D: lbtFace3D): { mesh: THREE.Mesh, wireframe: THREE.LineLoop, vertices: THREE.Points, vertexHelper: VertexNormalsHelper } | null {
+    if (!lbtFace3D.mesh) { return null }
+
     // ------------------------------------------------------------------------
     // Build up the Surface Mesh from an input Ladybug-Face3D
     const vertices: THREE.Vector3[] = [];
