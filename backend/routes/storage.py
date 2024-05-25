@@ -45,6 +45,7 @@ async def get_model_names(team_name: str, project_name: str) -> list[str]:
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
         )
 
+    logger.info(f"  > Returning: {len(project.model_view_names)} model-names for {team_name} | {project_name}")
     return project.model_view_names
 
 
@@ -67,7 +68,7 @@ async def get_model(team_name: str, project_name: str, model_name: str) -> Model
     if not model:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
 
-    logger.info(f"Returning: {team_name} | {project_name} | {model.display_name}")
+    logger.info(f"  > Returning: {team_name} | {project_name} | {model.display_name}")
     return model
 
 
@@ -87,6 +88,7 @@ async def create_new_project(team_name: str) -> Project:
     new_project = Project()
     new_project.display_name = new_project.identifier
     await team.add_project(new_project)
+    logger.info(f"  > Created a new project with name: '{new_project.display_name}' for team: '{team_name}'")
     return new_project
 
 
@@ -108,6 +110,7 @@ async def create_new_model_view(team_name: str, project_name: str) -> ModelView:
     new_model_view = ModelView()
     new_model_view.display_name = new_model_view.identifier
     await project.add_model_view(new_model_view)
+    logger.info(f"  > Created a new model with name: '{new_model_view.display_name}' for project: '{project_name}'")
     return new_model_view
 
 
@@ -118,13 +121,13 @@ async def create_new_model_view(team_name: str, project_name: str) -> ModelView:
 @router.put("/{team_name}/add_new_project_to_team", response_model=Project)
 async def add_new_project_to_team(team_name: str, project: Project) -> Project:
     """Add a new Project to a Team"""
-    logger.info(f"Route > add_new_project_to_team({team_name})")
+    logger.info(f"Route > add_new_project_to_team({team_name}, {project.display_name})")
 
     team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
 
-    logger.info(f"Creating a new project with name: '{project.display_name}' for team: '{team_name}'")
+    logger.info(f"  > Creating a new project with name: '{project.display_name}' for team: '{team_name}'")
     await team.add_project(project)
     return project
 
@@ -144,7 +147,7 @@ async def add_new_model_view_to_project(team_name: str, project_name: str, model
             status_code=404, detail=f"Sorry, there was no project found with the name: '{project_name}'"
         )
 
-    logger.info(f"Creating a new model with name: '{model.display_name}' for project: '{project_name}'")
+    logger.info(f"  > Creating a new model with name: '{model.display_name}' for project: '{project_name}'")
     await project.add_model_view(model)
     return model
 
@@ -191,10 +194,11 @@ async def upload_hbjson_file_to_model(
                 status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'"
             )
 
-        logger.info(f"Updating model: '{model_name}' in project: '{project_name}' for team: '{team_name}'")
+        logger.info(f"  > Updating model: '{model_name}' in project: '{project_name}' for team: '{team_name}'")
         model_view._hb_model = read_HBJSON_file.convert_hbjson_dict_to_hb_model(json_data)
 
     except Exception as e:
         return {"error": str(e)}
 
+    logger.info(f"  > File: '{file.filename}' uploaded successfully.")
     return {"success": f"File: '{file.filename}' uploaded successfully."}

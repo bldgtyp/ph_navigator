@@ -41,7 +41,7 @@ export function TeamView() {
                 if (!response) { return null };
 
                 // Create a new project on the server for each record
-                response.records.forEach((record) => {
+                const projectPromises = response.records.map((record) => {
                     const project_name = stringToUrlSafe(record.fields.PROJECT_NUMBER);
                     putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name })
                         .then(() => {
@@ -52,7 +52,7 @@ export function TeamView() {
                                     if (!response) { return null };
 
                                     // Create a new ModelView on the Project for each record
-                                    response.records.forEach((record: any) => {
+                                    const modelPromises = response.records.map((record: any) => {
                                         const payload = {
                                             display_name: stringToUrlSafe(record.fields.DISPLAY_NAME),
                                             // TODO: handle multiple files, or None...
@@ -60,9 +60,13 @@ export function TeamView() {
                                         }
                                         putModelServer(`${teamId}/${project_name}/add_new_model_view_to_project`, payload);
                                     });
+                                    // Wait for all ModelView creations to complete
+                                    return Promise.all(modelPromises);
                                 });
                         });
                 });
+                // Wait for all projects (and their ModelViews) to be created before continuing
+                return Promise.all(projectPromises);
             }).then(() => {
                 // 2) Now GET all the Team's Project metadata FROM the SERVER
                 // TODO: can this be done during tha first fetch? Try....

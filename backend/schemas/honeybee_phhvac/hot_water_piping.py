@@ -11,13 +11,13 @@ from backend.schemas.ladybug_geometry.geometry3d.line import LineSegment3DSchema
 
 class PhHvacPipeSegmentSchema(BaseModel):
     geometry: LineSegment3DSchema
-    diameter_value: str
-    insulation_thickness: str
+    diameter_mm: str
+    insulation_thickness_mm: str
     insulation_conductivity: float
     insulation_reflective: bool
     insulation_quality: Any
     daily_period: float
-    water_temp: float
+    water_temp_c: float
     material_value: str
     length: float
 
