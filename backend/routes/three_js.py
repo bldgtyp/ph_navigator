@@ -6,7 +6,7 @@
 from collections import defaultdict
 import pathlib
 from logging import getLogger
-from typing import Any
+from typing import Any, Sequence, Iterable
 
 from fastapi import APIRouter, HTTPException
 from honeybee import face, room, shade
@@ -21,6 +21,8 @@ from ladybug import epw
 from ladybug.compass import Compass
 from ladybug.sunpath import Sunpath
 from ladybug_geometry.geometry2d.pointvector import Point2D
+from ladybug_geometry.geometry3d.pointvector import Point3D
+from ladybug_geometry.geometry3d.mesh import Mesh3D
 
 from backend.schemas.honeybee.face import FaceSchema
 from backend.schemas.honeybee.shade import ShadeSchema, ShadeGroupSchema
@@ -296,6 +298,43 @@ async def get_ventilation_systems(team_id: str, project_id: str, model_id: str) 
     return ventilation_system_DTOs
 
 
+def find_vertix_index(vertix_list: list[Point3D], vertix: Point3D) -> int:
+    """Find the index of a vertix in a list of vertices.
+
+    Note: this uses the Point3D.is_equivalent() method to compare the vertices
+    instead of the __eq__ method in order to allow for a tolerance in the comparison.
+    """
+    TOL = 0.0000001
+    for i, other_vert in enumerate(vertix_list):
+        if vertix.is_equivalent(other_vert, TOL):
+            return i
+    raise ValueError()
+
+
+def interpret_input_from_face_vertices(
+    mesh_faces: Iterable[tuple[Point3D, Point3D, Point3D]]
+) -> tuple[list[Point3D], list[tuple[int, ...]]]:
+    """Custom version of the native LBT Mesh3D.from_face_vertices() method with custom `find_vertix_index` used."""
+
+    vertices: list[Point3D] = []
+    face_collector: list[tuple[int, ...]] = []
+
+    # -- Create a list of vertices and faces from the input mesh_faces
+    for mesh_face in mesh_faces:
+        index_list: list[int] = []
+        for mesh_vertix in mesh_face:
+            try:  # try and use an existing vertix
+                index_list.append(find_vertix_index(vertices, mesh_vertix))
+            except ValueError:  # add new point
+                vertices.append(mesh_vertix)
+                index_list.append(len(vertices) - 1)
+
+        # -- Add the new mesh-face
+        face_collector.append(tuple(index_list))
+
+    return vertices, face_collector
+
+
 @router.get("/{team_id}/{project_id}/{model_id}/shading_elements", response_model=list[ShadeGroupSchema])
 async def get_shading_elements(team_id: str, project_id: str, model_id: str) -> list[ShadeGroupSchema]:
     """Return a list of all the Shading elements in a Honeybee Model."""
@@ -305,20 +344,33 @@ async def get_shading_elements(team_id: str, project_id: str, model_id: str) -> 
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
-    # -- Pull out all the model-level shades
-    # -- Group them by their display-name
-    logger.info("  > Building shade-surface geometry....")
-    number_of_shades = 0
-    shade_DTOs = defaultdict(ShadeGroupSchema)
+    # Group the shade faces by their display-name
+    shade_groups = defaultdict(list[shade.Shade])
     hb_shades: list[shade.Shade] = model_view._hb_model.shades
-    for hb_shade in hb_shades:
-        shade_DTO = ShadeSchema(**any_dict(hb_shade.to_dict()))
-        # shade_DTO.geometry.mesh = Mesh3DSchema(**hb_shade.geometry.triangulated_mesh3d.to_dict())
-        # logger.info(
-        #     f"Converted {hb_shade.display_name} to Mesh: {len(shade_DTO.geometry.mesh.faces)}-faces {len(shade_DTO.geometry.mesh.vertices)}-vertices"
-        # )
-        shade_DTOs[hb_shade.display_name].shades.append(shade_DTO)
-        number_of_shades += 1
+    for shd in hb_shades:
+        shade_groups[shd.display_name].append(shd)
 
-    logger.info(f"  > Returning {number_of_shades} shade-surfaces in {len(shade_DTOs)} groups.")
-    return list(shade_DTOs.values())
+    shade_DTOs: list[ShadeGroupSchema] = []
+    number_of_shade_faces = 0
+    for shade_group in shade_groups.values():
+        if not shade_group:
+            continue
+
+        # -- Setup the DTO Outputs
+        shade_group_DTO = ShadeGroupSchema()
+        shade_DTO = ShadeSchema(**any_dict(shade_group[0].to_dict()))
+        shade_group_DTO.shades.append(shade_DTO)
+        shade_DTOs.append(shade_group_DTO)
+
+        # -- Create a joined mesh for the shade group's faces
+        face_vertices = (v for shd in shade_group for v in shd.geometry.triangulated_mesh3d.face_vertices)
+        vertices, face_collector = interpret_input_from_face_vertices(face_vertices)
+        joined_mesh = Mesh3D(tuple(vertices), tuple(face_collector))
+        number_of_shade_faces += len(joined_mesh.faces)
+        logger.info(f"  > New Mesh: {len(joined_mesh.faces)}-faces {len(joined_mesh.vertices)}-vertices")
+
+        # -- Update the DTO with the new mesh
+        shade_DTO.geometry.mesh = Mesh3DSchema(**joined_mesh.to_dict())
+
+    logger.info(f"  > Returning {number_of_shade_faces} shade-surfaces in {len(shade_DTOs)} groups.")
+    return shade_DTOs
