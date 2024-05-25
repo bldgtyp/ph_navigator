@@ -298,6 +298,10 @@ async def get_ventilation_systems(team_id: str, project_id: str, model_id: str) 
     return ventilation_system_DTOs
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Custom Ladybug Mesh3D methods
+
+
 def find_vertix_index(vertix_list: list[Point3D], vertix: Point3D) -> int:
     """Find the index of a vertix in a list of vertices.
 

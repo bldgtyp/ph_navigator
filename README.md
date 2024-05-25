@@ -73,9 +73,10 @@
 - [ ] When selecting a pipe, show the dims alongside
 - [ ] Add Loading modal dialogs
   - [X] Browser Project Loading
-  - [ ] Model Faces Load
-  - [ ] Shading Surfaces
+  - [X] Model Faces Load
+  - [X] Shading Surfaces
 - [ ] Check EPW Load path. Loads fine locally, not working when deployed.
+- [ ] Why isn't Compass and SubPath being loaded properly?
 
 #### NavBar:
 - [X] Add 'home' icon on left side (Navigator)
