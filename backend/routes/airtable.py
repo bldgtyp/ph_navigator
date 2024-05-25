@@ -34,6 +34,7 @@ AT_BLDGTYP_PROJ_LIST_TABLE_ID = "tblm15v0S09KY6wn2"
 @router.get("/get_project_metadata_from_source", response_model=AT_ProjectListingTableSchema)
 async def get_project_metadata_from_source(token: str = Header(None)):
     """Get the Team's Project metadata (project names, ...) from the Airtable Source Master List."""
+    logger.info("- " * 50)
     logger.info(f"Route > get_project_metadata_from_source({token})")
     try:
         api = Api(token)

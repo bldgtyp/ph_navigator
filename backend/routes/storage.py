@@ -52,6 +52,7 @@ async def get_model_names(team_name: str, project_name: str) -> list[str]:
 @router.get("/{team_name}/{project_name}/get_model", response_model=ModelView)
 async def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Return a specific Model from a Project"""
+    logger.info("- " * 50)
     logger.info(f"Route > get_model({team_name}, {project_name}, {model_name})")
 
     team = await _db_new_.get_team_by_name(team_name)

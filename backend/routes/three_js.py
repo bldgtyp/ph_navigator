@@ -52,7 +52,7 @@ def any_dict(d: dict[Any, Any]) -> dict[Any, Any]:
 
 async def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Return a specific Model from a Project"""
-    logger.info(f"Route > get_model({team_name}, {project_name}, {model_name})")
+    logger.info(f"  > three_js.get_model({team_name}, {project_name}, {model_name})")
 
     team = await _db_new_.get_team_by_name(team_name)
     if not team:
@@ -68,7 +68,7 @@ async def get_model(team_name: str, project_name: str, model_name: str) -> Model
     if not model:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no model found with the name: '{model_name}'")
 
-    logger.info(f"Returning: {team_name} | {project_name} | {model.display_name}")
+    logger.info(f"  > Returning: {team_name} | {project_name} | {model.display_name}")
     return model
 
 
@@ -117,7 +117,7 @@ async def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSc
 
         face_dicts.append(face_DTO)
 
-    logger.info(f"Returning {len(face_dicts)} Faces.")
+    logger.info(f"  > Returning {len(face_dicts)} Model Faces.")
 
     return face_dicts
 
@@ -144,6 +144,8 @@ async def get_spaces(team_id: str, project_id: str, model_id: str) -> list[Space
             space_DTO.avg_clear_height = space.avg_clear_height
             space_DTO.average_floor_weighting_factor = space.average_floor_weighting_factor
             spaces.append(space_DTO)
+
+    logger.info(f"  > Returning {len(spaces)} Model Spaces.")
     return spaces
 
 
@@ -190,6 +192,7 @@ async def get_exterior_constructions(team_id: str, project_id: str, model_id: st
         d.u_factor = construction.u_factor
         constructions.append(d)
 
+    logger.info(f"  > Returning {len(constructions)} Exterior Constructions.")
     return constructions
 
 
@@ -209,13 +212,21 @@ async def get_sun_path(team_id: str, project_id: str, model_id: str) -> SunPathA
     if not model_view._hb_model:
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
+    try:
+        epw_object = epw.EPW(SOURCE_FILE)
+        if not epw_object:
+            raise HTTPException(status_code=500, detail=f"Failed to load the EPW file: {SOURCE_FILE}")
+    except Exception as e:
+        logger.error(f"Failed to load the EPW file: {SOURCE_FILE}")
+        raise HTTPException(status_code=500, detail=f"Failed to load the EPW file: {SOURCE_FILE}")
+
     # -- Build the Ladybug SunPath and Compass
-    logger.info(f"Building SunPath and Compass... from {SOURCE_FILE}")
-    epw_object = epw.EPW(SOURCE_FILE)
+    logger.info(f"Building LBT SunPath and LBT Compass from {SOURCE_FILE}")
     sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
     compass = Compass(RADIUS, CENTER_POINT, NORTH)
 
     # -- Setup the the SunPath DTO
+    logger.info(f"  > Converting SunPath to DTO...")
     sunpath_DTO = SunPathSchema()
     sunpath_DTO.hourly_analemma_polyline3d = [
         Polyline3D(**_.to_dict()) for _ in sun_path.hourly_analemma_polyline3d(radius=RADIUS)
@@ -223,11 +234,13 @@ async def get_sun_path(team_id: str, project_id: str, model_id: str) -> SunPathA
     sunpath_DTO.monthly_day_arc3d = [Arc3D(**_.to_dict()) for _ in sun_path.monthly_day_arc3d(radius=RADIUS)]
 
     # -- Setup the the Compass DTO
+    logger.info("  > Converting Compass to DTO...")
     compass_DTO = CompassSchema()
     compass_DTO.all_boundary_circles = [Arc2D(**_.to_dict()) for _ in compass.all_boundary_circles]
     compass_DTO.major_azimuth_ticks = [LineSegment2D(**_.to_dict()) for _ in compass.major_azimuth_ticks]
     compass_DTO.minor_azimuth_ticks = [LineSegment2D(**_.to_dict()) for _ in compass.minor_azimuth_ticks]
 
+    logger.info("  > Returning SunPath and Compass DTOs.")
     return SunPathAndCompassDTOSchema(sunpath=sunpath_DTO, compass=compass_DTO)
 
 
@@ -252,6 +265,8 @@ async def get_hot_water_systems(team_id: str, project_id: str, model_id: str) ->
     hw_system_DTOs: list[PhHotWaterSystemSchema] = []
     for hw_system in hb_phHvac_hw_systems.values():
         hw_system_DTOs.append(PhHotWaterSystemSchema(**hw_system.to_dict(_include_properties=True)))
+
+    logger.info(f"  > Returning {len(hw_system_DTOs)} Hot Water Systems.")
     return hw_system_DTOs
 
 
@@ -276,6 +291,8 @@ async def get_ventilation_systems(team_id: str, project_id: str, model_id: str) 
     ventilation_system_DTOs: list[PhVentilationSystemSchema] = []
     for ventilation_system in ventilation_systems.values():
         ventilation_system_DTOs.append(PhVentilationSystemSchema(**ventilation_system.to_dict()))
+
+    logger.info(f"  > Returning {len(ventilation_system_DTOs)} Ventilation Systems.")
     return ventilation_system_DTOs
 
 
@@ -290,11 +307,15 @@ async def get_shading_elements(team_id: str, project_id: str, model_id: str) -> 
 
     # -- Pull out all the model-level shades
     # -- Group them by their display-name
+    logger.info("  > Building shade-surface geometry....")
+    number_of_shades = 0
     shade_DTOs = defaultdict(ShadeGroupSchema)
     hb_shades: list[shade.Shade] = model_view._hb_model.shades
     for hb_shade in hb_shades:
         shade_DTO = ShadeSchema(**any_dict(hb_shade.to_dict()))
         shade_DTO.geometry.mesh = Mesh3DSchema(**hb_shade.geometry.triangulated_mesh3d.to_dict())
         shade_DTOs[hb_shade.display_name].shades.append(shade_DTO)
+        number_of_shades += 1
 
+    logger.info(f"  > Returning {number_of_shades} shade-surfaces in {len(shade_DTOs)} groups.")
     return list(shade_DTOs.values())

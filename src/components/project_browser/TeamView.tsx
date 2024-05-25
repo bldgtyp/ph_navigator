@@ -40,32 +40,36 @@ export function TeamView() {
                 if (!response) { return null };
 
                 // Create a new project on the server for each record
-                response.records.map((record) => {
+                const projectPromises = response.records.map((record) => {
                     const project_name = stringToUrlSafe(record.fields.PROJECT_NUMBER);
-                    return putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name })
+                    putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name })
                         .then(() => {
 
                             // Get the model listing for the project from the source
-                            return fetchWithModal<ProjectTable>("get_model_metadata_from_source", tkn, { "app_id": record.fields.APP_ID, "tbl_id": record.fields.TABLE_ID })
+                            fetchWithModal<ProjectTable>("get_model_metadata_from_source", tkn, { "app_id": record.fields.APP_ID, "tbl_id": record.fields.TABLE_ID })
                                 .then((response) => {
                                     if (!response) { return null };
 
                                     // Create a new ModelView on the Project for each record
-                                    response.records.map((record: any) => {
+                                    const modelPromises = response.records.map((record: any) => {
                                         const payload = {
                                             display_name: stringToUrlSafe(record.fields.DISPLAY_NAME),
                                             // TODO: handle multiple files, or None...
                                             hbjson_url: record.fields.HBJSON_FILE[0].url,
                                         }
-                                        return putModelServer(`${teamId}/${project_name}/add_new_model_view_to_project`, payload);
+                                        putModelServer(`${teamId}/${project_name}/add_new_model_view_to_project`, payload);
                                     });
+                                    // Make suer we wait for all ModelView creations to complete
+                                    return Promise.resolve(modelPromises);
                                 });
                         });
                 });
+                // Make sure we wait for all projects (and their ModelViews) to be created before continuing
+                return Promise.resolve(projectPromises);
             }).then(() => {
                 // 2) Now GET all the Team's Project metadata FROM the SERVER
                 // TODO: can this be done during tha first fetch? Try....
-                return fetchWithModal<ProjectDataType[]>(`${teamId}/get_projects`, tkn)
+                fetchWithModal<ProjectDataType[]>(`${teamId}/get_projects`, tkn)
                     .then((response) => {
                         if (response) {
                             setProjectDataList(response);
@@ -79,7 +83,7 @@ export function TeamView() {
     return (
         <div className="project-browser-cards">
             <Dialog open={isLoading}>
-                <div>Loading...</div>
+                <div>Please wait. Loading {teamId} Project data from source...</div>
             </Dialog>
             {!isLoading && (
                 <>
