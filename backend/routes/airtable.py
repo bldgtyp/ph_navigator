@@ -34,9 +34,8 @@ AT_BLDGTYP_PROJ_LIST_TABLE_ID = "tblm15v0S09KY6wn2"
 @router.get("/get_project_metadata_from_source", response_model=AT_ProjectListingTableSchema)
 async def get_project_metadata_from_source(token: str = Header(None)):
     """Get the Team's Project metadata (project names, ...) from the Airtable Source Master List."""
+    logger.info(f"Route > get_project_metadata_from_source({token})")
     try:
-        logger.info(f"Getting project data from source with token: {token}")
-
         api = Api(token)
         project_data_table = api.table(AT_BLDGTYP_PROJ_LIST_BASE_ID, AT_BLDGTYP_PROJ_LIST_TABLE_ID)
         table_data = project_data_table.all()
@@ -56,8 +55,8 @@ async def get_project_metadata_from_source(token: str = Header(None)):
 @router.get("/get_model_metadata_from_source", response_model=AT_ProjectTableSchema)
 async def get_model_metadata_from_source(token: str = Header(None), app_id: str = "", tbl_id: str = ""):
     """Get the ModelView metadata (name, url, ...) from the specified Airtable app_id/tbl_id."""
+    logger.info(f"Route > get_model_metadata_from_source({app_id}, {tbl_id}, {token})")
     try:
-        logger.info(f"Getting model data from source: '{app_id} | {tbl_id}' using token: {token}")
         api = Api(token)
         project_data_table = api.table(app_id, tbl_id)
 
@@ -79,7 +78,7 @@ async def get_model_metadata_from_source(token: str = Header(None), app_id: str 
 
 def download_hb_json(url: str) -> dict:
     """Download the HBJSON data from the URL and return the JSON content."""
-    logger.info(f"Downloading from: {url}")
+    logger.info(f"Route > download_hb_json({url})")
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
@@ -92,7 +91,7 @@ def download_hb_json(url: str) -> dict:
 @router.get("/{team_name}/{project_name}/{model_name}/load_hb_model", response_model=ModelView)
 async def load_hb_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Load the Honeybee-Model from its source for a specific ModelView."""
-    logger.info(f"Loading HB-Model for: {team_name} | {project_name} | {model_name}")
+    logger.info(f"Route > load_hb_model({team_name} , {project_name} , {model_name})")
 
     # -- Find the Model in the Database
     team = await _db_new_.get_team_by_name(team_name)

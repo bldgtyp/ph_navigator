@@ -52,6 +52,8 @@ def any_dict(d: dict[Any, Any]) -> dict[Any, Any]:
 
 async def get_model(team_name: str, project_name: str, model_name: str) -> ModelView:
     """Return a specific Model from a Project"""
+    logger.info(f"Route > get_model({team_name}, {project_name}, {model_name})")
+
     team = await _db_new_.get_team_by_name(team_name)
     if not team:
         raise HTTPException(status_code=404, detail=f"Sorry, there was no team found with the name: '{team_name}'")
@@ -76,7 +78,7 @@ async def get_model(team_name: str, project_name: str, model_name: str) -> Model
 @router.get("/{team_id}/{project_id}/{model_id}/faces", response_model=list[FaceSchema])
 async def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSchema]:
     """Return a list of all the Faces in a Honeybee Model."""
-    logger.info(f"Getting Faces for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_faces({team_id}, {project_id}, {model_id})")
 
     model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
@@ -123,7 +125,7 @@ async def get_faces(team_id: str, project_id: str, model_id: str) -> list[FaceSc
 @router.get("/{team_id}/{project_id}/{model_id}/spaces", response_model=list[SpaceSchema])
 async def get_spaces(team_id: str, project_id: str, model_id: str) -> list[SpaceSchema]:
     """Return a list of all the Spaces in a Honeybee Model."""
-    logger.info(f"Getting Spaces for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_spaces({team_id}, {project_id}, {model_id})")
 
     model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
@@ -161,7 +163,7 @@ def is_inside_face(_face: face.Face, _model_face_ids: set[str]) -> bool:
 @router.get("/{team_id}/{project_id}/{model_id}/exterior_constructions", response_model=list[OpaqueConstructionSchema])
 async def get_exterior_constructions(team_id: str, project_id: str, model_id: str) -> list[OpaqueConstructionSchema]:
     """Return a list of all the Exterior Constructions in a Honeybee Model."""
-    logger.info(f"Getting Spaces for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_exterior_constructions({team_id}, {project_id}, {model_id})")
 
     model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
@@ -192,9 +194,9 @@ async def get_exterior_constructions(team_id: str, project_id: str, model_id: st
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/sun_path", response_model=SunPathAndCompassDTOSchema)
-async def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassDTOSchema:
+async def get_sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCompassDTOSchema:
     """Return the SunPath and Compass for a Honeybee-Model"""
-    logger.info(f"Getting SunPath for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_sun_path({team_id}, {project_id}, {model_id})")
 
     SCALE = 0.4
     NORTH = 0
@@ -208,6 +210,7 @@ async def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCo
         raise HTTPException(status_code=404, detail=f"No HB-Model found for: '{model_id}'")
 
     # -- Build the Ladybug SunPath and Compass
+    logger.info(f"Building SunPath and Compass... from {SOURCE_FILE}")
     epw_object = epw.EPW(SOURCE_FILE)
     sun_path = Sunpath.from_location(epw_object.location, NORTH, DAYLIGHT_SAVINGS_PERIOD)
     compass = Compass(RADIUS, CENTER_POINT, NORTH)
@@ -229,9 +232,9 @@ async def sun_path(team_id: str, project_id: str, model_id: str) -> SunPathAndCo
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/hot_water_systems", response_model=list[PhHotWaterSystemSchema])
-async def hot_water_systems(team_id: str, project_id: str, model_id: str) -> list[PhHotWaterSystemSchema]:
+async def get_hot_water_systems(team_id: str, project_id: str, model_id: str) -> list[PhHotWaterSystemSchema]:
     """Return a list of all the Hot Water Systems in a Honeybee Model."""
-    logger.info(f"Getting Hot-Water Systems for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_hot_water_systems({team_id}, {project_id}, {model_id})")
 
     model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
@@ -253,9 +256,9 @@ async def hot_water_systems(team_id: str, project_id: str, model_id: str) -> lis
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/ventilation_systems", response_model=list[PhVentilationSystemSchema])
-async def ventilation_systems(team_id: str, project_id: str, model_id: str) -> list[PhVentilationSystemSchema]:
+async def get_ventilation_systems(team_id: str, project_id: str, model_id: str) -> list[PhVentilationSystemSchema]:
     """Return a list of all the Hot Water Systems in a Honeybee Model."""
-    logger.info(f"Getting Ventilation Systems for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_ventilation_systems({team_id}, {project_id}, {model_id})")
 
     model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
@@ -277,9 +280,9 @@ async def ventilation_systems(team_id: str, project_id: str, model_id: str) -> l
 
 
 @router.get("/{team_id}/{project_id}/{model_id}/shading_elements", response_model=list[ShadeGroupSchema])
-async def shading_elements(team_id: str, project_id: str, model_id: str) -> list[ShadeGroupSchema]:
+async def get_shading_elements(team_id: str, project_id: str, model_id: str) -> list[ShadeGroupSchema]:
     """Return a list of all the Shading elements in a Honeybee Model."""
-    logger.info(f"Getting Shading Elements for: {team_id} | {project_id} | {model_id}")
+    logger.info(f"Route > get_shading_elements({team_id}, {project_id}, {model_id})")
 
     model_view = await get_model(team_id, project_id, model_id)
     if not model_view._hb_model:
