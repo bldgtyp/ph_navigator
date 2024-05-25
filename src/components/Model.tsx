@@ -1,10 +1,11 @@
 // 3D-Geometry and Views of a Specific Model Instance
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { SceneSetup } from '../scene/SceneSetup';
 import InfoPanel from './InfoPanel';
 import ResultsSidebar from './ResultsSidebar';
+import { Dialog } from '@mui/material';
 
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { loadModelFaces } from '../loaders/load_model_faces';
@@ -50,11 +51,14 @@ export function Model(props: ModelProps) {
     console.log("Rendering Model Component...")
     const { world, showModel } = props;
     const { teamId, projectId, modelId } = useParams();
+    const [isLoading, setIsLoading] = useState(true);
+
 
     // Load the Model-Elements from the Server based on: team-id / project-id / model-id
     // ------------------------------------------------------------------------
     useEffect(() => {
         console.log("Loading Model Elements...")
+        setIsLoading(true);
         world.current.reset();
         if (showModel === true && modelId !== undefined && projectId !== undefined) {
 
@@ -77,15 +81,23 @@ export function Model(props: ModelProps) {
                     fetchWithModal<hbPhHvacVentilationSystem[]>(`${teamId}/${projectId}/${modelId}/ventilation_systems`)
                         .then(data => handleError(loadModelERVDucting, world, data));
 
-                    fetchWithModal<hbShadeGroup[]>(`${teamId}/${projectId}/${modelId}/shading_elements`)
+                    return fetchWithModal<hbShadeGroup[]>(`${teamId}/${projectId}/${modelId}/shading_elements`)
                         .then(data => handleError(loadModelShades, world, data));
                 })
+                .then(() => {
+                    setIsLoading(false);
+                });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teamId, projectId, modelId, showModel]);
 
     return (
         <>
+            {isLoading && (
+                <Dialog open={isLoading}>
+                    <div>Loading...</div>
+                </Dialog>)
+            }
             <ResultsSidebar />
             <InfoPanel />
         </>)

@@ -6,7 +6,6 @@ import { Project } from '../../types/fake_database/Project';
 import { ProjectDataType, ProjectCard } from './ProjectCard';
 import { ProjectListingTable } from '../../types/airtable/project_listing_table';
 import { ProjectTable } from '../../types/airtable/project_table';
-
 import { Dialog } from '@mui/material';
 
 function stringToUrlSafe(str: string) {
@@ -41,36 +40,32 @@ export function TeamView() {
                 if (!response) { return null };
 
                 // Create a new project on the server for each record
-                const projectPromises = response.records.map((record) => {
+                response.records.map((record) => {
                     const project_name = stringToUrlSafe(record.fields.PROJECT_NUMBER);
-                    putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name })
+                    return putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name })
                         .then(() => {
 
                             // Get the model listing for the project from the source
-                            fetchWithModal<ProjectTable>("get_model_metadata_from_source", tkn, { "app_id": record.fields.APP_ID, "tbl_id": record.fields.TABLE_ID })
+                            return fetchWithModal<ProjectTable>("get_model_metadata_from_source", tkn, { "app_id": record.fields.APP_ID, "tbl_id": record.fields.TABLE_ID })
                                 .then((response) => {
                                     if (!response) { return null };
 
                                     // Create a new ModelView on the Project for each record
-                                    const modelPromises = response.records.map((record: any) => {
+                                    response.records.map((record: any) => {
                                         const payload = {
                                             display_name: stringToUrlSafe(record.fields.DISPLAY_NAME),
                                             // TODO: handle multiple files, or None...
                                             hbjson_url: record.fields.HBJSON_FILE[0].url,
                                         }
-                                        putModelServer(`${teamId}/${project_name}/add_new_model_view_to_project`, payload);
+                                        return putModelServer(`${teamId}/${project_name}/add_new_model_view_to_project`, payload);
                                     });
-                                    // Wait for all ModelView creations to complete
-                                    return Promise.all(modelPromises);
                                 });
                         });
                 });
-                // Wait for all projects (and their ModelViews) to be created before continuing
-                return Promise.all(projectPromises);
             }).then(() => {
                 // 2) Now GET all the Team's Project metadata FROM the SERVER
                 // TODO: can this be done during tha first fetch? Try....
-                fetchWithModal<ProjectDataType[]>(`${teamId}/get_projects`, tkn)
+                return fetchWithModal<ProjectDataType[]>(`${teamId}/get_projects`, tkn)
                     .then((response) => {
                         if (response) {
                             setProjectDataList(response);
