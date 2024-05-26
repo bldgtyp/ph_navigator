@@ -5,23 +5,8 @@
 
 ## TODO:
 
-#### Bugs:
-- [X] Check Exterior Construction API Calls (circular)?
-- [X] Check the Polyline3D Geometry errors
-
-#### Deployment:
-- [X] Create WebService 
-- [X] Test Deployment to Render.com
-
 #### Get Geometry:
-- [X] Add Ground Plane
-- [X] Windows & Material
-- [X] Get Boundary Condition
-- [X] Get HB-Construction Name and Props
-- [X] Get Outdoor Shades
-- [X] Refactor Poly-lines so material gets set in Viewer/useEffect
-- [X] Spaces
-  - [X] Spaces need to be Rotated in hp-ph
+- [ ] TFA Surfaces
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
@@ -36,24 +21,11 @@
   - [ ] Hot Water Tanks and Heaters (note: need to add geom to HBPH / GH)
 
 #### UI:
-- [X] Refactor App-State and Mouse-Events
-   - [X] State as Enum? 'State' Pattern?
-- [X] Add all app-state event listeners
-- [X] Fix Measurement Vertex Selector behavior. Super jankey right now.
-  - [X] Try: [webgl_interactive_points](https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_points.html)
-- [X] move the face data panel to the left
-- [X] add 'results' buttons on the right
-- [X] Refactor App State to useReducer / useContext
-- [X] Refactor AppState to Custom-Context
-  - [X] Review: [https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom](https://youtu.be/I7dwJxGuGYQ?si=86COoEbLIl_Vejom)
-- [X] Refactor Selected-Object to useReducer / useContext / Custom-Context
-- [X] Refactor Dimension-Lines to useReducer / useContext / Custom-Context
-- [X] Add PH status bar on the RIGHT-SIDE with the results and indicator red/green check marks for heat-demand, etc...
-- [X] Select Rooms, display room-data in panel on left side
 - [X] Add Sun-path diagram State
+  - [ ] Why isn't Compass and SubPath being loaded properly?
+  - [ ] Check EPW Load path. Loads fine locally, not working when deployed.
   - [ ] Time of Day control (connect to sunlight position)
 - [X] add a u-value list with sliders to the face data panel 
-  - [X] Make exterior surfaces only
   - [ ] Add a Window U-Value section below
 - [ ] Face Data - truncate names / identifiers
 - [ ] Constructions Table (with Materials)
@@ -71,19 +43,8 @@
 - [ ] When selecting a surface for query - show all the edge dims in very light text
 - [ ] Move results to top to allow for app-state bar to the right
 - [ ] When selecting a pipe, show the dims alongside
-- [ ] Add Loading modal dialogs
-  - [X] Browser Project Loading
-  - [X] Model Faces Load
-  - [X] Shading Surfaces
-- [ ] Check EPW Load path. Loads fine locally, not working when deployed.
-- [ ] Why isn't Compass and SubPath being loaded properly?
-- [ ] Add pointer cursor when over clickable item (face)
 
 #### NavBar:
-- [X] Add 'home' icon on left side (Navigator)
-- [X] Make so project cannot be selected from the dropdown, only the home page
-- [X] Create new Model Upload dialogue and endpoint
-- [X] Add model source url
 - [ ] Fix EPW file data source. Location in upper right (map link)
 - [ ] Add model refresh button
 
@@ -94,23 +55,13 @@
    - [ ] Try: [react-chat-window](https://www.npmjs.com/package/react-chat-window?activeTab=readme)
 
 #### Scene:
-- [X] Add Shadows on Ground Plane
-- [ ] AO Shadows Pass?
-- [ ] Add Outline Pass?
-  - [ ] Review: [https://youtu.be/1wiv3kF78Go?si=HpYGNYy6lxgoSj43](https://youtu.be/1wiv3kF78Go?si=HpYGNYy6lxgoSj43)
-  - [ ] Review: [https://youtu.be/AUJlkwLiciw?si=_bRL6HXfUnFkBG0s](https://youtu.be/AUJlkwLiciw?si=_bRL6HXfUnFkBG0s)
-- [ ] Auto-bounds based on loaded geometry:
+- [ ] Auto-bounds (ground, shadows) based on loaded geometry:
   - [ ] grid
   - [ ] lights
   - [ ] camera location
   - [ ] shadow map
 
 #### API & Data Storage:
-- [X] Create Pydantic Response Models
-- [X] Refactor all API endpoints to use Pydantic Models
-- [X] Re-write the other endpoints (spaces, pipes, etc..) with Pydantic
-- [X] Try moving file storage to AirTable records
-- [ ] Move file paths into config file
 - [ ] Add some form of basic Auth
 
 

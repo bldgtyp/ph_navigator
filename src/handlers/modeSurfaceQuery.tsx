@@ -6,9 +6,16 @@ import { SelectedObjectContextType } from '../contexts/selected_object_context';
 import { HoverObjectContextType } from '../contexts/hover_object_context';
 
 
+/**
+ * Resets the hover mesh material for the given object.
+ * If the object is a mesh and has a stored hover material, it sets the object's material to the stored hover material.
+ * It also sets the 'hoverOver' property of the object to false.
+ * If the object is not selected, it restores the original material.
+ * 
+ * @param object - The object to reset the hover mesh material for.
+ */
 function resetHoverMeshMaterial(object: THREE.Object3D | null) {
     if (object instanceof THREE.Mesh && object.userData["hoverMaterialStore"]) {
-        object.userData['hoverOver'] = false;
         if (object.userData['selected'] !== true) {
             object.material = object.userData["hoverMaterialStore"];
         }
@@ -16,6 +23,11 @@ function resetHoverMeshMaterial(object: THREE.Object3D | null) {
 }
 
 
+/**
+ * Resets the material and selection state of a selected mesh object.
+ * 
+ * @param object - The mesh object to reset.
+ */
 function resetSelectedMeshMaterial(object: THREE.Object3D | null) {
     if (object instanceof THREE.Mesh && object.userData["selectionMaterialStore"]) {
         object.material = object.userData["selectionMaterialStore"];
@@ -24,6 +36,13 @@ function resetSelectedMeshMaterial(object: THREE.Object3D | null) {
 }
 
 
+/**
+ * Handles the surface select mode on mouse click event.
+ *
+ * @param event - The mouse click event.
+ * @param world - The scene setup object.
+ * @param selectedObjectContext - The selected object context object.
+ */
 export function surfaceSelectModeOnMouseClick(
     event: any,
     world: SceneSetup,
@@ -43,6 +62,11 @@ export function surfaceSelectModeOnMouseClick(
 }
 
 
+/**
+ * Clears the selected mesh and resets its material.
+ *
+ * @param selectedObjectContext - The context object containing the selected object and its state.
+ */
 export function handleClearSelectedMesh(
     selectedObjectContext: SelectedObjectContextType
 ) {
@@ -52,24 +76,24 @@ export function handleClearSelectedMesh(
 }
 
 
-export function surfaceSelectModeOnMouseMove(
+export function surfaceSelectModeOnMouseOver(
     e: PointerEvent,
     world: SceneSetup,
     hoverObjectContext: HoverObjectContextType,
-    selectedObjectContext: SelectedObjectContextType,
 ) {
     e.preventDefault();
     const newMesh = getMeshFromMouseOver(e, world.camera, world.buildingGeometryMeshes.children)
     if (newMesh) {
+        world.renderer.domElement.style.cursor = 'pointer';
         if (newMesh.userData['selected'] !== true) {
             resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
             newMesh.userData["hoverMaterialStore"] = newMesh.material; // Store for changing back later
-            newMesh.userData['hoverOver'] = true;
             newMesh.material = appMaterials.geometryHoverOver;
             hoverObjectContext.hoverObjectRef.current = newMesh
             hoverObjectContext.setHoverObjectState(newMesh)
         }
     } else {
+        world.renderer.domElement.style.cursor = 'auto';
         resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
     }
 }

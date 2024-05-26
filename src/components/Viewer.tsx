@@ -3,15 +3,15 @@
 import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { SceneSetup } from '../scene/SceneSetup';
-import { onResize } from '../handlers/onResize';
-import { surfaceSelectModeOnMouseClick, surfaceSelectModeOnMouseMove } from '../handlers/modeSurfaceQuery';
-import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
-import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 import { useAppStateContext } from '../contexts/app_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { useHoverObjectContext } from '../contexts/hover_object_context';
+import { onResize } from '../handlers/onResize';
+import { surfaceSelectModeOnMouseClick, surfaceSelectModeOnMouseOver } from '../handlers/modeSurfaceQuery';
+import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
+import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
+import { spacesModeOnMouseClick, spacesModeOnMouseOver } from '../handlers/modeSpacesQuery';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
-import { spacesModeOnMouseClick } from '../handlers/modeSpacesQuery';
 import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
 import { pipingModeOnMouseClick } from '../handlers/modePipes';
 import { handleClearSelectedLine } from '../handlers/modePipes';
@@ -41,7 +41,7 @@ function Viewer(props: ViewerProps) {
     );
     addEventHandler(1, "pointermove",
         useCallback(
-            (e: any) => { surfaceSelectModeOnMouseMove(e, world.current, hoverObjectContext, selectedObjectContext) }
+            (e: any) => { surfaceSelectModeOnMouseOver(e, world.current, hoverObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
@@ -60,6 +60,12 @@ function Viewer(props: ViewerProps) {
     addEventHandler(4, "click",
         useCallback(
             (e: any) => { spacesModeOnMouseClick(e, world.current, selectedObjectContext) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
+    );
+    addEventHandler(4, "pointermove",
+        useCallback(
+            (e: any) => { spacesModeOnMouseOver(e, world.current, hoverObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
