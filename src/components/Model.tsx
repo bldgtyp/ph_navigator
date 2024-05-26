@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { SceneSetup } from '../scene/SceneSetup';
 import InfoPanel from './InfoPanel';
-import ResultsSidebar from './ResultsSidebar';
+// import ResultsSidebar from './ResultsSidebar';
+// import { _AO_GUI_ } from './_AO_GUI_';
 import { Dialog } from '@mui/material';
 import MoonLoader from "react-spinners/MoonLoader";
 
@@ -22,7 +23,6 @@ import { lbtSunPathDTO } from "../types/ladybug/sunpath";
 import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_system";
 import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
 import { hbShadeGroup } from "../types/honeybee/shade";
-
 
 /**
  * Fetches data from the model server with a modal for errors.
@@ -141,7 +141,8 @@ export function Model(props: ModelProps) {
                     </div>
                 </Dialog>)
             }
-            <ResultsSidebar />
             <InfoPanel />
+            {/* <ResultsSidebar /> */}
+            {/* <_AO_GUI_ world={world} /> */}
         </>)
 }

@@ -4,6 +4,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { appColors } from '../styles/AppColors';
 import { appMaterials } from './Materials';
 import { defaultLightConfiguration } from './Lighting';
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+
 export class SceneSetup {
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;
@@ -22,15 +28,48 @@ export class SceneSetup {
     ventilationGeometry: THREE.Group;
     shadingGeometry: THREE.Group;
 
+    composer: EffectComposer;
+    saoPass: SAOPass;
+
     constructor() {
         // -- Scene
         this.scene = new THREE.Scene();
         this.scene.background = appColors.BACKGROUND_WHITE;
 
+        // -- Camera
+        const FOV = 45
+        this.camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.set(-25, 40, 30);
+        this.camera.lookAt(0, 0, 0);
+        this.camera.up.set(0, 0, 1);
+
         // -- Geometry Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio * 2); // Improves line quality
+
+        // -- Scene Composer
+        this.composer = new EffectComposer(this.renderer);
+        const renderPass = new RenderPass(this.scene, this.camera);
+        this.composer.addPass(renderPass);
+
+        this.saoPass = new SAOPass(this.scene, this.camera);
+        this.saoPass.params.output = SAOPass.OUTPUT.Default
+        this.saoPass.params.saoBias = 1.0;
+        this.saoPass.params.saoIntensity = 0.004;
+        this.saoPass.params.saoScale = 8.0;
+        this.saoPass.params.saoKernelRadius = 25;
+        this.saoPass.params.saoMinResolution = 0.0;
+        this.saoPass.params.saoBlur = true;
+        this.saoPass.params.saoBlurRadius = 100;
+        this.saoPass.params.saoBlurStdDev = 4;
+        this.saoPass.params.saoBlurDepthCutoff = 0.0;
+
+        // This is not working well... too slow, and too shitty...
+        // Lines get all un-antialiased and jagged
+        // this.composer.addPass(this.saoPass);
+        // const outputPass = new OutputPass();
+        // this.composer.addPass(outputPass);
 
         // -- Shadows
         this.renderer.shadowMap.enabled = true;
@@ -43,13 +82,6 @@ export class SceneSetup {
         this.labelRenderer.domElement.style.top = '0px'
         this.labelRenderer.domElement.style.pointerEvents = 'none'
         document.body.appendChild(this.labelRenderer.domElement)
-
-        // -- Camera
-        const FOV = 45
-        this.camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set(-25, 40, 30);
-        this.camera.lookAt(0, 0, 0);
-        this.camera.up.set(0, 0, 1);
 
         // -- Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
