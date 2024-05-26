@@ -1,5 +1,12 @@
 import * as THREE from 'three';
 
+const mouseDownPosition = new THREE.Vector2();
+
+window.addEventListener('mousedown', (event) => {
+    mouseDownPosition.x = event.clientX;
+    mouseDownPosition.y = event.clientY;
+});
+
 /**
  * Retrieves the selected mesh from a mouse click event.
  * 
@@ -13,6 +20,12 @@ export function getSelectedMeshFromMouseClick(
     camera: THREE.Camera,
     objects: THREE.Object3D[]
 ): THREE.Mesh | null {
+    // Check if the mouse has moved significantly since the mousedown event
+    // If it has, it's a drag operation, not a click operation
+    if (Math.abs(mouseDownPosition.x - event.clientX) > 5 || Math.abs(mouseDownPosition.y - event.clientY) > 5) {
+        return null;
+    }
+
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
     const pointer = new THREE.Vector2();
@@ -23,7 +36,7 @@ export function getSelectedMeshFromMouseClick(
     const ray_caster = new THREE.Raycaster();
     ray_caster.setFromCamera(pointer, camera);
 
-    // Find the First (closets to camera) object intersecting the picking ray
+    // Find the First (closest to camera) object intersecting the picking ray
     const intersects = ray_caster.intersectObjects(objects);
     const mesh = intersects.find(intersect => intersect.object instanceof THREE.Mesh) || null;
     return mesh ? mesh.object as THREE.Mesh : null;

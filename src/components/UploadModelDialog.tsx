@@ -1,93 +1,95 @@
 import "../styles/UploadModelDialog.css";
 import { useState } from 'react';
-import { useParams } from "react-router-dom";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { putModelServer } from "../hooks/putModelServer";
-import { fetchModelServer } from "../hooks/fetchModelServer";
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { postModelServeFile } from "../hooks/postModelServerFile";
-import { useNavigate } from "react-router-dom";
+// import { useParams } from "react-router-dom";
+// import { Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog } from '@mui/material';
+// import { putModelServer } from "../hooks/putModelServer";
+// import { fetchModelServer } from "../hooks/fetchModelServer";
+// import UploadFileIcon from '@mui/icons-material/UploadFile';
+// import { postModelServeFile } from "../hooks/postModelServerFile";
+// import { useNavigate } from "react-router-dom";
 
-async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
-    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
-    if (error) {
-        const message = `Error getting data: ${error}`
-        alert(message);
-        return null;
-    } else {
-        return data;
-    }
-};
+// async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+//     const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
+//     if (error) {
+//         const message = `Error getting data: ${error}`
+//         alert(message);
+//         return null;
+//     } else {
+//         return data;
+//     }
+// };
 
-function UploadModelDialog(props: { setModelNames: any, setShowModel: any }) {
-    const { setModelNames, setShowModel } = props;
-    const navigate = useNavigate();
-    const { teamId, projectId, modelId } = useParams();
+function UploadModelDialog(props: { setModelViewList: any, setShowModel: any }) {
+    props
+    // const { setModelViewList, setShowModel } = props;
+    // const navigate = useNavigate();
+    // const { teamId, projectId, modelId } = useParams();
     const [open, setOpen] = useState(true);
-    const [dropZoneClassName, setDropZoneClassName] = useState('file-upload-zone');
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isDragOver, setIsDragOver] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
-    const [processing, setProcessing] = useState(false);
-    const [uploadButtonIsDisabled, setUploadButtonIsDisabled] = useState(true);
+    // const [dropZoneClassName, setDropZoneClassName] = useState('file-upload-zone');
+    // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    // const [isDragOver, setIsDragOver] = useState(false);
+    // const [uploadProgress, setUploadProgress] = useState(0);
+    // const [processing, setProcessing] = useState(false);
+    // const [uploadButtonIsDisabled, setUploadButtonIsDisabled] = useState(true);
 
     // ------------------------------------------------------------------------
-    const handleUpload = async () => {
-        if (!selectedFile) {
-            alert('Please select an HBJSON file to upload.');
-            return;
-        }
+    // const handleUpload = async () => {
+    //     if (!selectedFile) {
+    //         alert('Please select an HBJSON file to upload.');
+    //         return;
+    //     }
 
-        setProcessing(true);
-        setUploadButtonIsDisabled(true);
+    //     setProcessing(true);
+    //     setUploadButtonIsDisabled(true);
 
-        const formData = new FormData();
-        formData.append('file', selectedFile);
+    //     const formData = new FormData();
+    //     formData.append('file', selectedFile);
 
-        // Create the New Model in the Database
-        let model_id: string | undefined = undefined;
-        fetchWithModal<{ display_name: string }>(`${teamId}/${projectId}/create_new_model_view`)
-            .then(response => {
-                if (!response) { return null };
-                model_id = response.display_name;
-            }).then(() => {
-                // Upload the File to the new model
-                if (model_id !== undefined) {
-                    postModelServeFile(
-                        `${teamId}/${projectId}/${model_id}/upload_hbjson_file_to_model`,
-                        formData,
-                        setUploadProgress,
-                    )
-                }
-            }).then(() => {
-                // Close the Dialog and Navigate to the new Model
-                setModelNames([model_id]);
-                handleClose();
-                setShowModel(true);
-                navigate(`/${teamId}/${projectId}/${model_id}`);
-            });
-    };
+    //     // Create the New Model in the Database
+    //     let model_id: string | undefined = undefined;
+    //     fetchWithModal<{ display_name: string }>(`${teamId}/${projectId}/create_new_model_view`)
+    //         .then(response => {
+    //             if (!response) { return null };
+    //             model_id = response.display_name;
+    //         }).then(() => {
+    //             // Upload the File to the new model
+    //             if (model_id !== undefined) {
+    //                 postModelServeFile(
+    //                     `${teamId}/${projectId}/${model_id}/upload_hbjson_file_to_model`,
+    //                     formData,
+    //                     setUploadProgress,
+    //                 )
+    //             }
+    //         }).then(() => {
+    //             // Close the Dialog and Navigate to the new Model
+    //             // setModelNames([model_id]);
+    //             handleClose();
+    //             setShowModel(true);
+    //             navigate(`/${teamId}/${projectId}/${model_id}`);
+    //         });
+    // };
 
     // ------------------------------------------------------------------------
     // Drag and drop event handlers
-    const handleDragOver = (e: any) => {
-        e.preventDefault();
-        setIsDragOver(true);
-    };
+    // const handleDragOver = (e: any) => {
+    //     e.preventDefault();
+    //     setIsDragOver(true);
+    // };
 
-    const handleDragLeave = (e: any) => {
-        e.preventDefault();
-        setIsDragOver(false);
-    };
+    // const handleDragLeave = (e: any) => {
+    //     e.preventDefault();
+    //     setIsDragOver(false);
+    // };
 
-    const handleDrop = (e: any) => {
-        setUploadButtonIsDisabled(false);
-        setDropZoneClassName('file-upload-zone-dropped');
-        setIsDragOver(false);
-        e.preventDefault();
-        e.stopPropagation();
-        setSelectedFile(e.dataTransfer.files[0]);
-    };
+    // const handleDrop = (e: any) => {
+    //     setUploadButtonIsDisabled(false);
+    //     setDropZoneClassName('file-upload-zone-dropped');
+    //     setIsDragOver(false);
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     setSelectedFile(e.dataTransfer.files[0]);
+    // };
 
     const handleClose = () => {
         setOpen(false);
@@ -96,7 +98,7 @@ function UploadModelDialog(props: { setModelNames: any, setShowModel: any }) {
     // ------------------------------------------------------------------------
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle id="form-dialog-title">Upload a valid Honeybee-JSON (.hbjson) file to view</DialogTitle>
+            {/* <DialogTitle id="form-dialog-title">Upload a valid Honeybee-JSON (.hbjson) file to view</DialogTitle>
             <DialogContent>
                 <p>
                     Note that while using the free viewer any
@@ -139,7 +141,7 @@ function UploadModelDialog(props: { setModelNames: any, setShowModel: any }) {
                     <UploadFileIcon />
                     Upload Model
                 </Button>
-            </DialogActions>
+            </DialogActions> */}
         </Dialog>
     );
 }

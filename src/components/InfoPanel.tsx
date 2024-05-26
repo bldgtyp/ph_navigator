@@ -17,7 +17,7 @@ async function fetchWithModal<T>(endpoint: string, token: string | undefined = "
     } else {
         return data;
     }
-};
+}
 
 function PanelItem(props: { label: React.ReactNode, value: string }) {
     return (
@@ -92,7 +92,7 @@ function UValueSliders() {
     useEffect(() => {
         fetchWithModal<hbEnergyOpaqueConstruction[]>(`${teamId}/${projectId}/${modelId}/exterior_constructions`)
             .then(data => {
-                if (data) { setConstructions(data); };
+                if (data) { setConstructions(data); }
             });
     }, [teamId, projectId, modelId]);
 

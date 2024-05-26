@@ -41,7 +41,7 @@ async function fetchWithModal<T>(endpoint: string, token: string | undefined = "
     } else {
         return data;
     }
-};
+}
 
 type ModelProps = {
     world: React.MutableRefObject<SceneSetup>;
@@ -63,7 +63,7 @@ function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, d
     } else if (Array.isArray(data)) {
         return _func(world, data);
     }
-};
+}
 
 export function Model(props: ModelProps) {
     console.log("Rendering Model Component...")
@@ -110,7 +110,7 @@ export function Model(props: ModelProps) {
                 console.log(`${teamId}/${projectId}/${modelId} data successfully loaded.`)
                 setIsLoading(false);
             }
-        };
+        }
 
         world.current.reset();
         if (showModel === true && modelId !== undefined && projectId !== undefined) {

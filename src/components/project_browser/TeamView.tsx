@@ -37,7 +37,7 @@ async function fetchWithModal<T>(endpoint: string, token: string | undefined = "
     } else {
         return data;
     }
-};
+}
 
 
 /**
@@ -70,7 +70,7 @@ async function createProjectAndModelViews(teamId: string | undefined, record: an
     await putModelServer<Project>(`${teamId}/add_new_project_to_team`, { display_name: project_name });
 
     const response = await fetchWithModal<ProjectTable>("get_model_metadata_from_source", tkn, { "app_id": record.fields.APP_ID, "tbl_id": record.fields.TABLE_ID });
-    if (!response) { return null };
+    if (!response) { return null; }
 
     const modelPromises = response.records.map((record: any) => createModelViews(teamId, project_name, record));
     await Promise.all(modelPromises);

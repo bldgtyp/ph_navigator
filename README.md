@@ -77,12 +77,13 @@
   - [X] Shading Surfaces
 - [ ] Check EPW Load path. Loads fine locally, not working when deployed.
 - [ ] Why isn't Compass and SubPath being loaded properly?
+- [ ] Add pointer cursor when over clickable item (face)
 
 #### NavBar:
 - [X] Add 'home' icon on left side (Navigator)
 - [X] Make so project cannot be selected from the dropdown, only the home page
 - [X] Create new Model Upload dialogue and endpoint
-- [ ] Add model source url
+- [X] Add model source url
 - [ ] Fix EPW file data source. Location in upper right (map link)
 - [ ] Add model refresh button
 

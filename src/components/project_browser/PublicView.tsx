@@ -10,7 +10,7 @@ async function fetchWithModal<T>(endpoint: string, token: string | undefined = "
     } else {
         return data;
     }
-};
+}
 
 export function Public() {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ export function Public() {
                         navigate(`/${teamId}/${newProjectId}/${newModelId}`);
                     });
             });
-    };
+    }
 
     return (
         <div className="public">

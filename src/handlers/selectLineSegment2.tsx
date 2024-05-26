@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 
+const mouseDownPosition = new THREE.Vector2();
+
+window.addEventListener('mousedown', (event) => {
+    mouseDownPosition.x = event.clientX;
+    mouseDownPosition.y = event.clientY;
+});
+
 /**
  * Retrieves the selected LineSegments2 object from a mouse click event.
  * 
@@ -14,6 +21,12 @@ export function getSelectedLineFromMouseClick(
     camera: THREE.Camera,
     objects: THREE.Object3D[]
 ): LineSegments2 | null {
+    // Check if the mouse has moved significantly since the mousedown event
+    // If it has, it's a drag operation, not a click operation
+    if (Math.abs(mouseDownPosition.x - event.clientX) > 5 || Math.abs(mouseDownPosition.y - event.clientY) > 5) {
+        return null;
+    }
+
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
     const pointer = new THREE.Vector2();

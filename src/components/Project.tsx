@@ -15,67 +15,76 @@ import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { ModelView } from "../types/fake_database/ModelView";
 
-async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
+
+
+async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}): Promise<T | null> {
     const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
     if (error) {
-        const message = `Error getting data: ${error}`
+        const message = `Error getting data: ${error}`;
         alert(message);
         return null;
     } else {
         return data;
     }
-};
+}
+
+
+async function fetchProjectModelViews(teamId: string, projectId: string): Promise<ModelView[] | null> {
+    return fetchWithModal<ModelView[]>(`${teamId}/${projectId}/get_models`);
+}
+
+async function fetchModelView(teamId: string, projectId: string, modelId: string): Promise<ModelView | null> {
+    return fetchWithModal<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` });
+}
+
 
 function Project() {
     const navigate = useNavigate();
     const { teamId, projectId } = useParams();
-    const [modelNames, setModelNames] = useState<string[] | undefined>(undefined);
+    const [modelViewList, setModelViewList] = useState<ModelView[]>([]);
     const [showUploadModel, setShowUploadModel] = useState(false);
     const [showModel, setShowModel] = useState(false);
-
     const world = useRef(new SceneSetup());
     const hoveringVertex = useRef<THREE.Vector3 | null>(null); // For THREE.js Rendering
     const dimensionLinesRef = useRef(new THREE.Group()); // For THREE.js Rendering
-
     world.current.scene.add(dimensionLinesRef.current);
 
-    // Load in the ModelViews for the Project
     useEffect(() => {
-        fetchWithModal<string[]>(`${teamId}/${projectId}/get_model_names`)
-            .then(projectModelNames => {
-                if (!projectModelNames) { return null }
+        const loadModelViews = async () => {
+            if (teamId === undefined || projectId === undefined) { return; }
 
-                setModelNames(projectModelNames);
+            const projectModelViews = await fetchProjectModelViews(teamId, projectId);
 
-                // If the Project has any ModelViews...
-                if (projectModelNames.length > 0) {
+            if (!projectModelViews) { return; }
 
-                    const modelId = projectModelNames[0];
-                    fetchWithModal<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` })
-                        .then(modelView => {
-                            if (!modelView) { return null }
+            setModelViewList(projectModelViews);
 
-                            // If the ModelView is missing a source-URL, ask the user to upload a model
-                            if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
-                                setShowUploadModel(true);
-                                return;
-                            } else {
-                                /// If the ModelView has a source-URL, show the model...
-                                setShowModel(true);
-                                navigate(`/${teamId}/${projectId}/${modelId}`);
-                            }
-                        });
-                } else {
-                    // If the project has no ModelViews, ask the user to upload a model...
+            if (projectModelViews.length > 0) {
+                const modelId = projectModelViews[0].display_name; // Default to the first model
+                const modelView = await fetchModelView(teamId, projectId, modelId);
+
+                if (!modelView) { return; }
+
+                if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
                     setShowUploadModel(true);
-                    return;
+                } else {
+                    setShowModel(true);
+                    navigate(`/${teamId}/${projectId}/${modelId}`);
                 }
-            });
+            } else {
+                setShowUploadModel(true);
+            }
+        };
+
+        loadModelViews();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teamId, projectId]);
+
 
     return (
         <>
-            <NavigationBar modelsList={modelNames} />
+            <NavigationBar modelsViewList={modelViewList} />
             <AppStateContextProvider>
                 <SelectedObjectContextProvider>
                     <Viewer
@@ -83,7 +92,7 @@ function Project() {
                         hoveringVertex={hoveringVertex}
                         dimensionLinesRef={dimensionLinesRef}
                     />
-                    {showUploadModel ? <UploadModelDialog setModelNames={setModelNames} setShowModel={setShowModel} /> : null}
+                    {showUploadModel ? <UploadModelDialog setModelViewList={setModelViewList} setShowModel={setShowModel} /> : null}
                     <Routes>
                         <Route path="/" element={<Model world={world} showModel={showModel} />} />
                         <Route path=":modelId/" element={<Model world={world} showModel={showModel} />} />
