@@ -75,25 +75,41 @@ export function handleClearSelectedMesh(
     selectedObjectContext.setSelectedObjectState(null)
 }
 
+let hoverTimeout: NodeJS.Timeout | null = null;
 
+/**
+ * Handles the mouse over event for surface selection mode.
+ * 
+ * @param e - The pointer event.
+ * @param world - The scene setup.
+ * @param hoverObjectContext - The hover object context.
+ */
 export function surfaceSelectModeOnMouseOver(
     e: PointerEvent,
     world: SceneSetup,
     hoverObjectContext: HoverObjectContextType,
 ) {
     e.preventDefault();
-    const newMesh = getMeshFromMouseOver(e, world.camera, world.buildingGeometryMeshes.children)
-    if (newMesh) {
-        world.renderer.domElement.style.cursor = 'pointer';
-        if (newMesh.userData['selected'] !== true) {
-            resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
-            newMesh.userData["hoverMaterialStore"] = newMesh.material; // Store for changing back later
-            newMesh.material = appMaterials.geometryHoverOver;
-            hoverObjectContext.hoverObjectRef.current = newMesh
-            hoverObjectContext.setHoverObjectState(newMesh)
-        }
-    } else {
-        world.renderer.domElement.style.cursor = 'auto';
-        resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
+    if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = null;
     }
+
+    hoverTimeout = setTimeout(() => {
+
+        const newMesh = getMeshFromMouseOver(e, world.camera, world.buildingGeometryMeshes.children)
+        if (newMesh) {
+            world.renderer.domElement.style.cursor = 'pointer';
+            if (newMesh.userData['selected'] !== true) {
+                resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
+                newMesh.userData["hoverMaterialStore"] = newMesh.material; // Store for changing back later
+                newMesh.material = appMaterials.geometryHoverOver;
+                hoverObjectContext.hoverObjectRef.current = newMesh
+                hoverObjectContext.setHoverObjectState(newMesh)
+            }
+        } else {
+            world.renderer.domElement.style.cursor = 'auto';
+            resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
+        }
+    }, 20);
 }

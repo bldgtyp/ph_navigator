@@ -80,6 +80,10 @@ export function spacesModeOnMouseClick(
     }
 }
 
+
+
+let hoverTimeout: NodeJS.Timeout | null = null;
+
 /**
  * Handles the mouse over event for spaces mode.
  * 
@@ -93,23 +97,30 @@ export function spacesModeOnMouseOver(
     hoverObjectContext: HoverObjectContextType,
 ) {
     e.preventDefault();
-    const newMesh = getMeshFromMouseOver(e, world.camera, world.spaceGeometryMeshes.children)
-    if (newMesh) {
-        world.renderer.domElement.style.cursor = 'pointer';
-        const spaceGroup = newMesh.parent
-        if (spaceGroup && spaceGroup instanceof THREE.Group) {
-            if (spaceGroup.userData['selected'] !== true) {
-                resetSpaceGroupHoverMaterial(hoverObjectContext.hoverObjectRef.current)
-                spaceGroup.children.forEach((spaceMesh: any) => {
-                    spaceMesh.userData["hoverMaterialStore"] = spaceMesh.material; // Store for changing back later
-                    spaceMesh.material = appMaterials.geometryHoverOver;
-                });
-            }
-        }
-        hoverObjectContext.hoverObjectRef.current = spaceGroup
-        hoverObjectContext.setHoverObjectState(spaceGroup)
-    } else {
-        world.renderer.domElement.style.cursor = 'auto';
-        resetSpaceGroupHoverMaterial(hoverObjectContext.hoverObjectRef.current)
+    if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = null;
     }
+
+    hoverTimeout = setTimeout(() => {
+        const newMesh = getMeshFromMouseOver(e, world.camera, world.spaceGeometryMeshes.children)
+        if (newMesh) {
+            world.renderer.domElement.style.cursor = 'pointer';
+            const spaceGroup = newMesh.parent
+            if (spaceGroup && spaceGroup instanceof THREE.Group) {
+                if (spaceGroup.userData['selected'] !== true) {
+                    resetSpaceGroupHoverMaterial(hoverObjectContext.hoverObjectRef.current)
+                    spaceGroup.children.forEach((spaceMesh: any) => {
+                        spaceMesh.userData["hoverMaterialStore"] = spaceMesh.material; // Store for changing back later
+                        spaceMesh.material = appMaterials.geometryHoverOver;
+                    });
+                }
+            }
+            hoverObjectContext.hoverObjectRef.current = spaceGroup
+            hoverObjectContext.setHoverObjectState(spaceGroup)
+        } else {
+            world.renderer.domElement.style.cursor = 'auto';
+            resetSpaceGroupHoverMaterial(hoverObjectContext.hoverObjectRef.current)
+        }
+    }, 20);
 }

@@ -47,6 +47,7 @@ export function getMeshFromMouseOver(
     event: any,
     camera: THREE.Camera,
     objects: THREE.Object3D[]) {
+
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
     const pointer = new THREE.Vector2();
