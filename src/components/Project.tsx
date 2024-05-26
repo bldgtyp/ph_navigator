@@ -11,6 +11,7 @@ import { Model } from './Model';
 import { SceneSetup } from '../scene/SceneSetup';
 import { AppStateContextProvider } from '../contexts/app_state_context';
 import { SelectedObjectContextProvider } from '../contexts/selected_object_context';
+import { HoverObjectContextProvider } from '../contexts/hover_object_context';
 import NavigationBar from './NavigationBar';
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { ModelView } from "../types/fake_database/ModelView";
@@ -87,16 +88,18 @@ function Project() {
             <NavigationBar modelsViewList={modelViewList} />
             <AppStateContextProvider>
                 <SelectedObjectContextProvider>
-                    <Viewer
-                        world={world}
-                        hoveringVertex={hoveringVertex}
-                        dimensionLinesRef={dimensionLinesRef}
-                    />
-                    {showUploadModel ? <UploadModelDialog setModelViewList={setModelViewList} setShowModel={setShowModel} /> : null}
-                    <Routes>
-                        <Route path="/" element={<Model world={world} showModel={showModel} />} />
-                        <Route path=":modelId/" element={<Model world={world} showModel={showModel} />} />
-                    </Routes>
+                    <HoverObjectContextProvider>
+                        <Viewer
+                            world={world}
+                            hoveringVertex={hoveringVertex}
+                            dimensionLinesRef={dimensionLinesRef}
+                        />
+                        {showUploadModel ? <UploadModelDialog setModelViewList={setModelViewList} setShowModel={setShowModel} /> : null}
+                        <Routes>
+                            <Route path="/" element={<Model world={world} showModel={showModel} />} />
+                            <Route path=":modelId/" element={<Model world={world} showModel={showModel} />} />
+                        </Routes>
+                    </HoverObjectContextProvider>
                 </SelectedObjectContextProvider>
                 <AppStateMenubar />
             </AppStateContextProvider>

@@ -12,6 +12,7 @@ export const appColors = {
     GROUND: new THREE.Color(0x00ff00),
     SURFACE_WHITE: new THREE.Color(0xffffff),
     SURFACE_HIGHLIGHT: new THREE.Color(0xe600e6),
+    SURFACE_HOVER: new THREE.Color(0xdbbddb),
 
     // Lines
     OUTLINE: new THREE.Color(0x262626),

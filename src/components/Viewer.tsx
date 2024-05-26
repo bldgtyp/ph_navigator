@@ -4,11 +4,12 @@ import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { SceneSetup } from '../scene/SceneSetup';
 import { onResize } from '../handlers/onResize';
-import { surfaceSelectModeOnMouseClick } from '../handlers/modeSurfaceQuery';
+import { surfaceSelectModeOnMouseClick, surfaceSelectModeOnMouseMove } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
 import { useAppStateContext } from '../contexts/app_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
+import { useHoverObjectContext } from '../contexts/hover_object_context';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
 import { spacesModeOnMouseClick } from '../handlers/modeSpacesQuery';
 import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
@@ -24,6 +25,7 @@ interface ViewerProps {
 function Viewer(props: ViewerProps) {
     const appStateContext = useAppStateContext();
     const selectedObjectContext = useSelectedObjectContext();
+    const hoverObjectContext = useHoverObjectContext();
 
     const { world, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
@@ -34,6 +36,12 @@ function Viewer(props: ViewerProps) {
     addEventHandler(1, "click",
         useCallback(
             (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectContext) }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            , [])
+    );
+    addEventHandler(1, "pointermove",
+        useCallback(
+            (e: any) => { surfaceSelectModeOnMouseMove(e, world.current, hoverObjectContext, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
@@ -198,7 +206,6 @@ function Viewer(props: ViewerProps) {
         const animate = function () {
             requestAnimationFrame(animate);
             world.current.controls.update();
-            // world.current.composer.render();
             world.current.renderer.render(world.current.scene, world.current.camera);
             world.current.labelRenderer.render(world.current.scene, world.current.camera)
         };

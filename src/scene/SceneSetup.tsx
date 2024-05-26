@@ -4,15 +4,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { appColors } from '../styles/AppColors';
 import { appMaterials } from './Materials';
 import { defaultLightConfiguration } from './Lighting';
-// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-// import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
-// import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
-
 export class SceneSetup {
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;
-    // composer: EffectComposer;
     labelRenderer: CSS2DRenderer;
     camera: THREE.PerspectiveCamera;
     controls: OrbitControls;
@@ -57,18 +51,9 @@ export class SceneSetup {
         this.camera.lookAt(0, 0, 0);
         this.camera.up.set(0, 0, 1);
 
-        // -- Composer for Post Processing
-        // this.composer = new EffectComposer(this.renderer);
-        // let renderPass = new RenderPass(this.scene, this.camera);
-        // this.composer.addPass(renderPass);
-        // let saoPass = new SAOPass(this.scene, this.camera);
-        // this.composer.addPass(saoPass);
-        // const outputPass = new OutputPass();
-        // this.composer.addPass(outputPass);
-
         // -- Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.rotateSpeed = 1.5;
+        this.controls.rotateSpeed = 0.9;
         this.controls.zoomSpeed = 3.0;
 
         // -- Grid Helpers
