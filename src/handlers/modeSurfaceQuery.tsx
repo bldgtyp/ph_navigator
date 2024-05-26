@@ -111,5 +111,5 @@ export function surfaceSelectModeOnMouseOver(
             world.renderer.domElement.style.cursor = 'auto';
             resetHoverMeshMaterial(hoverObjectContext.hoverObjectRef.current)
         }
-    }, 20);
+    }, 10);
 }

@@ -43,6 +43,14 @@ export function getSelectedMeshFromMouseClick(
 }
 
 
+/**
+ * Retrieves the mesh object from the mouseover event.
+ * 
+ * @param event - The mouseover event.
+ * @param camera - The THREE.Camera object.
+ * @param objects - An array of THREE.Object3D objects.
+ * @returns The THREE.Mesh object that was intersected by the picking ray, or null if no mesh was found.
+ */
 export function getMeshFromMouseOver(
     event: any,
     camera: THREE.Camera,

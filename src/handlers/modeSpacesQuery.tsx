@@ -122,5 +122,5 @@ export function spacesModeOnMouseOver(
             world.renderer.domElement.style.cursor = 'auto';
             resetSpaceGroupHoverMaterial(hoverObjectContext.hoverObjectRef.current)
         }
-    }, 20);
+    }, 10);
 }
