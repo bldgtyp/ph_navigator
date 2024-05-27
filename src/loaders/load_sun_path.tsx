@@ -6,7 +6,7 @@ import { convertLBTArc2DtoLine } from '../to_three_geometry/ladybug_geometry/geo
 import { convertLBTLineSegment2DtoLine } from '../to_three_geometry/ladybug_geometry/geometry2d/line';
 import { appMaterials } from '../scene/Materials';
 
-export function loadModelSunPath(world: React.MutableRefObject<SceneSetup>, data: lbtSunPathDTO) {
+export function loadSunPath(world: React.MutableRefObject<SceneSetup>, data: lbtSunPathDTO) {
     data.sunpath.hourly_analemma_polyline3d.forEach((lbtPolyline3D) => {
         const line = convertLBTPolyline3DtoLine(lbtPolyline3D)
         line.computeLineDistances(); // Dashes don't work without this

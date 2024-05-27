@@ -1,16 +1,28 @@
 import { lbtFace3D } from "../ladybug_geometry/geometry3d/face";
-import { lbtMesh3D } from "../ladybug_geometry/geometry3d/mesh";
 
-type hbPhSpaceVolume = {
+export type hbPhSpaceFloorSegment = {
+    identifier: string;
+    display_name: string;
+    geometry: lbtFace3D | null;
+    weighting_factor: number;
+}
+
+export type hbPhSpaceFloor = {
+    identifier: string;
+    display_name: string;
+    geometry: lbtFace3D[];
+    floor_segments: hbPhSpaceFloorSegment[];
+};
+
+export type hbPhSpaceVolume = {
     identifier: string;
     display_name: string;
     avg_ceiling_height: number;
-    floor: any;
+    floor: hbPhSpaceFloor;
     geometry: lbtFace3D[];
-    mesh?: lbtMesh3D[];
 };
 
-export type hbPHSpace = {
+export type hbPhSpace = {
     identifier: string;
     name: string;
     number: number;

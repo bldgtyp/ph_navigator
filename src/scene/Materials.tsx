@@ -28,12 +28,12 @@ export const appMaterials = {
             side: THREE.DoubleSide,
             flatShading: true,
         }),
-    geometrySelected: new THREE.MeshBasicMaterial(
+    geometrySelected: new THREE.MeshStandardMaterial(
         {
             color: appColors.SURFACE_HIGHLIGHT,
             side: THREE.DoubleSide,
         }),
-    geometryHoverOver: new THREE.MeshBasicMaterial(
+    geometryHoverOver: new THREE.MeshStandardMaterial(
         {
             color: appColors.SURFACE_HOVER,
             side: THREE.DoubleSide,

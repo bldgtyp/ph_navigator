@@ -6,7 +6,7 @@ import { appMaterials } from '../scene/Materials';
 import { hbPhHvacPipeTrunk } from '../types/honeybee_phhvac/hot_water_piping';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 
-export function loadModelHotWaterPiping(world: React.MutableRefObject<SceneSetup>, data: hbPhHvacHotWaterSystem[]) {
+export function loadHotWaterPiping(world: React.MutableRefObject<SceneSetup>, data: hbPhHvacHotWaterSystem[]) {
     data.forEach((hw_system) => {
         // -- Distribution piping -------------------------------------------------------
         for (const key in hw_system.distribution_piping) {

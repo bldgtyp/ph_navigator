@@ -4,7 +4,7 @@ import { appMaterials } from '../scene/Materials';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { hbPhHvacVentilationSystem } from '../types/honeybee_phhvac/ventilation';
 
-export function loadModelERVDucting(
+export function loadERVDucting(
     world: React.MutableRefObject<SceneSetup>,
     data: hbPhHvacVentilationSystem[]
 ) {

@@ -19,7 +19,8 @@ const icons = [
     <SpaceIcon key={3} />,
     <SunPathIcon key={4} />,
     <DuctIcon key={5} />,
-    <PipeIcon key={6} />
+    <PipeIcon key={6} />,
+    <PipeIcon key={7} />,
 ];
 
 const AppStateMenubar = () => {

@@ -1,6 +1,6 @@
 import { fetchModelServer } from "../hooks/fetchModelServer";
 import { hbFace } from "../types/honeybee/face";
-import { hbPHSpace } from "../types/honeybee_ph/space";
+import { hbPhSpace } from "../types/honeybee_ph/space";
 import { lbtSunPathDTO } from "../types/ladybug/sunpath";
 import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_system";
 import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
@@ -46,7 +46,7 @@ export async function fetchModelDataFromServer(
         const facesData = await fetchWithModal<hbFace[]>(routeFaces);
 
         const routeSpaces = `${teamId}/${projectId}/${modelId}/spaces`;
-        const spacesData = await fetchWithModal<hbPHSpace[]>(routeSpaces);
+        const spacesData = await fetchWithModal<hbPhSpace[]>(routeSpaces);
 
         const routeSunPath = `${teamId}/${projectId}/${modelId}/sun_path`;
         const sunPathData = await fetchWithModal<lbtSunPathDTO[]>(routeSunPath);

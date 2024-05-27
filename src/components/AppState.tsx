@@ -11,7 +11,8 @@ export enum appStateTypeEnum {
     Spaces = 4,
     SunPath = 5,
     Ventilation = 6,
-    HotWaterPiping = 7
+    HotWaterPiping = 7,
+    SpaceFloors = 8,
 }
 
 type EventHandlerFunction = (event: any) => void;
@@ -53,6 +54,7 @@ export const states: { [key: number]: AppState } = {
     5: new AppState(appStateTypeEnum.SunPath),
     6: new AppState(appStateTypeEnum.Ventilation),
     7: new AppState(appStateTypeEnum.HotWaterPiping),
+    8: new AppState(appStateTypeEnum.SpaceFloors),
 };
 
 export function addEventHandler(appState: number, eventName: string, callbackFunction: EventHandlerFunction) {

@@ -116,6 +116,11 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.pipeGeometry.visible = true
     });
+    addMountHandler(8, "showSpaceFloorsPiping", () => {
+        world.current.spaceFloorGeometryMeshes.visible = true;
+        world.current.spaceFloorGeometryOutlines.visible = true
+        world.current.spaceFloorGeometryVertices.visible = true
+    });
 
 
     // Dismount Handlers for AppStates
@@ -163,6 +168,11 @@ function Viewer(props: ViewerProps) {
         handleClearSelectedLine(selectedObjectContext)
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
+    });
+    addDismountHandler(8, "hideHotWaterPiping", () => {
+        world.current.spaceFloorGeometryMeshes.visible = false;
+        world.current.spaceFloorGeometryOutlines.visible = false
+        world.current.spaceFloorGeometryVertices.visible = false
     });
 
 

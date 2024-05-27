@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { convertLBTFace3DToMesh } from '../to_three_geometry/ladybug_geometry/geometry3d/face';
 import { appMaterials } from '../scene/Materials';
-import { hbPHSpace } from "../types/honeybee_ph/space";
+import { hbPhSpace } from "../types/honeybee_ph/space";
 import { SceneSetup } from '../scene/SceneSetup';
 
-function groupFromSpace(space: hbPHSpace) {
+function groupFromSpace(space: hbPhSpace) {
     const newGroup = new THREE.Group
     newGroup.name = space.name;
     newGroup.userData["identifier"] = space.identifier;
@@ -19,7 +19,7 @@ function groupFromSpace(space: hbPHSpace) {
     return newGroup
 }
 
-export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHSpaces: hbPHSpace[]) {
+export function loadSpaces(world: React.MutableRefObject<SceneSetup>, hbPHSpaces: hbPhSpace[]) {
     world.current.spaceGeometryMeshes.visible = false;
     world.current.spaceGeometryMeshes.castShadow = false;
     world.current.spaceGeometryOutlines.visible = false;
@@ -45,7 +45,6 @@ export function loadModelSpaces(world: React.MutableRefObject<SceneSetup>, hbPHS
                 spaceMeshesGroup.add(geom.mesh);
                 spaceOutlinesGroup.add(geom.wireframe);
                 spaceVerticesGroup.add(geom.vertices);
-
             });
         });
 

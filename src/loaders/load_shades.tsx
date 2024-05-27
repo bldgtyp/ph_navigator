@@ -3,7 +3,7 @@ import { convertLBTFace3DToMesh } from '../to_three_geometry/ladybug_geometry/ge
 import { appMaterials } from '../scene/Materials';
 import { hbShadeGroup } from '../types/honeybee/shade';
 
-export function loadModelShades(
+export function loadShades(
     world: React.MutableRefObject<SceneSetup>,
     data: hbShadeGroup[]
 ) {

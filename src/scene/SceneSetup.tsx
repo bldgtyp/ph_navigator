@@ -23,6 +23,9 @@ export class SceneSetup {
     spaceGeometryMeshes: THREE.Group;
     spaceGeometryOutlines: THREE.Group;
     spaceGeometryVertices: THREE.Group;
+    spaceFloorGeometryMeshes: THREE.Group;
+    spaceFloorGeometryOutlines: THREE.Group;
+    spaceFloorGeometryVertices: THREE.Group;
     sunPathDiagram: THREE.Group;
     pipeGeometry: THREE.Group;
     ventilationGeometry: THREE.Group;
@@ -147,6 +150,7 @@ export class SceneSetup {
         this.sunPathDiagram.name = "Sun Path Diagram";
         this.scene.add(this.sunPathDiagram);
 
+        // ----
         this.spaceGeometryMeshes = new THREE.Group();
         this.spaceGeometryMeshes.name = "Space Geometry | Meshes";
         this.scene.add(this.spaceGeometryMeshes);
@@ -159,6 +163,20 @@ export class SceneSetup {
         this.spaceGeometryVertices.name = "Space Geometry | Vertices";
         this.scene.add(this.spaceGeometryVertices);
 
+        // ----
+        this.spaceFloorGeometryMeshes = new THREE.Group();
+        this.spaceFloorGeometryMeshes.name = "SpaceFloor Geometry | Meshes";
+        this.scene.add(this.spaceFloorGeometryMeshes);
+
+        this.spaceFloorGeometryOutlines = new THREE.Group();
+        this.spaceFloorGeometryOutlines.name = "SpaceFloor Geometry | Outlines";
+        this.scene.add(this.spaceFloorGeometryOutlines);
+
+        this.spaceFloorGeometryVertices = new THREE.Group();
+        this.spaceFloorGeometryVertices.name = "SpaceFloor Geometry | Vertices";
+        this.scene.add(this.spaceFloorGeometryVertices);
+
+        // --- 
         this.pipeGeometry = new THREE.Group();
         this.pipeGeometry.name = "Pipe Geometry";
         this.scene.add(this.pipeGeometry);

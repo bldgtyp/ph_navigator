@@ -10,12 +10,13 @@ import { Dialog } from '@mui/material';
 import MoonLoader from "react-spinners/MoonLoader";
 
 import { fetchModelDataFromServer } from "../api/model";
-import { loadModelFaces } from '../loaders/load_model_faces';
-import { loadModelSpaces } from '../loaders/load_model_spaces';
-import { loadModelSunPath } from '../loaders/load_sun_path';
-import { loadModelHotWaterPiping } from '../loaders/load_hot_water_piping';
-import { loadModelERVDucting } from '../loaders/load_erv_ducting';
-import { loadModelShades } from '../loaders/load_model_shades';
+import { loadModelFaces } from '../loaders/load_faces';
+import { loadSpaces } from '../loaders/load_spaces';
+import { loadSpaceFloors } from '../loaders/load_space_floors';
+import { loadSunPath } from '../loaders/load_sun_path';
+import { loadHotWaterPiping } from '../loaders/load_hot_water_piping';
+import { loadERVDucting } from '../loaders/load_erv_ducting';
+import { loadShades } from '../loaders/load_shades';
 
 
 type ModelProps = {
@@ -54,11 +55,12 @@ function Model(props: ModelProps) {
                 const modelData = await fetchModelDataFromServer(teamId, projectId, modelId);
                 if (modelData === null) { return }
                 handleLoadError(loadModelFaces, world, modelData.facesData);
-                handleLoadError(loadModelSpaces, world, modelData.spacesData);
-                handleLoadError(loadModelSunPath, world, modelData.sunPathData);
-                handleLoadError(loadModelHotWaterPiping, world, modelData.hotWaterSystemData);
-                handleLoadError(loadModelERVDucting, world, modelData.ventilationSystemData);
-                handleLoadError(loadModelShades, world, modelData.shadingElementsData);
+                handleLoadError(loadSpaces, world, modelData.spacesData);
+                handleLoadError(loadSpaceFloors, world, modelData.spacesData);
+                handleLoadError(loadSunPath, world, modelData.sunPathData);
+                handleLoadError(loadHotWaterPiping, world, modelData.hotWaterSystemData);
+                handleLoadError(loadERVDucting, world, modelData.ventilationSystemData);
+                handleLoadError(loadShades, world, modelData.shadingElementsData);
             } catch (error) {
                 alert(`Error loading model data: ${error}`);
             } finally {
