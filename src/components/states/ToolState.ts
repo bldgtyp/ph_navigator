@@ -1,12 +1,12 @@
 // The App can be in many 'states'. Each State will mount an arbitrary number of 
-// event handlers when activated. The AppToolState class
+// event handlers, and visibility settings when activated. The AppState class
 // will also unmount these event-handlers and visibility settings when the State is
 // deactivated.
 
 export enum appToolStateTypeEnum {
     None = 0,
-    SurfaceQuery = 1,
-    Measurement = 2,
+    Select = 1,
+    Measure = 2,
     Comments = 3,
 }
 
@@ -14,7 +14,7 @@ type EventHandlerFunction = (event: any) => void;
 type MountHandlerFunction = () => void;
 type DismountHandlerFunction = () => void;
 
-export class AppToolState {
+export class ToolState {
     toolState: appToolStateTypeEnum;
     eventHandlers: { [event: string]: EventHandlerFunction } = {};
     mountHandlers: { [event: string]: MountHandlerFunction } = {};
@@ -25,35 +25,35 @@ export class AppToolState {
     }
 
     addEventHandler(event: string, handler: EventHandlerFunction) {
-        // All these will get added when the ToolState is switched 'on'
-        // They will all get removed when the ToolState is switched 'off'
+        // All these will get added when the State is switched 'on'
+        // They will all get removed when the State is switched 'off'
         this.eventHandlers[event] = handler;
     }
     addMountHandler(event: string, handler: MountHandlerFunction) {
-        // All these will run when the ToolState is switched 'on'
+        // All these will run when the State is switched 'on'
         this.mountHandlers[event] = handler;
     }
     addDismountHandler(event: string, handler: DismountHandlerFunction) {
-        // All these will run when the ToolState is switched 'off'
+        // All these will run when the State is switched 'off'
         this.dismountHandlers[event] = handler;
     }
 }
 
-export const toolStates: { [key: number]: AppToolState } = {
-    0: new AppToolState(appToolStateTypeEnum.None),
-    1: new AppToolState(appToolStateTypeEnum.SurfaceQuery),
-    2: new AppToolState(appToolStateTypeEnum.Measurement),
-    3: new AppToolState(appToolStateTypeEnum.Comments),
+export const toolStates: { [key: number]: ToolState } = {
+    0: new ToolState(appToolStateTypeEnum.None),
+    1: new ToolState(appToolStateTypeEnum.Select),
+    2: new ToolState(appToolStateTypeEnum.Measure),
+    3: new ToolState(appToolStateTypeEnum.Comments),
 };
 
-export function addEventHandler(appToolState: number, eventName: string, callbackFunction: EventHandlerFunction) {
+export function addToolStateEventHandler(appToolState: number, eventName: string, callbackFunction: EventHandlerFunction) {
     toolStates[appToolState].addEventHandler(eventName, callbackFunction);
 }
 
-export function addMountHandler(appToolState: number, eventName: string, callbackFunction: MountHandlerFunction) {
+export function addToolStateMountHandler(appToolState: number, eventName: string, callbackFunction: MountHandlerFunction) {
     toolStates[appToolState].addMountHandler(eventName, callbackFunction);
 }
 
-export function addDismountHandler(appToolState: number, eventName: string, callbackFunction: DismountHandlerFunction) {
+export function addToolStateDismountHandler(appToolState: number, eventName: string, callbackFunction: DismountHandlerFunction) {
     toolStates[appToolState].addDismountHandler(eventName, callbackFunction);
 }

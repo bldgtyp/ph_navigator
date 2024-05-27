@@ -10,22 +10,19 @@ import { ReactComponent as DuctIcon } from '../icons/Ducts.svg';
 import { ReactComponent as PipeIcon } from '../icons/Piping.svg';
 import { ReactComponent as SpaceIcon } from '../icons/Space.svg';
 import { ReactComponent as SunPathIcon } from '../icons/SunPath.svg';
-import { useAppStateContext } from '../contexts/app_viz_state_context';
+import { useAppVizStateContext } from '../contexts/app_viz_state_context';
 
 const icons = [
-    <SurfaceIcon key={0} />,
-    <RulerIcon key={1} />,
-    <NoteIcon key={2} />,
-    <SpaceIcon key={3} />,
-    <SunPathIcon key={4} />,
-    <DuctIcon key={5} />,
-    <PipeIcon key={6} />,
-    <PipeIcon key={7} />,
+    <NoteIcon key={1} />,
+    <SpaceIcon key={2} />,
+    <SunPathIcon key={3} />,
+    <DuctIcon key={4} />,
+    <PipeIcon key={5} />,
 ];
 
 const AppStateMenubar = () => {
     const [activeButton, setActiveButton] = useState<number | null>(null);
-    const appStateContext = useAppStateContext();
+    const appStateContext = useAppVizStateContext();
 
     return (
         <Stack direction="row" spacing={2} className="toolbar">
@@ -37,7 +34,7 @@ const AppStateMenubar = () => {
                         // Set the App-State based on the button clicked
                         // Remember: The Toolbar Icon Index starts ay 0, but AppState starts at 1
                         const newAppStateNumber = index + 1
-                        if (newAppStateNumber === appStateContext.appState.state) {
+                        if (newAppStateNumber === appStateContext.appVizState.vizState) {
                             appStateContext.dispatch(0)
                             setActiveButton(null);
                         } else {

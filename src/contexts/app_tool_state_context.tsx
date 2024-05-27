@@ -1,14 +1,14 @@
-import { AppToolState, toolStates } from '../components/AppToolState';
+import { ToolState, toolStates } from '../components/states/ToolState';
 import { createContext, useContext, useReducer } from 'react';
 
 // -- useReducer instead of useState so that THREE.js works
-const setAppToolStateReducer = (_appToolState: AppToolState, _appToolStateNumber: number) => {
+const setAppToolStateReducer = (_appToolState: ToolState, _appToolStateNumber: number) => {
     return toolStates[_appToolStateNumber]
 }
 
 // --
 const defaultAppToolState = { appToolState: toolStates[0], dispatch: () => 0 }
-type AppToolStateContextType = { appToolState: AppToolState, dispatch: React.Dispatch<number> }
+type AppToolStateContextType = { appToolState: ToolState, dispatch: React.Dispatch<number> }
 export const AppToolStateContext = createContext<AppToolStateContextType>(defaultAppToolState)
 
 // --

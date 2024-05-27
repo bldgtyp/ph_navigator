@@ -3,13 +3,15 @@
 import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { SceneSetup } from '../scene/SceneSetup';
-import { useAppStateContext } from '../contexts/app_viz_state_context';
+import { useAppVizStateContext } from '../contexts/app_viz_state_context';
+import { useAppToolStateContext } from '../contexts/app_tool_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { useHoverObjectContext } from '../contexts/hover_object_context';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick, surfaceSelectModeOnMouseOver } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
-import { addEventHandler, addMountHandler, addDismountHandler } from './AppVizState';
+import { addVizStateMountHandler, addVizStateDismountHandler } from './states/VizState';
+import { addToolStateEventHandler, addToolStateDismountHandler } from './states/ToolState';
 import { spacesModeOnMouseClick, spacesModeOnMouseOver } from '../handlers/modeSpacesQuery';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
 import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
@@ -23,85 +25,95 @@ interface ViewerProps {
 }
 
 function Viewer(props: ViewerProps) {
-    const appStateContext = useAppStateContext();
+    const appVizStateContext = useAppVizStateContext();
+    const appToolStateContext = useAppToolStateContext();
     const selectedObjectContext = useSelectedObjectContext();
     const hoverObjectContext = useHoverObjectContext();
 
     const { world, hoveringVertex, dimensionLinesRef } = props;
     const mountRef = useRef<HTMLDivElement | null>(null);
 
-    // Setup all the Event Listener Callbacks for the different App-States
+    // Setup all the Event Listener Callbacks for the different Tool-States
     // For some reason, this does not work unless these are all wrapped in useCallback?
     // ------------------------------------------------------------------------
-    addEventHandler(1, "click",
+    addToolStateEventHandler(1, "click",
         useCallback(
             (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
-    addEventHandler(1, "pointermove",
+    addToolStateEventHandler(1, "pointermove",
         useCallback(
             (e: any) => { surfaceSelectModeOnMouseOver(e, world.current, hoverObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
-    addEventHandler(2, "click",
+    addToolStateEventHandler(2, "click",
         useCallback(
             () => { measureModeOnMouseClick(hoveringVertex, dimensionLinesRef) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
-    addEventHandler(2, "pointermove",
+    addToolStateEventHandler(2, "pointermove",
         useCallback(
             (e: any) => { measureModeOnMouseMove(e, world.current, hoveringVertex) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
-    addEventHandler(4, "click",
-        useCallback(
-            (e: any) => { spacesModeOnMouseClick(e, world.current, selectedObjectContext) }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            , [])
-    );
-    addEventHandler(4, "pointermove",
-        useCallback(
-            (e: any) => { spacesModeOnMouseOver(e, world.current, hoverObjectContext) }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            , [])
-    );
-    addEventHandler(7, "click",
-        useCallback(
-            (e: any) => { pipingModeOnMouseClick(e, world.current, selectedObjectContext) }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            , [])
-    );
+
+    // addVizStateEventHandler(2, "click",
+    //     useCallback(
+    //         (e: any) => { spacesModeOnMouseClick(e, world.current, selectedObjectContext) }
+    //         // eslint-disable-next-line react-hooks/exhaustive-deps
+    //         , [])
+    // );
+    // addVizStateEventHandler(2, "pointermove",
+    //     useCallback(
+    //         (e: any) => { spacesModeOnMouseOver(e, world.current, hoverObjectContext) }
+    //         // eslint-disable-next-line react-hooks/exhaustive-deps
+    //         , [])
+    // );
+    // addVizStateEventHandler(5, "click",
+    //     useCallback(
+    //         (e: any) => { pipingModeOnMouseClick(e, world.current, selectedObjectContext) }
+    //         // eslint-disable-next-line react-hooks/exhaustive-deps
+    //         , [])
+    // );
 
 
-    // Mount Handlers for AppStates
+    // Dismount Handlers for ToolStates
     // ------------------------------------------------------------------------
-    addMountHandler(0, "showDefault", () => {
+    addToolStateDismountHandler(1, "clearSelectedMesh", () => {
+        // handleClearSelectedLine(selectedObjectContext)
+        // handleClearSelectedSpace(selectedObjectContext)
+        handleClearSelectedMesh(selectedObjectContext)
+    });
+    addToolStateDismountHandler(2, "clearDims", () => {
+        hoveringVertex.current = null;
+        dimensionLinesRef.current.clear()
+    });
+
+
+
+    // Mount Handlers for Viz-States
+    // ------------------------------------------------------------------------
+    addVizStateMountHandler(0, "showDefault", () => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
     });
-    addMountHandler(1, "showFaces", () => {
-        world.current.buildingGeometryMeshes.visible = true;
-        world.current.buildingGeometryOutlines.visible = true;
-        world.current.buildingGeometryVertices.visible = true;
+    addVizStateMountHandler(1, "showSpaceFloors", () => {
+        world.current.spaceFloorGeometryMeshes.visible = true;
+        world.current.spaceFloorGeometryOutlines.visible = true
+        world.current.spaceFloorGeometryVertices.visible = true
     });
-    addMountHandler(2, "showDimensionLines", () => {
-        world.current.buildingGeometryMeshes.visible = true;
-        world.current.buildingGeometryOutlines.visible = true;
-        world.current.buildingGeometryVertices.visible = true;
-    });
-    addMountHandler(3, "showComments", () => { console.log("Show Comments") });
-    addMountHandler(4, "showSpaces", () => {
+    addVizStateMountHandler(2, "showSpaces", () => {
         world.current.spaceGeometryMeshes.visible = true;
         world.current.spaceGeometryOutlines.visible = true;
         world.current.spaceGeometryVertices.visible = false;
         world.current.buildingGeometryOutlines.visible = true
     });
-    addMountHandler(5, "showSunPath", () => {
+    addVizStateMountHandler(3, "showSunPath", () => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
@@ -109,52 +121,35 @@ function Viewer(props: ViewerProps) {
         world.current.shadingGeometryMeshes.visible = true;
         world.current.shadingGeometryWireframe.visible = true
     });
-    addMountHandler(6, "showERVDucting", () => {
+    addVizStateMountHandler(4, "showERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.ventilationGeometry.visible = true
     });
-    addMountHandler(7, "showHotWaterPiping", () => {
+    addVizStateMountHandler(5, "showHotWaterPiping", () => {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.pipeGeometry.visible = true
     });
-    addMountHandler(8, "showSpaceFloors", () => {
-        world.current.spaceFloorGeometryMeshes.visible = true;
-        world.current.spaceFloorGeometryOutlines.visible = true
-        world.current.spaceFloorGeometryVertices.visible = true
-    });
 
 
-    // Dismount Handlers for AppStates
+    // Dismount Handlers for Viz-States
     // ------------------------------------------------------------------------
-    addDismountHandler(0, "hideDefault", () => {
-        hoveringVertex.current = null;
-        dimensionLinesRef.current.clear()
+    addVizStateDismountHandler(0, "hideDefault", () => {
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
     });
-    addDismountHandler(1, "hideSurfaceQuery", () => {
-        handleClearSelectedMesh(selectedObjectContext)
-        world.current.buildingGeometryMeshes.visible = false;
-        world.current.buildingGeometryOutlines.visible = false;
-        world.current.buildingGeometryVertices.visible = false;
+    addVizStateDismountHandler(1, "hideSpaceFloors", () => {
+        world.current.spaceFloorGeometryMeshes.visible = false;
+        world.current.spaceFloorGeometryOutlines.visible = false
+        world.current.spaceFloorGeometryVertices.visible = false
     });
-    addDismountHandler(2, "hideDimensionLines", () => {
-        hoveringVertex.current = null;
-        dimensionLinesRef.current.clear()
-        world.current.buildingGeometryMeshes.visible = false;
-        world.current.buildingGeometryOutlines.visible = false;
-        world.current.buildingGeometryVertices.visible = false;
-    });
-    addDismountHandler(3, "hideComments", () => { console.log("Hide Comments") });
-    addDismountHandler(4, "hideSpaces", () => {
-        handleClearSelectedSpace(selectedObjectContext)
+    addVizStateDismountHandler(2, "hideSpaces", () => {
         world.current.spaceGeometryMeshes.visible = false;
         world.current.spaceGeometryOutlines.visible = false;
         world.current.spaceGeometryVertices.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
     });
-    addDismountHandler(5, "hideSunPath", () => {
+    addVizStateDismountHandler(3, "hideSunPath", () => {
         world.current.sunPathDiagram.visible = false;
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
@@ -162,51 +157,76 @@ function Viewer(props: ViewerProps) {
         world.current.shadingGeometryMeshes.visible = false;
         world.current.shadingGeometryWireframe.visible = false
     });
-    addDismountHandler(6, "hideERVDucting", () => {
+    addVizStateDismountHandler(4, "hideERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.ventilationGeometry.visible = false
     });
-    addDismountHandler(7, "hideHotWaterPiping", () => {
-        handleClearSelectedLine(selectedObjectContext)
+    addVizStateDismountHandler(5, "hideHotWaterPiping", () => {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
     });
-    addDismountHandler(8, "hideSpaceFloors", () => {
-        world.current.spaceFloorGeometryMeshes.visible = false;
-        world.current.spaceFloorGeometryOutlines.visible = false
-        world.current.spaceFloorGeometryVertices.visible = false
-    });
 
 
-    // Add the App-State event-listeners and run the state's mount/un-mount actions
+    // Add the Tool-State mount/un-mount and event-listeners
     // ------------------------------------------------------------------------
     useEffect(() => {
-        // Run the new State's mount handlers
-        for (const key in appStateContext.appState.mountHandlers) {
-            appStateContext.appState.mountHandlers[key]();
+        // Run the new Tool-State's mount handlers
+        for (const key in appToolStateContext.appToolState.mountHandlers) {
+            appToolStateContext.appToolState.mountHandlers[key]();
         }
 
-        // Add the new state's event listeners
-        for (const key in appStateContext.appState.eventHandlers) {
-            const handler: any = appStateContext.appState.eventHandlers[key];
+        // Add the new Tool-State's event listeners
+        for (const key in appToolStateContext.appToolState.eventHandlers) {
+            const handler: any = appToolStateContext.appToolState.eventHandlers[key];
             window.addEventListener(key, handler);
         }
 
-        // Cleanup function to remove the previous States' view and event listeners
-        const prevState = appStateContext.appState;
+        // Cleanup function to remove the previous Tool-States' event listeners
+        const prevToolState = appToolStateContext.appToolState;
         return () => {
             // Run the previous State's dismount handlers
-            for (const key in prevState.dismountHandlers) {
-                prevState.dismountHandlers[key]();
+            for (const key in prevToolState.dismountHandlers) {
+                prevToolState.dismountHandlers[key]();
             }
 
             // Remove the previous state's event listeners
-            for (const key in prevState.eventHandlers) {
-                const handler: any = prevState.eventHandlers[key];
+            for (const key in prevToolState.eventHandlers) {
+                const handler: any = prevToolState.eventHandlers[key];
                 window.removeEventListener(key, handler);
             }
         };
-    }, [appStateContext.appState]);
+    }, [appToolStateContext.appToolState]);
+
+
+    // Add the Viz-State mount/un-mount and event-listeners
+    // ------------------------------------------------------------------------
+    useEffect(() => {
+        // Run the new Viz-State's mount handlers
+        for (const key in appVizStateContext.appVizState.mountHandlers) {
+            appVizStateContext.appVizState.mountHandlers[key]();
+        }
+
+        // Add the new Voz-State's event listeners
+        for (const key in appVizStateContext.appVizState.eventHandlers) {
+            const handler: any = appVizStateContext.appVizState.eventHandlers[key];
+            window.addEventListener(key, handler);
+        }
+
+        // Cleanup function to remove the previous Viz-States' view
+        const prevVizState = appVizStateContext.appVizState;
+        return () => {
+            // Run the previous State's dismount handlers
+            for (const key in prevVizState.dismountHandlers) {
+                prevVizState.dismountHandlers[key]();
+            }
+
+            // Remove the previous state's event listeners
+            for (const key in prevVizState.eventHandlers) {
+                const handler: any = prevVizState.eventHandlers[key];
+                window.removeEventListener(key, handler);
+            }
+        };
+    }, [appVizStateContext.appVizState]);
 
 
     // Setup the THREE Scene, Run the Animation

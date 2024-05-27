@@ -1,29 +1,29 @@
-import { AppState, states } from '../components/AppVizState';
+import { VizState, vizStates } from '../components/states/VizState';
 import { createContext, useContext, useReducer } from 'react';
 
 // -- useReducer instead of useState so that THREE.js works
-const setAppStateReducer = (_appState: AppState, _appStateNumber: number) => {
-    return states[_appStateNumber]
+const setAppVizStateReducer = (_appVizState: VizState, _appVizStateNumber: number) => {
+    return vizStates[_appVizStateNumber]
 }
 
 // --
-const defaultAppState = { appState: states[0], dispatch: () => 0 }
-type AppStateContextType = { appState: AppState, dispatch: React.Dispatch<number> }
-export const AppStateContext = createContext<AppStateContextType>(defaultAppState)
+const defaultAppVizState = { appVizState: vizStates[0], dispatch: () => 0 }
+type AppVizStateContextType = { appVizState: VizState, dispatch: React.Dispatch<number> }
+export const AppVizStateContext = createContext<AppVizStateContextType>(defaultAppVizState)
 
 // --
 export function AppStateContextProvider({ children }: any) {
-    const [_appState, _appStateDispatch] = useReducer(setAppStateReducer, states[0])
+    const [_appVizState, _appStateDispatch] = useReducer(setAppVizStateReducer, vizStates[0])
 
     return (
-        <AppStateContext.Provider value={{ appState: _appState, dispatch: _appStateDispatch }}>
+        <AppVizStateContext.Provider value={{ appVizState: _appVizState, dispatch: _appStateDispatch }}>
             {children}
-        </AppStateContext.Provider>
+        </AppVizStateContext.Provider>
     );
 }
 
 // -- Child components should consume the context through this hook
-export function useAppStateContext() {
-    const context = useContext(AppStateContext);
+export function useAppVizStateContext() {
+    const context = useContext(AppVizStateContext);
     return context;
 }
