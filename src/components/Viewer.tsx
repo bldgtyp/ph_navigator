@@ -99,16 +99,23 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     addVizStateMountHandler(0, "showDefault", () => {
         world.current.buildingGeometryMeshes.visible = true;
+        world.current.selectableObjects.add(world.current.buildingGeometryMeshes)
+        world.current.selectableObjects.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
     });
     addVizStateMountHandler(1, "showSpaceFloors", () => {
         world.current.spaceFloorGeometryMeshes.visible = true;
+        world.current.selectableObjects.add(world.current.spaceFloorGeometryMeshes)
+        world.current.selectableObjects.visible = true;
         world.current.spaceFloorGeometryOutlines.visible = true
         world.current.spaceFloorGeometryVertices.visible = true
+        world.current.buildingGeometryOutlines.visible = true
     });
     addVizStateMountHandler(2, "showSpaces", () => {
         world.current.spaceGeometryMeshes.visible = true;
+        world.current.selectableObjects.add(world.current.spaceGeometryMeshes)
+        world.current.selectableObjects.visible = true;
         world.current.spaceGeometryOutlines.visible = true;
         world.current.spaceGeometryVertices.visible = false;
         world.current.buildingGeometryOutlines.visible = true
@@ -134,34 +141,40 @@ function Viewer(props: ViewerProps) {
     // Dismount Handlers for Viz-States
     // ------------------------------------------------------------------------
     addVizStateDismountHandler(0, "hideDefault", () => {
+        world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
     });
     addVizStateDismountHandler(1, "hideSpaceFloors", () => {
+        world.current.clearSelectableObjectsGroup()
         world.current.spaceFloorGeometryMeshes.visible = false;
         world.current.spaceFloorGeometryOutlines.visible = false
         world.current.spaceFloorGeometryVertices.visible = false
     });
     addVizStateDismountHandler(2, "hideSpaces", () => {
+        world.current.clearSelectableObjectsGroup()
         world.current.spaceGeometryMeshes.visible = false;
         world.current.spaceGeometryOutlines.visible = false;
         world.current.spaceGeometryVertices.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
     });
     addVizStateDismountHandler(3, "hideSunPath", () => {
-        world.current.sunPathDiagram.visible = false;
+        world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
+        world.current.sunPathDiagram.visible = false;
         world.current.shadingGeometryMeshes.visible = false;
         world.current.shadingGeometryWireframe.visible = false
     });
     addVizStateDismountHandler(4, "hideERVDucting", () => {
+        world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryOutlines.visible = false;
         world.current.ventilationGeometry.visible = false
     });
     addVizStateDismountHandler(5, "hideHotWaterPiping", () => {
+        world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
     });

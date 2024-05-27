@@ -49,7 +49,7 @@ export function surfaceSelectModeOnMouseClick(
     selectedObjectContext: SelectedObjectContextType,
 ) {
     event.preventDefault();
-    const newMesh = getSelectedMeshFromMouseClick(event, world.camera, world.buildingGeometryMeshes.children)
+    const newMesh = getSelectedMeshFromMouseClick(event, world.camera, world.selectableObjects.children)
     if (newMesh) {
         resetSelectedMeshMaterial(selectedObjectContext.selectedObjectRef.current)
         resetHoverMeshMaterial(newMesh)
@@ -97,7 +97,7 @@ export function surfaceSelectModeOnMouseOver(
 
     hoverTimeout = setTimeout(() => {
 
-        const newMesh = getMeshFromMouseOver(e, world.camera, world.buildingGeometryMeshes.children)
+        const newMesh = getMeshFromMouseOver(e, world.camera, world.selectableObjects.children)
         if (newMesh) {
             world.renderer.domElement.style.cursor = 'pointer';
             if (newMesh.userData['selected'] !== true) {

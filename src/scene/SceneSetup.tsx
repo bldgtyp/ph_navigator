@@ -16,6 +16,10 @@ export class SceneSetup {
     labelRenderer: CSS2DRenderer;
     camera: THREE.PerspectiveCamera;
     controls: OrbitControls;
+    composer: EffectComposer;
+    saoPass: SAOPass;
+
+    selectableObjects: THREE.Group;
     groundGeometry: THREE.Group;
     buildingGeometryMeshes: THREE.Group;
     buildingGeometryOutlines: THREE.Group;
@@ -29,17 +33,18 @@ export class SceneSetup {
     sunPathDiagram: THREE.Group;
     pipeGeometry: THREE.Group;
     ventilationGeometry: THREE.Group;
-
     shadingGeometryMeshes: THREE.Group;
     shadingGeometryWireframe: THREE.Group;
 
-    composer: EffectComposer;
-    saoPass: SAOPass;
+
 
     constructor() {
         // -- Scene
         this.scene = new THREE.Scene();
         this.scene.background = appColors.BACKGROUND;
+        this.selectableObjects = new THREE.Group();
+        this.selectableObjects.visible = true;
+        this.scene.add(this.selectableObjects);
 
         // -- Camera
         const FOV = 45
@@ -59,16 +64,16 @@ export class SceneSetup {
         this.composer.addPass(renderPass);
 
         this.saoPass = new SAOPass(this.scene, this.camera);
-        this.saoPass.params.output = SAOPass.OUTPUT.Default
-        this.saoPass.params.saoBias = 1.0;
-        this.saoPass.params.saoIntensity = 0.004;
-        this.saoPass.params.saoScale = 8.0;
-        this.saoPass.params.saoKernelRadius = 25;
-        this.saoPass.params.saoMinResolution = 0.0;
-        this.saoPass.params.saoBlur = true;
-        this.saoPass.params.saoBlurRadius = 100;
-        this.saoPass.params.saoBlurStdDev = 4;
-        this.saoPass.params.saoBlurDepthCutoff = 0.0;
+        // this.saoPass.params.output = SAOPass.OUTPUT.Default
+        // this.saoPass.params.saoBias = 1.0;
+        // this.saoPass.params.saoIntensity = 0.004;
+        // this.saoPass.params.saoScale = 8.0;
+        // this.saoPass.params.saoKernelRadius = 25;
+        // this.saoPass.params.saoMinResolution = 0.0;
+        // this.saoPass.params.saoBlur = true;
+        // this.saoPass.params.saoBlurRadius = 100;
+        // this.saoPass.params.saoBlurStdDev = 4;
+        // this.saoPass.params.saoBlurDepthCutoff = 0.0;
 
         // This is not working well... too slow, and too shitty...
         // Lines get all un-antialiased and jagged
@@ -215,5 +220,16 @@ export class SceneSetup {
         this.pipeGeometry.clear();
         this.ventilationGeometry.clear();
         this.shadingGeometryMeshes.clear();
+    }
+
+    /**
+     * Clears the selectable objects group by adding each child back to the scene.
+     * Because any THREE object can only have one parent, moving it back to the scene
+     * will remove it from the selectable objects group.
+     */
+    clearSelectableObjectsGroup() {
+        this.selectableObjects.children.forEach((child) => {
+            this.scene.add(child);
+        });
     }
 }
