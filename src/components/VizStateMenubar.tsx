@@ -3,9 +3,7 @@
 import '../styles/VizStateMenuBar.css';
 import { useState } from 'react';
 import { Stack } from "@mui/material";
-import { ReactComponent as RulerIcon } from '../icons/Ruler.svg';
-import { ReactComponent as SurfaceIcon } from '../icons/Surface.svg';
-import { ReactComponent as NoteIcon } from '../icons/Note.svg';
+import { ReactComponent as FloorSegmentIcon } from '../icons/FloorSegments.svg';
 import { ReactComponent as DuctIcon } from '../icons/Ducts.svg';
 import { ReactComponent as PipeIcon } from '../icons/Piping.svg';
 import { ReactComponent as SpaceIcon } from '../icons/Space.svg';
@@ -13,7 +11,7 @@ import { ReactComponent as SunPathIcon } from '../icons/SunPath.svg';
 import { useAppVizStateContext } from '../contexts/app_viz_state_context';
 
 const icons = [
-    <NoteIcon key={1} />,
+    <FloorSegmentIcon key={1} />,
     <SpaceIcon key={2} />,
     <SunPathIcon key={3} />,
     <DuctIcon key={4} />,
