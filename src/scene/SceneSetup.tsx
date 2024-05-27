@@ -39,7 +39,7 @@ export class SceneSetup {
     constructor() {
         // -- Scene
         this.scene = new THREE.Scene();
-        this.scene.background = appColors.BACKGROUND_WHITE;
+        this.scene.background = appColors.BACKGROUND;
 
         // -- Camera
         const FOV = 45
