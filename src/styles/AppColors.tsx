@@ -3,6 +3,8 @@ import * as THREE from 'three';
 export const appColors = {
     // Scene
     LIGHT_GREY: new THREE.Color(0xededed),
+    MED_GREY: new THREE.Color(0xfcfcfcf),
+    DARK_GREY: new THREE.Color(0x878686),
     BLACK: new THREE.Color(0x000000),
     BACKGROUND_WHITE: new THREE.Color(0xffffff),
     GRID_LINE_LIGHT: new THREE.Color(0xc9c9c9),

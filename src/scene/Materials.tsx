@@ -24,7 +24,7 @@ export const appMaterials = {
         }),
     geometryShading: new THREE.MeshStandardMaterial(
         {
-            color: appColors.SURFACE_WHITE,
+            color: appColors.MED_GREY,
             side: THREE.DoubleSide,
             flatShading: true,
         }),
@@ -43,6 +43,11 @@ export const appMaterials = {
     wireframe: new THREE.LineBasicMaterial(
         {
             color: appColors.OUTLINE,
+            linewidth: 2,
+        }),
+    wireframeDarkGrey: new THREE.LineBasicMaterial(
+        {
+            color: appColors.DARK_GREY,
             linewidth: 2,
         }),
     dimensionLine: new THREE.LineBasicMaterial(

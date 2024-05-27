@@ -29,7 +29,9 @@ export class SceneSetup {
     sunPathDiagram: THREE.Group;
     pipeGeometry: THREE.Group;
     ventilationGeometry: THREE.Group;
-    shadingGeometry: THREE.Group;
+
+    shadingGeometryMeshes: THREE.Group;
+    shadingGeometryWireframe: THREE.Group;
 
     composer: EffectComposer;
     saoPass: SAOPass;
@@ -185,9 +187,14 @@ export class SceneSetup {
         this.ventilationGeometry.name = "Ventilation Geometry";
         this.scene.add(this.ventilationGeometry);
 
-        this.shadingGeometry = new THREE.Group();
-        this.shadingGeometry.name = "Shading Geometry";
-        this.scene.add(this.shadingGeometry);
+        // ---
+        this.shadingGeometryMeshes = new THREE.Group();
+        this.shadingGeometryMeshes.name = "Shading Geometry | Meshes";
+        this.scene.add(this.shadingGeometryMeshes);
+
+        this.shadingGeometryWireframe = new THREE.Group();
+        this.shadingGeometryWireframe.name = "Shading Geometry | Outlines";
+        this.scene.add(this.shadingGeometryWireframe);
 
         // -- Show Helpers
         // const lightHelper = new THREE.DirectionalLightHelper(light_2, 5);
@@ -207,6 +214,6 @@ export class SceneSetup {
         this.sunPathDiagram.clear();
         this.pipeGeometry.clear();
         this.ventilationGeometry.clear();
-        this.shadingGeometry.clear();
+        this.shadingGeometryMeshes.clear();
     }
 }

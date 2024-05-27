@@ -106,7 +106,8 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
         world.current.sunPathDiagram.visible = true;
-        world.current.shadingGeometry.visible = true;
+        world.current.shadingGeometryMeshes.visible = true;
+        world.current.shadingGeometryWireframe.visible = true
     });
     addMountHandler(6, "showERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = true;
@@ -116,7 +117,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.pipeGeometry.visible = true
     });
-    addMountHandler(8, "showSpaceFloorsPiping", () => {
+    addMountHandler(8, "showSpaceFloors", () => {
         world.current.spaceFloorGeometryMeshes.visible = true;
         world.current.spaceFloorGeometryOutlines.visible = true
         world.current.spaceFloorGeometryVertices.visible = true
@@ -158,7 +159,8 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
-        world.current.shadingGeometry.visible = false;
+        world.current.shadingGeometryMeshes.visible = false;
+        world.current.shadingGeometryWireframe.visible = false
     });
     addDismountHandler(6, "hideERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = false;
@@ -169,7 +171,7 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
     });
-    addDismountHandler(8, "hideHotWaterPiping", () => {
+    addDismountHandler(8, "hideSpaceFloors", () => {
         world.current.spaceFloorGeometryMeshes.visible = false;
         world.current.spaceFloorGeometryOutlines.visible = false
         world.current.spaceFloorGeometryVertices.visible = false
