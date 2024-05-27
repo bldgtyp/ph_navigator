@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Stack } from "@mui/material";
 import ResultsView from "./ResultsView";
 import { ResultType } from "../types/airtable/record_results";
-import { HeatingDemandSeries } from "./graphs/HeatingDemand";
-import { CoolingDemandSeries } from "./graphs/CoolingDemand";
+import { HeatingDemandSeries } from "./_graphs_/HeatingDemand";
+import { CoolingDemandSeries } from "./_graphs_/CoolingDemand";
 
 type ResultsItemProps = {
     buttonTitle: string;
