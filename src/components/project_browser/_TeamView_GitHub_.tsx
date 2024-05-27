@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { fetchModelServer } from '../../hooks/fetchModelServer';
+// import { fetchModelServer } from '../../hooks/fetchModelServer';
 import { putModelServer } from '../../hooks/putModelServer';
 import { GitHubPathElement } from '../../types/github/PathElement';
 import { Project } from '../../types/fake_database/Project';
-import { ProjectDataType, ProjectCard } from './ProjectCard';
+import ProjectCard, { ProjectDataType } from './ProjectCard';
 
 import { Dialog } from '@mui/material';
 

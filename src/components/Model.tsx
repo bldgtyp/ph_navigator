@@ -9,7 +9,7 @@ import InfoPanel from './InfoPanel';
 import { Dialog } from '@mui/material';
 import MoonLoader from "react-spinners/MoonLoader";
 
-import { fetchModelServer } from "../hooks/fetchModelServer";
+import { fetchModelDataFromServer } from "../api/model";
 import { loadModelFaces } from '../loaders/load_model_faces';
 import { loadModelSpaces } from '../loaders/load_model_spaces';
 import { loadModelSunPath } from '../loaders/load_sun_path';
@@ -17,31 +17,6 @@ import { loadModelHotWaterPiping } from '../loaders/load_hot_water_piping';
 import { loadModelERVDucting } from '../loaders/load_erv_ducting';
 import { loadModelShades } from '../loaders/load_model_shades';
 
-import { hbFace } from "../types/honeybee/face";
-import { hbPHSpace } from "../types/honeybee_ph/space";
-import { lbtSunPathDTO } from "../types/ladybug/sunpath";
-import { hbPhHvacHotWaterSystem } from "../types/honeybee_phhvac/hot_water_system";
-import { hbPhHvacVentilationSystem } from "../types/honeybee_phhvac/ventilation";
-import { hbShadeGroup } from "../types/honeybee/shade";
-
-/**
- * Fetches data from the model server with a modal for errors.
- *
- * @param endpoint - The endpoint to fetch data from.
- * @param token - The authentication token (optional).
- * @param params - Additional parameters for the request (optional).
- * @returns A Promise that resolves to the fetched data or null if there was an error.
- */
-async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}) {
-    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
-    if (error) {
-        const message = `Error getting data: ${error}`
-        alert(message);
-        return null;
-    } else {
-        return data;
-    }
-}
 
 type ModelProps = {
     world: React.MutableRefObject<SceneSetup>;
@@ -57,7 +32,7 @@ type ModelProps = {
  * @param data - The data to be processed by the function.
  * @returns An array of results from the function, or an empty array if there was an error or the data is null.
  */
-function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | null) {
+function handleLoadError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | null) {
     if (!data) {
         return [];
     } else if (Array.isArray(data)) {
@@ -65,7 +40,7 @@ function handleError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, d
     }
 }
 
-export function Model(props: ModelProps) {
+function Model(props: ModelProps) {
     console.log("Rendering Model Component...")
     const { world, showModel } = props;
     const { teamId, projectId, modelId } = useParams();
@@ -74,47 +49,26 @@ export function Model(props: ModelProps) {
     // Load the Model-Elements from the Server based on: team-id / project-id / model-id
     // ------------------------------------------------------------------------
     useEffect(() => {
-        async function fetchModelDataFromServer() {
+        async function loadModelDataIntoWorld(teamId: string, projectId: string, modelId: string) {
             try {
-                console.log(`Loading data for ${teamId}/${projectId}/${modelId}`)
-                const routeLoadModel = `${teamId}/${projectId}/${modelId}/load_hb_model`;
-                const modelData = await fetchWithModal<hbFace[]>(routeLoadModel);
-                if (!modelData) { return null }
-
-                const routeFaces = `${teamId}/${projectId}/${modelId}/faces`;
-                const facesData = await fetchWithModal<hbFace[]>(routeFaces);
-                handleError(loadModelFaces, world, facesData);
-
-                const routeSpaces = `${teamId}/${projectId}/${modelId}/spaces`;
-                const spacesData = await fetchWithModal<hbPHSpace[]>(routeSpaces);
-                handleError(loadModelSpaces, world, spacesData);
-
-                const routeSunPath = `${teamId}/${projectId}/${modelId}/sun_path`;
-                const sunPathData = await fetchWithModal<lbtSunPathDTO[]>(routeSunPath);
-                handleError(loadModelSunPath, world, sunPathData);
-
-                const routeHotWaterSystem = `${teamId}/${projectId}/${modelId}/hot_water_systems`;
-                const hotWaterSystemData = await fetchWithModal<hbPhHvacHotWaterSystem[]>(routeHotWaterSystem);
-                handleError(loadModelHotWaterPiping, world, hotWaterSystemData);
-
-                const routeVentilationSystem = `${teamId}/${projectId}/${modelId}/ventilation_systems`;
-                const ventilationSystemData = await fetchWithModal<hbPhHvacVentilationSystem[]>(routeVentilationSystem);
-                handleError(loadModelERVDucting, world, ventilationSystemData);
-
-                const routeShades = `${teamId}/${projectId}/${modelId}/shading_elements`;
-                const shadingElementsData = await fetchWithModal<hbShadeGroup[]>(routeShades);
-                handleError(loadModelShades, world, shadingElementsData);
+                const modelData = await fetchModelDataFromServer(teamId, projectId, modelId);
+                if (modelData === null) { return }
+                handleLoadError(loadModelFaces, world, modelData.facesData);
+                handleLoadError(loadModelSpaces, world, modelData.spacesData);
+                handleLoadError(loadModelSunPath, world, modelData.sunPathData);
+                handleLoadError(loadModelHotWaterPiping, world, modelData.hotWaterSystemData);
+                handleLoadError(loadModelERVDucting, world, modelData.ventilationSystemData);
+                handleLoadError(loadModelShades, world, modelData.shadingElementsData);
             } catch (error) {
-                console.error(error);
+                alert(`Error loading model data: ${error}`);
             } finally {
-                console.log(`${teamId}/${projectId}/${modelId} data successfully loaded.`)
                 setIsLoading(false);
             }
         }
 
         world.current.reset();
-        if (showModel === true && modelId !== undefined && projectId !== undefined) {
-            fetchModelDataFromServer();
+        if (showModel === true && modelId !== undefined && projectId !== undefined && teamId !== undefined) {
+            loadModelDataIntoWorld(teamId, projectId, modelId);
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,3 +100,5 @@ export function Model(props: ModelProps) {
             {/* <_AO_GUI_ world={world} /> */}
         </>)
 }
+
+export default Model;

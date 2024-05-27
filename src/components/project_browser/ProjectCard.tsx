@@ -8,7 +8,7 @@ export type ProjectDataType = {
 
 type ProjectCardProps = ProjectDataType & { teamId: string | undefined; };
 
-export function ProjectCard(props: ProjectCardProps) {
+function ProjectCard(props: ProjectCardProps) {
     const { display_name, identifier, teamId } = props;
     const navigate = useNavigate();
 
@@ -26,3 +26,5 @@ export function ProjectCard(props: ProjectCardProps) {
         </Paper>
     );
 }
+
+export default ProjectCard;

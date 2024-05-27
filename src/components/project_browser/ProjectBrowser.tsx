@@ -1,8 +1,8 @@
 import '../../styles/ProjectBrowser.css';
 import { useParams } from "react-router-dom";
 import { Paper } from "@mui/material";
-import { Public } from './PublicView';
-import { TeamView } from './TeamView';
+import Public from './PublicView';
+import TeamView from './TeamView';
 
 function ProjectBrowser() {
     const { teamId } = useParams();

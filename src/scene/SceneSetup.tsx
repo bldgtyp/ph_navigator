@@ -8,7 +8,7 @@ import { defaultLightConfiguration } from './Lighting';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
-import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+// import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 
 export class SceneSetup {
     scene: THREE.Scene;

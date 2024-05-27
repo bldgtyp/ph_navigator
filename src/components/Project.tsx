@@ -4,39 +4,17 @@ import * as THREE from 'three';
 import { useRef, useEffect, useState } from 'react';
 import { Route, Routes, useParams, useNavigate } from "react-router-dom";
 
-import Viewer from './Viewer';
 import AppStateMenubar from './AppStateMenubar';
+import Model from './Model';
+import NavigationBar from './NavigationBar';
 import UploadModelDialog from './UploadModelDialog';
-import { Model } from './Model';
+import Viewer from './Viewer';
 import { SceneSetup } from '../scene/SceneSetup';
 import { AppStateContextProvider } from '../contexts/app_state_context';
 import { SelectedObjectContextProvider } from '../contexts/selected_object_context';
 import { HoverObjectContextProvider } from '../contexts/hover_object_context';
-import NavigationBar from './NavigationBar';
-import { fetchModelServer } from "../hooks/fetchModelServer";
 import { ModelView } from "../types/fake_database/ModelView";
-
-
-
-async function fetchWithModal<T>(endpoint: string, token: string | undefined = "", params: any = {}): Promise<T | null> {
-    const { data, error } = await fetchModelServer<T | null>(endpoint, token, params);
-    if (error) {
-        const message = `Error getting data: ${error}`;
-        alert(message);
-        return null;
-    } else {
-        return data;
-    }
-}
-
-
-async function fetchProjectModelViews(teamId: string, projectId: string): Promise<ModelView[] | null> {
-    return fetchWithModal<ModelView[]>(`${teamId}/${projectId}/get_models`);
-}
-
-async function fetchModelView(teamId: string, projectId: string, modelId: string): Promise<ModelView | null> {
-    return fetchWithModal<ModelView>(`${teamId}/${projectId}/get_model`, "", { model_name: `${modelId}` });
-}
+import { getProjectModelViews, getModelView } from "../api/project";
 
 
 function Project() {
@@ -51,19 +29,20 @@ function Project() {
     world.current.scene.add(dimensionLinesRef.current);
 
     useEffect(() => {
-        const loadModelViews = async () => {
-            if (teamId === undefined || projectId === undefined) { return; }
+        async function loadModelViews() {
+            // -- Load all of the Project's Model Views
+            const projectModelViews = await getProjectModelViews(teamId, projectId);
+            if (!projectModelViews) {
+                alert(`Project ${projectId} has no model views to load.`);
+                return;
+            } else {
+                setModelViewList(projectModelViews);
+            }
 
-            const projectModelViews = await fetchProjectModelViews(teamId, projectId);
-
-            if (!projectModelViews) { return; }
-
-            setModelViewList(projectModelViews);
-
+            // -- Load the First Model View
             if (projectModelViews.length > 0) {
                 const modelId = projectModelViews[0].display_name; // Default to the first model
-                const modelView = await fetchModelView(teamId, projectId, modelId);
-
+                const modelView = await getModelView(teamId, projectId, modelId);
                 if (!modelView) { return; }
 
                 if (modelView.hbjson_url === "" || modelView.hbjson_url === null) {
@@ -75,7 +54,7 @@ function Project() {
             } else {
                 setShowUploadModel(true);
             }
-        };
+        }
 
         loadModelViews();
 

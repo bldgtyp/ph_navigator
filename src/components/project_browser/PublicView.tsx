@@ -12,7 +12,7 @@ async function fetchWithModal<T>(endpoint: string, token: string | undefined = "
     }
 }
 
-export function Public() {
+function Public() {
     const navigate = useNavigate();
     const { teamId } = useParams();
     function handleOnClick() {
@@ -39,3 +39,5 @@ export function Public() {
         </div>
     );
 }
+
+export default Public;
