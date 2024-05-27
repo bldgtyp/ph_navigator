@@ -1,6 +1,6 @@
 // Menu Bar for setting the App State and Visibility
 
-import '../styles/Toolbar.css';
+import '../styles/VizStateMenuBar.css';
 import { useState } from 'react';
 import { Stack } from "@mui/material";
 import { ReactComponent as RulerIcon } from '../icons/Ruler.svg';
@@ -10,7 +10,7 @@ import { ReactComponent as DuctIcon } from '../icons/Ducts.svg';
 import { ReactComponent as PipeIcon } from '../icons/Piping.svg';
 import { ReactComponent as SpaceIcon } from '../icons/Space.svg';
 import { ReactComponent as SunPathIcon } from '../icons/SunPath.svg';
-import { useAppStateContext } from '../contexts/app_state_context';
+import { useAppStateContext } from '../contexts/app_viz_state_context';
 
 const icons = [
     <SurfaceIcon key={0} />,

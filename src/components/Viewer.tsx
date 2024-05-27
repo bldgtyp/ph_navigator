@@ -3,13 +3,13 @@
 import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { SceneSetup } from '../scene/SceneSetup';
-import { useAppStateContext } from '../contexts/app_state_context';
+import { useAppStateContext } from '../contexts/app_viz_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { useHoverObjectContext } from '../contexts/hover_object_context';
 import { onResize } from '../handlers/onResize';
 import { surfaceSelectModeOnMouseClick, surfaceSelectModeOnMouseOver } from '../handlers/modeSurfaceQuery';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
-import { addEventHandler, addMountHandler, addDismountHandler } from './AppState';
+import { addEventHandler, addMountHandler, addDismountHandler } from './AppVizState';
 import { spacesModeOnMouseClick, spacesModeOnMouseOver } from '../handlers/modeSpacesQuery';
 import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
 import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';

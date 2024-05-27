@@ -3,7 +3,7 @@ import "../styles/Model.css";
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { SceneSetup } from '../scene/SceneSetup';
-import InfoPanel from './InfoPanel';
+import InfoPanel from './info_panel/InfoPanel';
 // import ResultsSidebar from './ResultsSidebar';
 // import { _AO_GUI_ } from './_AO_GUI_';
 import { Dialog } from '@mui/material';

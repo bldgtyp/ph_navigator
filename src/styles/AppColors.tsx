@@ -6,7 +6,8 @@ export const appColors = {
     MED_GREY: new THREE.Color(0xfcfcfcf),
     DARK_GREY: new THREE.Color(0x878686),
     BLACK: new THREE.Color(0x000000),
-    BACKGROUND: new THREE.Color(0xf4f4f1),
+    BACKGROUND: new THREE.Color(0xf1f4f4),
+    // BACKGROUND: new THREE.Color(0xf4f4f1),
     GRID_LINE_LIGHT: new THREE.Color(0xc9c9c9),
     GRID_LINE_DARK: new THREE.Color(0x919191),
 

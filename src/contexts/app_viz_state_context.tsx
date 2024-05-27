@@ -1,4 +1,4 @@
-import { AppState, states } from '../components/AppState';
+import { AppState, states } from '../components/AppVizState';
 import { createContext, useContext, useReducer } from 'react';
 
 // -- useReducer instead of useState so that THREE.js works
