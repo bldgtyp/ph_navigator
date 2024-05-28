@@ -202,6 +202,7 @@ function Viewer(props: ViewerProps) {
                 window.removeEventListener(key, handler);
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appToolStateContext.appToolState]);
 
 
@@ -234,6 +235,7 @@ function Viewer(props: ViewerProps) {
                 window.removeEventListener(key, handler);
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appVizStateContext.appVizState]);
 
 

@@ -1,12 +1,9 @@
-.toolbar {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -100%);
+.viz-state-menubar {
     text-align: center;
-    padding: 1em;
+    padding: 0.35em;
 }
 
-.round-button {
+.viz-state-button {
     width: 40px;
     height: 40px;
     border-style: none;
@@ -16,10 +13,14 @@
     background: none;
 }
 
-.round-button:hover {
+.viz-state-button:hover {
     background-color: #deb5de;
 }
 
-.round-button.active {
+.viz-state-button.active {
     background-color: #ff1bff;
+}
+
+.viz-state-button svg {
+    pointer-events: none;
 }

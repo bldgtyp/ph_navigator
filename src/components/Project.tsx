@@ -4,11 +4,11 @@ import * as THREE from 'three';
 import { useRef, useEffect, useState } from 'react';
 import { Route, Routes, useParams, useNavigate } from "react-router-dom";
 
-import AppStateMenubar from './VizStateMenubar';
 import Model from './Model';
 import NavigationBar from './NavigationBar';
 import UploadModelDialog from './UploadModelDialog';
 import Viewer from './Viewer';
+import BottomMenubar from './BottomMenubar';
 import { SceneSetup } from '../scene/SceneSetup';
 import { AppStateContextProvider } from '../contexts/app_viz_state_context';
 import { AppToolStateContextProvider } from '../contexts/app_tool_state_context';
@@ -82,7 +82,7 @@ function Project() {
                             </Routes>
                         </HoverObjectContextProvider>
                     </SelectedObjectContextProvider>
-                    <AppStateMenubar />
+                    <BottomMenubar />
                 </AppToolStateContextProvider>
             </AppStateContextProvider>
         </>

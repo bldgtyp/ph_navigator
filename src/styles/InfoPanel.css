@@ -12,35 +12,6 @@
 
 
 /* ------------------------------------------------------------------------- */
-/* Vis-State Icon Bar  */
-
-.viz-state-icon-bar {
-    width: 100%;
-    align-items: center;
-    padding-bottom: 0.5em;
-    border-bottom: 1px dotted rgb(101, 106, 115);
-}
-
-.tool-button {
-    width: 30px;
-    height: 30px;
-    border-style: none;
-    border-radius: 10%;
-    cursor: pointer;
-    box-shadow: 2px 2px 3px 0px rgba(101, 106, 115, 0.1);
-    background: none;
-
-}
-
-.tool-button:hover {
-    background-color: #deb5de;
-}
-
-.tool-button.active {
-    background-color: #ff1bff;
-}
-
-/* ------------------------------------------------------------------------- */
 
 .panel-select-button {
     font-size: 0.8em !important;
