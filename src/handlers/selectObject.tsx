@@ -6,6 +6,20 @@ import { SelectedObjectContextType } from '../contexts/selected_object_context';
 import { HoverObjectContextType } from '../contexts/hover_object_context';
 
 
+
+export function clearSelection(SelectedObjectContext: SelectedObjectContextType, hoverObjectContext: HoverObjectContextType) {
+    // Remove the selection effect from the selected object
+    setStandardMaterialFromStore(SelectedObjectContext.selectedObjectRef.current)
+    SelectedObjectContext.selectedObjectRef.current = null
+    SelectedObjectContext.setSelectedObjectState(null)
+
+    // Remove the hover effect from the hovered object
+    setStandardMaterialFromStore(hoverObjectContext.hoverObjectRef.current)
+    hoverObjectContext.hoverObjectRef.current = null
+    hoverObjectContext.setHoverObjectState(null)
+}
+
+
 // Material handling --------------------------------------------------------------------
 
 

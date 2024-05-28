@@ -39,10 +39,16 @@ export function loadSpaceFloors(world: React.MutableRefObject<SceneSetup>, hbPHS
 
                 const geom = convertLBTFace3DToMesh(segment.geometry)
                 if (!geom) { return null }
-
                 geom.mesh.material = appMaterials.geometryStandard;
                 geom.mesh.castShadow = false;
                 geom.mesh.userData["type"] = "spaceFloorSegmentMeshFace";
+                geom.mesh.userData["weighting_factor"] = segment.weighting_factor;
+                geom.mesh.userData["identifier"] = segment.identifier;
+                geom.mesh.userData["display_name"] = space.name;
+                geom.mesh.userData["number"] = space.number;
+                geom.mesh.userData["weighted_floor_area"] = segment.weighted_floor_area;
+                geom.mesh.userData["floor_area"] = segment.floor_area;
+
                 geom.wireframe.material = appMaterials.wireframe;
                 geom.wireframe.userData["type"] = "spaceFloorSegmentMeshFaceWireframe";
 

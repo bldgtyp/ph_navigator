@@ -5,11 +5,12 @@
 
 export enum appVizStateTypeEnum {
     None = 0,
-    SpaceFloors = 1,
-    Spaces = 2,
-    SunPath = 3,
-    Ventilation = 4,
-    HotWaterPiping = 5,
+    Geometry = 1,
+    SpaceFloors = 2,
+    Spaces = 3,
+    SunPath = 4,
+    Ventilation = 5,
+    HotWaterPiping = 6,
 }
 
 type EventHandlerFunction = (event: any) => void;
@@ -44,11 +45,12 @@ export class VizState {
 
 export const vizStates: { [key: number]: VizState } = {
     0: new VizState(appVizStateTypeEnum.None),
-    1: new VizState(appVizStateTypeEnum.SpaceFloors),
-    2: new VizState(appVizStateTypeEnum.Spaces),
-    3: new VizState(appVizStateTypeEnum.SunPath),
-    4: new VizState(appVizStateTypeEnum.Ventilation),
-    5: new VizState(appVizStateTypeEnum.HotWaterPiping),
+    1: new VizState(appVizStateTypeEnum.Geometry),
+    2: new VizState(appVizStateTypeEnum.SpaceFloors),
+    3: new VizState(appVizStateTypeEnum.Spaces),
+    4: new VizState(appVizStateTypeEnum.SunPath),
+    5: new VizState(appVizStateTypeEnum.Ventilation),
+    6: new VizState(appVizStateTypeEnum.HotWaterPiping),
 };
 
 export function addVizStateEventHandler(appVizState: number, eventName: string, callbackFunction: EventHandlerFunction) {

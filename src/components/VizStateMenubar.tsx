@@ -3,6 +3,7 @@
 import '../styles/VizStateMenuBar.css';
 import { useState } from 'react';
 import { Stack, Tooltip } from "@mui/material";
+import { ReactComponent as Geometry } from '../icons/Geometry.svg';
 import { ReactComponent as FloorSegmentIcon } from '../icons/FloorSegments.svg';
 import { ReactComponent as DuctIcon } from '../icons/Ducts.svg';
 import { ReactComponent as PipeIcon } from '../icons/Piping.svg';
@@ -11,11 +12,12 @@ import { ReactComponent as SunPathIcon } from '../icons/SunPath.svg';
 import { useAppVizStateContext } from '../contexts/app_viz_state_context';
 
 const icons: any[] = [
-    <FloorSegmentIcon key={1} title="Interior Floors" />,
-    <SpaceIcon key={2} title="Interior Spaces" />,
-    <SunPathIcon key={3} title="Sunpath" />,
-    <DuctIcon key={4} title="Ventilation Ducting" />,
-    <PipeIcon key={5} title="Hot Water Piping" />,
+    <Geometry key={1} title="Geometry" />,
+    <FloorSegmentIcon key={2} title="Interior Floors" />,
+    <SpaceIcon key={3} title="Interior Spaces" />,
+    <SunPathIcon key={4} title="Site" />,
+    <DuctIcon key={5} title="Ventilation Ducting" />,
+    <PipeIcon key={6} title="Hot Water Piping" />,
 ];
 
 const AppStateMenubar = () => {

@@ -8,7 +8,7 @@ import { useAppToolStateContext } from '../contexts/app_tool_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { useHoverObjectContext } from '../contexts/hover_object_context';
 import { onResize } from '../handlers/onResize';
-import { handleOnClick, handleOnMouseOver } from '../handlers/meshFaceSelect';
+import { handleOnClick, handleOnMouseOver, clearSelection } from '../handlers/selectObject';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { addVizStateMountHandler, addVizStateDismountHandler } from './states/VizState';
 import { addToolStateEventHandler, addToolStateDismountHandler } from './states/ToolState';
@@ -61,25 +61,6 @@ function Viewer(props: ViewerProps) {
             , [])
     );
 
-    // addVizStateEventHandler(2, "click",
-    //     useCallback(
-    //         (e: any) => { spacesModeOnMouseClick(e, world.current, selectedObjectContext) }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //         , [])
-    // );
-    // addVizStateEventHandler(2, "pointermove",
-    //     useCallback(
-    //         (e: any) => { spacesModeOnMouseOver(e, world.current, hoverObjectContext) }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //         , [])
-    // );
-    // addVizStateEventHandler(5, "click",
-    //     useCallback(
-    //         (e: any) => { pipingModeOnMouseClick(e, world.current, selectedObjectContext) }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //         , [])
-    // );
-
 
     // Dismount Handlers for ToolStates
     // ------------------------------------------------------------------------
@@ -104,7 +85,14 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
     });
-    addVizStateMountHandler(1, "showSpaceFloors", () => {
+    addVizStateMountHandler(1, "showGeometry", () => {
+        world.current.buildingGeometryMeshes.visible = true;
+        world.current.selectableObjects.add(world.current.buildingGeometryMeshes)
+        world.current.selectableObjects.visible = true;
+        world.current.buildingGeometryOutlines.visible = true;
+        world.current.buildingGeometryVertices.visible = true;
+    });
+    addVizStateMountHandler(2, "showSpaceFloors", () => {
         world.current.spaceFloorGeometryMeshes.visible = true;
         world.current.selectableObjects.add(world.current.spaceFloorGeometryMeshes)
         world.current.selectableObjects.visible = true;
@@ -112,7 +100,7 @@ function Viewer(props: ViewerProps) {
         world.current.spaceFloorGeometryVertices.visible = true
         world.current.buildingGeometryOutlines.visible = true
     });
-    addVizStateMountHandler(2, "showSpaces", () => {
+    addVizStateMountHandler(3, "showSpaces", () => {
         world.current.spaceGeometryMeshes.visible = true;
         world.current.selectableObjects.add(world.current.spaceGeometryMeshes)
         world.current.selectableObjects.visible = true;
@@ -120,7 +108,7 @@ function Viewer(props: ViewerProps) {
         world.current.spaceGeometryVertices.visible = false;
         world.current.buildingGeometryOutlines.visible = true
     });
-    addVizStateMountHandler(3, "showSunPath", () => {
+    addVizStateMountHandler(4, "showSunPath", () => {
         world.current.buildingGeometryMeshes.visible = true;
         world.current.buildingGeometryOutlines.visible = true;
         world.current.buildingGeometryVertices.visible = true;
@@ -128,11 +116,11 @@ function Viewer(props: ViewerProps) {
         world.current.shadingGeometryMeshes.visible = true;
         world.current.shadingGeometryWireframe.visible = true
     });
-    addVizStateMountHandler(4, "showERVDucting", () => {
+    addVizStateMountHandler(5, "showERVDucting", () => {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.ventilationGeometry.visible = true
     });
-    addVizStateMountHandler(5, "showHotWaterPiping", () => {
+    addVizStateMountHandler(6, "showHotWaterPiping", () => {
         world.current.buildingGeometryOutlines.visible = true;
         world.current.pipeGeometry.visible = true
     });
@@ -146,20 +134,26 @@ function Viewer(props: ViewerProps) {
         world.current.buildingGeometryOutlines.visible = false;
         world.current.buildingGeometryVertices.visible = false;
     });
-    addVizStateDismountHandler(1, "hideSpaceFloors", () => {
+    addVizStateDismountHandler(1, "hideGeometry", () => {
+        world.current.clearSelectableObjectsGroup()
+        world.current.buildingGeometryMeshes.visible = false;
+        world.current.buildingGeometryOutlines.visible = false;
+        world.current.buildingGeometryVertices.visible = false;
+    });
+    addVizStateDismountHandler(2, "hideSpaceFloors", () => {
         world.current.clearSelectableObjectsGroup()
         world.current.spaceFloorGeometryMeshes.visible = false;
         world.current.spaceFloorGeometryOutlines.visible = false
         world.current.spaceFloorGeometryVertices.visible = false
     });
-    addVizStateDismountHandler(2, "hideSpaces", () => {
+    addVizStateDismountHandler(3, "hideSpaces", () => {
         world.current.clearSelectableObjectsGroup()
         world.current.spaceGeometryMeshes.visible = false;
         world.current.spaceGeometryOutlines.visible = false;
         world.current.spaceGeometryVertices.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
     });
-    addVizStateDismountHandler(3, "hideSunPath", () => {
+    addVizStateDismountHandler(4, "hideSunPath", () => {
         world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryMeshes.visible = false;
         world.current.buildingGeometryOutlines.visible = false;
@@ -168,12 +162,12 @@ function Viewer(props: ViewerProps) {
         world.current.shadingGeometryMeshes.visible = false;
         world.current.shadingGeometryWireframe.visible = false
     });
-    addVizStateDismountHandler(4, "hideERVDucting", () => {
+    addVizStateDismountHandler(5, "hideERVDucting", () => {
         world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryOutlines.visible = false;
         world.current.ventilationGeometry.visible = false
     });
-    addVizStateDismountHandler(5, "hideHotWaterPiping", () => {
+    addVizStateDismountHandler(6, "hideHotWaterPiping", () => {
         world.current.clearSelectableObjectsGroup()
         world.current.buildingGeometryOutlines.visible = false;
         world.current.pipeGeometry.visible = false
@@ -214,6 +208,7 @@ function Viewer(props: ViewerProps) {
     // Add the Viz-State mount/un-mount and event-listeners
     // ------------------------------------------------------------------------
     useEffect(() => {
+        clearSelection(selectedObjectContext, hoverObjectContext)
         // Run the new Viz-State's mount handlers
         for (const key in appVizStateContext.appVizState.mountHandlers) {
             appVizStateContext.appVizState.mountHandlers[key]();

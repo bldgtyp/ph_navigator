@@ -14,6 +14,8 @@ class SpaceFloorSegmentSchema(BaseModel):
     display_name: str
     geometry: Face3DSchema | None
     weighting_factor: float
+    floor_area: float | None = 0.0
+    weighted_floor_area: float | None = 0.0
 
 
 class SpaceFloorSchema(BaseModel):

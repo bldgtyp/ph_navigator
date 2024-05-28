@@ -5,6 +5,8 @@ export type hbPhSpaceFloorSegment = {
     display_name: string;
     geometry: lbtFace3D | null;
     weighting_factor: number;
+    weighted_floor_area: number;
+    floor_area: number;
 }
 
 export type hbPhSpaceFloor = {
