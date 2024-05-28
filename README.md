@@ -6,7 +6,8 @@
 ## TODO:
 
 #### Get Geometry:
-- [ ] TFA Surfaces
+- [X] TFA Surfaces
+  - [ ] Color By TFA Surface
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
 - [ ] add north arrow and north text to sunpath
@@ -22,7 +23,6 @@
 
 #### UI:
 - [X] Add Sun-path diagram State
-  - [ ] Why isn't Compass and SubPath being loaded properly?
   - [ ] Check EPW Load path. Loads fine locally, not working when deployed.
   - [ ] Time of Day control (connect to sunlight position)
 - [X] add a u-value list with sliders to the face data panel 
@@ -30,7 +30,6 @@
 - [ ] Face Data - truncate names / identifiers
 - [ ] Constructions Table (with Materials)
 - [ ] Windows Table (frames, glass, units)
-- [ ] Surface select should not drop on scene rotate or pan
 - [ ] Add 'escape' to clear surface select
 - [ ] Dimensions:
   - [ ] Add 'escape' to clear current dimension
@@ -39,10 +38,10 @@
   - [ ] Add guard against 0-length markers
   - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
-- [ ] Fix so that clicks on the dialogue windows don't become clicks in THREE.js
-- [ ] When selecting a surface for query - show all the edge dims in very light text
+- [ ] When selecting a surface for query - show all the edge-dims in very light text
 - [ ] Move results to top to allow for app-state bar to the right
 - [ ] When selecting a pipe, show the dims alongside
+- [ ] Update selectable objects with vis-state
 
 #### NavBar:
 - [ ] Fix EPW file data source. Location in upper right (map link)

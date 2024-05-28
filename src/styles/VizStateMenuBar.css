@@ -12,7 +12,8 @@
     border-style: none;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+    /* box-shadow: 3px 3px 1px 0px rgba(0, 0, 0, 0.1); */
+    background: none;
 }
 
 .round-button:hover {

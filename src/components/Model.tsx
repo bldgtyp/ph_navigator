@@ -33,10 +33,11 @@ type ModelProps = {
  * @param data - The data to be processed by the function.
  * @returns An array of results from the function, or an empty array if there was an error or the data is null.
  */
-function handleLoadError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | null) {
+function handleLoadError<T>(_func: any, world: React.MutableRefObject<SceneSetup>, data: T[] | T | null) {
     if (!data) {
+        console.error(`ERROR: Something went wrong loading the data for Function: ${_func.name}`);
         return [];
-    } else if (Array.isArray(data)) {
+    } else {
         return _func(world, data);
     }
 }

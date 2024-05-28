@@ -7,7 +7,6 @@ import { SpaceFloorSegmentData } from './SpaceFloorSegmentData';
 export function SelectedObjectDetails() {
     const selectedObjectContext = useSelectedObjectContext();
     if (selectedObjectContext.selectedObjectRef.current) {
-        console.log(selectedObjectContext.selectedObjectRef.current)
         if (selectedObjectContext.selectedObjectRef.current.userData['type'] == "spaceGroup") {
             return <SpaceData selectedObject={selectedObjectContext.selectedObjectRef.current} />;
         } else if (selectedObjectContext.selectedObjectRef.current.userData['type'] === "spaceFloorSegmentMeshFace") {
