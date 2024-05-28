@@ -12,11 +12,11 @@ import { handleOnClick, handleOnMouseOver } from '../handlers/meshFaceSelect';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { addVizStateMountHandler, addVizStateDismountHandler } from './states/VizState';
 import { addToolStateEventHandler, addToolStateDismountHandler } from './states/ToolState';
-import { spacesModeOnMouseClick, spacesModeOnMouseOver } from '../handlers/modeSpacesQuery';
+// import { spacesModeOnMouseClick, spacesModeOnMouseOver } from '../handlers/modeSpacesQuery';
 // import { handleClearSelectedMeshFace } from '../handlers/meshFaceSelect';
-import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
-import { pipingModeOnMouseClick } from '../handlers/modePipes';
-import { handleClearSelectedLine } from '../handlers/modePipes';
+// import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
+// import { pipingModeOnMouseClick } from '../handlers/modePipes';
+// import { handleClearSelectedLine } from '../handlers/modePipes';
 
 interface ViewerProps {
     world: React.MutableRefObject<SceneSetup>;
