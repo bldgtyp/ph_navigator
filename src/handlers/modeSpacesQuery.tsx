@@ -65,6 +65,8 @@ export function spacesModeOnMouseClick(
     e.preventDefault();
     const newMesh = getSelectedMeshFromMouseClick(e, world.camera, world.spaceGeometryMeshes.children)
     if (newMesh) {
+        console.log(newMesh.userData['type'] == "spaceGroup")
+
         const spaceGroup = newMesh.parent
         if (spaceGroup && spaceGroup instanceof THREE.Group && spaceGroup.userData['selected'] !== true) {
             resetSpaceGroupSelectionMaterial(selectedObjectContext.selectedObjectRef.current)

@@ -8,12 +8,12 @@ import { useAppToolStateContext } from '../contexts/app_tool_state_context';
 import { useSelectedObjectContext } from '../contexts/selected_object_context';
 import { useHoverObjectContext } from '../contexts/hover_object_context';
 import { onResize } from '../handlers/onResize';
-import { surfaceSelectModeOnMouseClick, surfaceSelectModeOnMouseOver } from '../handlers/modeSurfaceQuery';
+import { handleOnClick, handleOnMouseOver } from '../handlers/meshFaceSelect';
 import { measureModeOnMouseClick, measureModeOnMouseMove } from '../handlers/modeMeasurement';
 import { addVizStateMountHandler, addVizStateDismountHandler } from './states/VizState';
 import { addToolStateEventHandler, addToolStateDismountHandler } from './states/ToolState';
 import { spacesModeOnMouseClick, spacesModeOnMouseOver } from '../handlers/modeSpacesQuery';
-import { handleClearSelectedMesh } from '../handlers/modeSurfaceQuery';
+// import { handleClearSelectedMeshFace } from '../handlers/meshFaceSelect';
 import { handleClearSelectedSpace } from '../handlers/modeSpacesQuery';
 import { pipingModeOnMouseClick } from '../handlers/modePipes';
 import { handleClearSelectedLine } from '../handlers/modePipes';
@@ -38,13 +38,13 @@ function Viewer(props: ViewerProps) {
     // ------------------------------------------------------------------------
     addToolStateEventHandler(1, "click",
         useCallback(
-            (e: any) => { surfaceSelectModeOnMouseClick(e, world.current, selectedObjectContext) }
+            (e: any) => { handleOnClick(e, world.current, selectedObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
     addToolStateEventHandler(1, "pointermove",
         useCallback(
-            (e: any) => { surfaceSelectModeOnMouseOver(e, world.current, hoverObjectContext) }
+            (e: any) => { handleOnMouseOver(e, world.current, hoverObjectContext) }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             , [])
     );
@@ -86,7 +86,7 @@ function Viewer(props: ViewerProps) {
     addToolStateDismountHandler(1, "clearSelectedMesh", () => {
         // handleClearSelectedLine(selectedObjectContext)
         // handleClearSelectedSpace(selectedObjectContext)
-        handleClearSelectedMesh(selectedObjectContext)
+        // handleClearSelectedMeshFace(selectedObjectContext)
     });
     addToolStateDismountHandler(2, "clearDims", () => {
         hoveringVertex.current = null;
