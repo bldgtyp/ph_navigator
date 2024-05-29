@@ -1,7 +1,7 @@
 # PH Navigator (WIP)
 ![Screenshot 2024-05-29 at 1 53 04 PM](https://github.com/bldgtyp/ph_navigator/assets/69652712/787acbb2-5f32-4805-b1cd-d3846d910f8a)
 
-#### [https://bldgtyp.github.io/ph_navigator/](https://bldgtyp.github.io/ph_navigator/)
+#### [https://bldgtyp.github.io/ph_navigator/#/bldgtyp](https://bldgtyp.github.io/ph_navigator/#/bldgtyp)
 
 
 ## TODO:
