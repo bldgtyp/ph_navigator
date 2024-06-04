@@ -12,7 +12,7 @@ try:
 except Exception as e:
     print(e)
 
-from backend.routes import storage, three_js, airtable
+from backend.routes import airtable, storage, three_js
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Setup the FastAPI app and routes

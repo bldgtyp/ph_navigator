@@ -4,7 +4,8 @@
 """Pydantic Schema: honeybee.shade.Shade"""
 
 from typing import Any
-from pydantic import BaseModel
+
+from pydantic.main import BaseModel
 
 from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
 
@@ -12,7 +13,7 @@ from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
 class ShadeSchema(BaseModel):
     type: str
     identifier: str
-    user_data: dict[Any, Any] | None
+    user_data: dict[Any, Any] | None = None
     display_name: str
     is_detached: bool
     geometry: Face3DSchema

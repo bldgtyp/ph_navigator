@@ -4,7 +4,7 @@
 """Pydantic Schema: honeybee.boundarycondition"""
 
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 
 class BoundaryConditionSchema(BaseModel):

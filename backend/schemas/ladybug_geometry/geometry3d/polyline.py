@@ -3,7 +3,7 @@
 
 """Pydantic Schema: ladybug_geometry.geometry3d.polyline.PolyLine3D"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 
 class Polyline3D(BaseModel):

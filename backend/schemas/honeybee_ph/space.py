@@ -4,7 +4,7 @@
 """Pydantic Schema: honeybee_ph.space"""
 
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
 
@@ -12,7 +12,7 @@ from backend.schemas.ladybug_geometry.geometry3d.face3d import Face3DSchema
 class SpaceFloorSegmentSchema(BaseModel):
     identifier: str
     display_name: str
-    geometry: Face3DSchema | None
+    geometry: Face3DSchema | None = None
     weighting_factor: float
     floor_area: float | None = 0.0
     weighted_floor_area: float | None = 0.0

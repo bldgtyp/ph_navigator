@@ -4,7 +4,7 @@
 """Pydantic Schema: honeybee.properties"""
 
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.honeybee_energy.properties.aperture import ApertureEnergyPropertiesSchema
 from backend.schemas.honeybee_energy.properties.face import FaceEnergyPropertiesSchema

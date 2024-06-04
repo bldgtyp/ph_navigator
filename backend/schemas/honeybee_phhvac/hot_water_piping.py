@@ -4,6 +4,7 @@
 """Pydantic Schema: honeybee_phhvac.hot_water_piping"""
 
 from typing import Any
+
 from pydantic import BaseModel
 
 from backend.schemas.ladybug_geometry.geometry3d.line import LineSegment3DSchema
@@ -11,11 +12,11 @@ from backend.schemas.ladybug_geometry.geometry3d.line import LineSegment3DSchema
 
 class PhHvacPipeSegmentSchema(BaseModel):
     geometry: LineSegment3DSchema
-    diameter_mm: str
-    insulation_thickness_mm: str
+    diameter_mm: float
+    insulation_thickness_mm: float
     insulation_conductivity: float
     insulation_reflective: bool
-    insulation_quality: Any
+    insulation_quality: Any = None
     daily_period: float
     water_temp_c: float
     material_value: str

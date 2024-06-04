@@ -3,7 +3,7 @@
 
 """Pydantic Schema: honeybee_energy.properties.window.WindowConstruction"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.honeybee_energy.construction.window import WindowConstructionSchema
 

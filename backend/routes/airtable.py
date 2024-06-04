@@ -3,19 +3,17 @@
 
 """Routes for Airtable API."""
 
-import json
 import logging
-import os
 
-from fastapi import APIRouter, Header, HTTPException
 import requests
+from fastapi import APIRouter, Header, HTTPException
 from PHX.from_HBJSON import read_HBJSON_file
 from pyairtable import Api
 from requests.exceptions import HTTPError
 
-from backend.storage.fake_db import ModelView, _db_new_
 from backend.schemas.airtable.project_listing_table import AT_ProjectListingTableSchema
 from backend.schemas.airtable.project_table import AT_ProjectTableSchema
+from backend.storage.fake_db import ModelView, _db_new_
 
 logger = logging.getLogger("uvicorn")
 

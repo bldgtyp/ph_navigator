@@ -3,7 +3,7 @@
 
 """Pydantic Schema: ladybug_geometry.geometry2d.line.LineSegment2D"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 
 class LineSegment2D(BaseModel):

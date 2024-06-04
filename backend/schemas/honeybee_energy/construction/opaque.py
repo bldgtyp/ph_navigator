@@ -4,7 +4,7 @@
 """Pydantic Schema: honeybee_energy.construction.opaque.OpaqueConstruction"""
 
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.honeybee_energy.material.opaque import EnergyMaterialSchema
 

@@ -1,7 +1,68 @@
+import * as THREE from 'three';
 import { convertHBFaceToMesh } from '../to_three_geometry/honeybee/face';
 import { appMaterials } from '../scene/Materials';
 import { hbFace } from "../types/honeybee/face";
 import { SceneSetup } from '../scene/SceneSetup';
+import { Text } from 'troika-three-text';
+
+
+function getMeshCenter(mesh: THREE.Mesh) {
+    // Ensure the geometry's bounding box is up-to-date
+    mesh.geometry.computeBoundingBox();
+
+    // Get the bounding box
+    const boundingBox = mesh.geometry.boundingBox;
+
+    // Compute the center of the bounding box
+    const center = new THREE.Vector3();
+    boundingBox?.getCenter(center);
+
+    // Return the center
+    return center;
+}
+
+
+function calcNormal(msh: THREE.Mesh) {
+    // Assuming geometry is BufferGeometry and has position attribute
+    const positions = msh.geometry.attributes.position.array;
+
+    // Get the positions of the first face's vertices
+    const p1 = new THREE.Vector3(positions[0], positions[1], positions[2]);
+    const p2 = new THREE.Vector3(positions[3], positions[4], positions[5]);
+    const p3 = new THREE.Vector3(positions[6], positions[7], positions[8]);
+
+    // Compute the vectors of the two sides of the face
+    const v1 = new THREE.Vector3().subVectors(p2, p1);
+    const v2 = new THREE.Vector3().subVectors(p3, p1);
+
+    // Compute the face normal
+    const normal = new THREE.Vector3().crossVectors(v1, v2).normalize();
+    return normal
+}
+
+
+// Function to create a text label
+function createTextLabel(text: string, msh: THREE.Mesh): any {
+    msh.geometry.computeVertexNormals()
+    // console.log(msh)
+    const meshCenterPoint = getMeshCenter(msh)
+    const textMesh = new Text();
+    textMesh.text = text;
+    textMesh.fontSize = 0.1;
+    textMesh.position.set(meshCenterPoint.x, meshCenterPoint.y, meshCenterPoint.z);
+
+    // Set the rotation of the textMesh to match the normal
+    const vertexNormals = msh.geometry.attributes.normal.array
+    const faceNormal = new THREE.Vector3(vertexNormals[0], vertexNormals[1], vertexNormals[2]);
+    // TODO: This part is not working properly
+    // textMesh.lookAt(faceNormal);
+
+    textMesh.anchorX = 'center';
+    textMesh.anchorY = 'middle';
+    textMesh.color = 0x000000;
+    return null
+    // return textMesh
+}
 
 
 export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFaces: hbFace[]) {
@@ -51,6 +112,9 @@ export function loadModelFaces(world: React.MutableRefObject<SceneSetup>, hbFace
 
                 apertureGeom.vertices.visible = false
                 world.current.buildingGeometryVertices.add(apertureGeom.vertices)
+
+                const txt = createTextLabel(aperture.display_name, apertureGeom.mesh)
+                world.current.buildingGeometryMeshes.add(txt)
             }
         });
     });

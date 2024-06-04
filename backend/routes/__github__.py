@@ -34,7 +34,7 @@ class GitHubPathElement(BaseModel):
     url: str
     html_url: str
     git_url: str
-    download_url: str | None
+    download_url: str | None = None
     type: str
     _links: dict[str, str]
     children: list["GitHubPathElement"] = []

@@ -3,7 +3,7 @@
 
 """Pydantic Schema: ladybug.compass.Compass"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.ladybug_geometry.geometry2d.arc import Arc2D
 from backend.schemas.ladybug_geometry.geometry2d.line import LineSegment2D

@@ -3,7 +3,7 @@
 
 """Pydantic Schema: ladybug_geometry.geometry3d.plane.Plane"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 
 class PlaneSchema(BaseModel):

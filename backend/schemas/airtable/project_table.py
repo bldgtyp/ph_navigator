@@ -3,7 +3,7 @@
 
 """Pydantic Schema: AirTable | Project"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 
 class AT_HBJSONFileSchema(BaseModel):

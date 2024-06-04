@@ -4,7 +4,7 @@
 """Pydantic Schema: honeybee.face.Face"""
 
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.honeybee.aperture import ApertureSchema
 from backend.schemas.honeybee.boundarycondition import BoundaryConditionSchema

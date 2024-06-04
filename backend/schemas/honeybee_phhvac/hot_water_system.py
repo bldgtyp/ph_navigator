@@ -3,9 +3,9 @@
 
 """Pydantic Schema: honeybee_phhvac.hot_water_system.PhHotWaterSystemSchema"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
-from backend.schemas.honeybee_phhvac.hot_water_piping import PhHvacPipeTrunkSchema, PhHvacPipeElementSchema
+from backend.schemas.honeybee_phhvac.hot_water_piping import PhHvacPipeElementSchema, PhHvacPipeTrunkSchema
 
 
 class PhHotWaterSystemSchema(BaseModel):

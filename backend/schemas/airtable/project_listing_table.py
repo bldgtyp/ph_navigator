@@ -4,7 +4,7 @@
 """Pydantic Schema: AirTable | Master Project List"""
 
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 
 class AT_ProjectListingRecordFieldsSchema(BaseModel):

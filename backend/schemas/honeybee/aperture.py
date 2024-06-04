@@ -3,7 +3,7 @@
 
 """Pydantic Schema: honeybee.aperture.Aperture"""
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
 from backend.schemas.honeybee.boundarycondition import BoundaryConditionSchema
 from backend.schemas.honeybee.properties import AperturePropertiesSchema

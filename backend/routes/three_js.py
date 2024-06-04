@@ -3,10 +3,10 @@
 
 """Routes for the THREE.js 3D Model Viewer."""
 
-from collections import defaultdict
 import pathlib
+from collections import defaultdict
 from logging import getLogger
-from typing import Any, Sequence, Iterable
+from typing import Any, Iterable
 
 from fastapi import APIRouter, HTTPException
 from honeybee import face, room, shade
@@ -14,21 +14,21 @@ from honeybee.boundarycondition import Surface
 from honeybee_energy.construction.opaque import OpaqueConstruction
 from honeybee_energy.properties.face import FaceEnergyProperties
 from honeybee_ph.properties.room import RoomPhProperties
-from honeybee_phhvac.properties.room import RoomPhHvacProperties
 from honeybee_phhvac.hot_water_system import PhHotWaterSystem
+from honeybee_phhvac.properties.room import RoomPhHvacProperties
 from honeybee_phhvac.ventilation import PhVentilationSystem
 from ladybug import epw
 from ladybug.compass import Compass
 from ladybug.sunpath import Sunpath
 from ladybug_geometry.geometry2d.pointvector import Point2D
-from ladybug_geometry.geometry3d.pointvector import Point3D
 from ladybug_geometry.geometry3d.mesh import Mesh3D
+from ladybug_geometry.geometry3d.pointvector import Point3D
 
 from backend.schemas.honeybee.face import FaceSchema
-from backend.schemas.honeybee.shade import ShadeSchema, ShadeGroupSchema
+from backend.schemas.honeybee.shade import ShadeGroupSchema, ShadeSchema
 from backend.schemas.honeybee_energy.construction.opaque import OpaqueConstructionSchema
 from backend.schemas.honeybee_energy.construction.window import WindowConstructionSchema
-from backend.schemas.honeybee_ph.space import SpaceSchema, SpaceFloorSchema
+from backend.schemas.honeybee_ph.space import SpaceFloorSchema, SpaceSchema
 from backend.schemas.honeybee_phhvac.hot_water_system import PhHotWaterSystemSchema
 from backend.schemas.honeybee_phhvac.ventilation import PhVentilationSystemSchema
 from backend.schemas.ladybug.compass import CompassSchema
