@@ -7,42 +7,72 @@
 ## TODO:
 
 #### Get Geometry:
-- [X] TFA Surfaces
-  - [ ] Color By TFA Surface
 - [ ] Thermal Bridge Edges
 - [ ] Winter / Summer Window Radiation Grid and Legend
-- [ ] add north arrow and north text to sunpath
+- [ ] Add north arrow and north text to sunpath
+- [ ] Add persistent North arrow someplace (for non-shading views)
 - [ ] Get Doors
+- [ ] iCFA / Geometry Outlines using 'boundary' don't work for donut shapes. Shift to use edge-helper like on shading meshes
+- [ ] Property Lines, curb/street edges, street-name / label
+- [ ] Adjacent buildings as semi-opaque somehow?
 
 #### Get Systems:
 - [ ] Ventilation
-  - [X] Ducting
-  - [ ] ERV unit
+  - [X] Ducting 
+  - [ ] ERV unit (note: need to add geom to HBPH / GH)
 - [ ] Plumbing
   - [X] Piping
   - [ ] Hot Water Tanks and Heaters (note: need to add geom to HBPH / GH)
 
 #### UI:
 - [X] Add Sun-path diagram State
-  - [ ] Check EPW Load path. Loads fine locally, not working when deployed.
   - [ ] Time of Day control (connect to sunlight position)
-- [X] add a u-value list with sliders to the face data panel 
-  - [ ] Add a Window U-Value section below
-- [ ] Face Data - truncate names / identifiers
-- [ ] Constructions Table (with Materials)
-- [ ] Windows Table (frames, glass, units)
-- [ ] Add 'escape' to clear surface select
-- [ ] Dimensions:
-  - [ ] Add 'escape' to clear current dimension
-  - [ ] Add rubber-band line
-  - [ ] Add 'first vertex' persistent marker
-  - [ ] Add guard against 0-length markers
-  - [ ] Add new option to select face, show face-id/name and aut-dimension all edges
 - [ ] Adjustable clipping plane (vertical adjustment at least, to see levels)
-- [ ] When selecting a surface for query - show all the edge-dims in very light text
-- [ ] Move results to top to allow for app-state bar to the right
-- [ ] When selecting a pipe, show the dims alongside
 - [ ] Update selectable objects with vis-state
+
+#### Tables:
+- [ ] Windows Table (frames, glass, units)
+- [ ] Constructions Table (with Materials)
+- [ ] Searchable
+- [ ] add a u-value list with sliders to the face data panel 
+  - [ ] Add a Window U-Value section below
+
+#### Dimensions:
+- [ ] Add 'escape' to clear current dimension
+- [ ] Add rubber-band line
+- [ ] Add 'first vertex' persistent marker
+- [ ] Add guard against 0-length markers
+- [ ] Add new option to select face, show face-id/name and aut-dimension all edges
+
+#### Selection:
+- [ ] When selecting a surface for query - show all the edge-dims in very light text
+- [ ] Multiple Object Select (reflected in object properties panel)
+- [ ] LMB crossing box to select
+- [ ] ctrl-LMB (Windows Style)?
+- [ ] Plumbing Pipes
+  - [ ] When selecting, show the dims alongside
+- [ ] Ventilation Ducting
+- [ ] LMB select in negative space to de-select
+- [ ] Add 'escape' to clear surface select
+
+#### Object Properties Panel:
+- [ ] Face Data - truncate names / identifiers
+- [ ] Don't like constant opening/closing. 
+- [ ] Should have option to close
+- [ ] Tighten up text fields. Too much spacing
+
+#### Color by:
+- [ ] Boundary Condition
+- [ ] Assembly Type
+- [ ] TFA Factor
+- [ ] Ventilation (sup/eta)
+
+#### Search Panel:
+- [ ] Select Similar to current selection
+- [ ] By boundary-condition type
+- [ ] By surface/object type
+- [ ] By Construction Type
+- [ ] By Name / Prefix 
 
 #### NavBar:
 - [ ] Fix EPW file data source. Location in upper right (map link)
@@ -52,18 +82,26 @@
 - [ ] Create new honeybee-tracker plugin
 - [ ] Add 'comments' storage to all relevant honeybee-objects `.properties`
 - [ ] Integrate comments library into ph-navigator
-   - [ ] Try: [react-chat-window](https://www.npmjs.com/package/react-chat-window?activeTab=readme)
+  - [ ] Try: [react-chat-window](https://www.npmjs.com/package/react-chat-window?activeTab=readme)
 
 #### Scene:
-- [ ] Auto-bounds (ground, shadows) based on loaded geometry:
+- [ ] Auto-bounds (ground, shadows) based on loaded geometry size:
   - [ ] grid
   - [ ] lights
   - [ ] camera location
   - [ ] shadow map
+- [ ] Camera 'reset' button someplace
+- [ ] Intentionally ignore coincident face display conflict (ground)
+- [ ] Add default 'pan/rotate' tool-state
 
 #### API & Data Storage:
 - [ ] Add some form of basic Auth
 
+#### Export:
+- [x] JSON
+  -  Add 'Download' icon, not just link icon 
+- [ ] CSV
+- [ ] Download
 
 
 # Backend Setup (FastAPI)
